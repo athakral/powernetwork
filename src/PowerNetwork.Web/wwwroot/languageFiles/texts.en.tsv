@@ -1,0 +1,58 @@
+﻿Home.Header					Power Network Use cases
+Home.Login.Username			Username
+Home.Login.Password			Password
+Home.Login.Submit			Submit
+Home.Login.Error			Username or password is incorrect
+Home.Logout					log out
+
+
+
+Main.Header					Power Network Use cases
+Main.Box1.Header			Loading<br />monitoring
+Main.Box1.Content			The power outlet measurement allows to identify meters overloading and unbalances among grids by sending alarms to the system, reducing on the ground visits
+Main.Box2.Header			Fraud<br/>detection
+Main.Box2.Content			The fraud detection identifies handled smart meters and out of normal power consumptions to tackle the problem
+Main.Box3.Header			Probability<br/>of failure
+Main.Box3.Content			The probability to failure allows to identify which assets are at risk to define critical and extraordinary maintenance
+
+
+
+Power.Header				Power Outlet Use Case
+Power.Menu.Home				Home
+Power.Menu.Power			Loading<br />monitoring
+Power.Menu.Fraud			Fraud<br/>detection
+Power.Menu.Fail				Probability<br/>of failure
+Power.Menu.Download			Download<br />report
+
+Power.Filter.Region			Region
+Power.Filter.City			City
+Power.Filter.Center			Responsible Maintenance Center
+Power.Filter.CTCode			CT Code
+Power.Filter.MeterCode		Smart Meter Code
+Power.Filter.Date			Date
+
+Power.Map.Legend.Overloading	Overloading transformer
+Power.Map.Legend.Unbalance		Unbalances among grids
+Power.Map.Legend.Both			Overloading & unbalanced transformer
+Power.Map.Legend.Normal			Transformers w/o alarm
+Power.Map.Legend.MeterGroup		Acometida
+
+Power.Alarm.Overloading		Overloading alarm
+Power.Alarm.Unbalance		Unbalanced alarm
+Power.Alarm.Code			Code
+Power.Alarm.Access			Access
+Power.Alarm.Ratio1			# hour<br/>over loading
+Power.Alarm.Ratio2			Differences<br/>among exits
+
+Power.Graph.Intensity		Power outlet intensity curve
+Power.Graph.Histogram		Power outlet histogram
+Power.Graph.Daily			Daily
+Power.Graph.Monthly			Monthly
+Power.Graph.Yearly			Yearly
+
+
+
+Fraud.Header				Loss Management Use Case
+Fraud.Alarm.Unbalance		Unbalances intensity<br/>between CT and Exits
+Fraud.Alarm.Ratio1			Total losses between<br/>CT and Exits
+Fraud.Graph.Energy			Unbalances curve between CT and Exits

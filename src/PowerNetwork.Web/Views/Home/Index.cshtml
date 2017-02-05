@@ -1,109 +1,118 @@
+@using PowerNetwork.Core.Helpers
+@model PowerNetwork.Web.Models.LoginModel
 @{
     ViewData["Title"] = "Home Page";
+    var texts = ResourceService.Instance(ViewBag.HostingEnvironment, ViewBag.LanguageCode);
 }
 
-<div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">
-    <ol class="carousel-indicators">
-        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-        <li data-target="#myCarousel" data-slide-to="1"></li>
-        <li data-target="#myCarousel" data-slide-to="2"></li>
-        <li data-target="#myCarousel" data-slide-to="3"></li>
-    </ol>
-    <div class="carousel-inner" role="listbox">
-        <div class="item active">
-            <img src="~/images/banner1.svg" alt="ASP.NET" class="img-responsive" />
-            <div class="carousel-caption" role="option">
-                <p>
-                    Learn how to build ASP.NET apps that can run anywhere.
-                    <a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkID=525028&clcid=0x409">
-                        Learn More
-                    </a>
-                </p>
+<form>
+    <div class="container-fluid" id="loginView">
+        <div class="row">
+            <div class="col-md-7 left text-center">
+                <h1>@texts["Home.Header"]</h1>
+                <div class="row">
+                    <div class="col-xs-8 col-xs-offset-2">
+                        <img src="~/images/logo-big.png" />
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="item">
-            <img src="~/images/banner2.svg" alt="Visual Studio" class="img-responsive" />
-            <div class="carousel-caption" role="option">
-                <p>
-                    There are powerful new features in Visual Studio for building modern web apps.
-                    <a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkID=525030&clcid=0x409">
-                        Learn More
-                    </a>
-                </p>
-            </div>
-        </div>
-        <div class="item">
-            <img src="~/images/banner3.svg" alt="Package Management" class="img-responsive" />
-            <div class="carousel-caption" role="option">
-                <p>
-                    Bring in libraries from NuGet, Bower, and npm, and automate tasks using Grunt or Gulp.
-                    <a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkID=525029&clcid=0x409">
-                        Learn More
-                    </a>
-                </p>
-            </div>
-        </div>
-        <div class="item">
-            <img src="~/images/banner4.svg" alt="Microsoft Azure" class="img-responsive" />
-            <div class="carousel-caption" role="option">
-                <p>
-                    Learn how Microsoft's Azure cloud platform allows you to build, deploy, and scale web apps.
-                    <a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkID=525027&clcid=0x409">
-                        Learn More
-                    </a>
-                </p>
-            </div>
-        </div>
-    </div>
-    <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
-        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-        <span class="sr-only">Previous</span>
-    </a>
-    <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
-        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-        <span class="sr-only">Next</span>
-    </a>
-</div>
+            <div class="col-md-5 right">
+                <div class="row">
+                    <div class="col-xs-8 col-xs-offset-2">
+                        <img src="~/images/logo.png" class="logo" />
+                        <div id="loginControls" class="overlay-container">
+                            <div class="form-group">
+                                <label class="control-label">@texts["Home.Login.Username"]</label>
+                                <input type="text" class="form-control" id="txtUsername" />
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">@texts["Home.Login.Password"]</label>
+                                <input type="password" class="form-control" id="txtPassword"/>
+                            </div>
+                            <div>
+                                <button id="btnSubmit" type="submit" class="btn btn-default">@texts["Home.Login.Submit"]</button>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="error" id="divError" style="display: none;">@texts["Home.Login.Error"]</div>
+                    </div>
+                </div>
 
-<div class="row">
-    <div class="col-md-3">
-        <h2>Application uses</h2>
-        <ul>
-            <li>Sample pages using ASP.NET Core MVC</li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=518007">Gulp</a> and <a href="https://go.microsoft.com/fwlink/?LinkId=518004">Bower</a> for managing client-side libraries</li>
-            <li>Theming using <a href="https://go.microsoft.com/fwlink/?LinkID=398939">Bootstrap</a></li>
-        </ul>
+                <div class="row bottom text-center">
+                    <div class="col-xs-4 col-xs-offset-2">
+                        <img src="~/images/power1.png" />
+                    </div>
+                    <div class="col-xs-4">
+                        <img src="~/images/fraud1.png" />
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="col-md-3">
-        <h2>How to</h2>
-        <ul>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkID=398600">Add a Controller and View</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkID=699562">Add an appsetting in config and access it in app.</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=699315">Manage User Secrets using Secret Manager.</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=699316">Use logging to log a message.</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=699317">Add packages using NuGet.</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=699318">Add client packages using Bower.</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=699319">Target development, staging or production environment.</a></li>
-        </ul>
-    </div>
-    <div class="col-md-3">
-        <h2>Overview</h2>
-        <ul>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=518008">Conceptual overview of what is ASP.NET Core</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=699320">Fundamentals of ASP.NET Core such as Startup and middleware.</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=398602">Working with Data</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkId=398603">Security</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkID=699321">Client side development</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkID=699322">Develop on different platforms</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkID=699323">Read more on the documentation site</a></li>
-        </ul>
-    </div>
-    <div class="col-md-3">
-        <h2>Run & Deploy</h2>
-        <ul>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkID=517851">Run your app</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkID=517853">Run tools such as EF migrations and more</a></li>
-            <li><a href="https://go.microsoft.com/fwlink/?LinkID=398609">Publish to Microsoft Azure Web Apps</a></li>
-        </ul>
-    </div>
-</div>
+</form>
+
+
+@section scripts {
+    <script src="~/lib/jsbn/jsbn.js"></script>
+    <script src="~/lib/jsbn/jsbn2.js"></script>
+    <script src="~/lib/sjcl/sjcl.js"></script>
+    <script src="~/lib/moment/min/moment.min.js"></script>
+    <script src="~/lib/amazon-cognito-identity-js/dist/aws-cognito-sdk.min.js"></script>
+    <script src="~/lib/amazon-cognito-identity-js/dist/amazon-cognito-identity.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#btnSubmit").click(function (e) {
+                e.preventDefault();
+                toggleOverlay($("#loginControls"), true);
+
+                var authenticationData = {
+                    Username: $("#txtUsername").val(),
+                    Password: $("#txtPassword").val(),
+                };
+                var authenticationDetails = new AWSCognito.CognitoIdentityServiceProvider.AuthenticationDetails(authenticationData);
+
+                var poolData = {
+                    UserPoolId: '@ViewBag.AppConf.CognitoUserPoolId',
+                    ClientId: '@ViewBag.AppConf.CognitoClientId'
+                };
+                var userPool = new AWSCognito.CognitoIdentityServiceProvider.CognitoUserPool(poolData);
+
+                var userData = {
+                    Username: $("#txtUsername").val(),
+                    Pool: userPool
+                };
+                var cognitoUser = new AWSCognito.CognitoIdentityServiceProvider.CognitoUser(userData);
+
+                cognitoUser.authenticateUser(authenticationDetails, {
+                    onSuccess: function (result) {
+                        $.ajax({
+                            type: 'POST',
+                            url: '/home/login',
+                            data: JSON.stringify({ code: result.getAccessToken().getJwtToken() }),
+                            contentType: 'application/json; charset=utf-8',
+                            success: function (loginResult) {
+                                if (loginResult == $("#txtUsername").val()) {
+                                    window.location.href = "/main";
+                                } else {
+                                    $("#divError").show();
+                                }
+                            },
+                            complete: function () {
+                                toggleOverlay($("#loginControls"), false);
+                            }
+                        });
+                    },
+
+                    onFailure: function (err) {
+                        $("#divError").show();
+                        toggleOverlay($("#loginControls"), false);
+                    },
+
+                    newPasswordRequired: function (userAttributes, requiredAttributes) {
+                        cognitoUser.completeNewPasswordChallenge($("#txtPassword").val(), null, this);
+                    }
+                });
+            });
+        });
+    </script>
+}

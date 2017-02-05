@@ -8,8 +8,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft​.AspNetCore​.Http;
+using PowerNetwork.Core.DataModels;
 
-namespace GnfSmartMeters
+namespace PowerNetwork
 {
     public class Startup
     {
@@ -31,6 +32,8 @@ namespace GnfSmartMeters
             // Add framework services.
             services.AddMvc();
             services.AddOptions();
+            services.Configure<AppConfig>(options => Configuration.GetSection("AppConfig").Bind(options));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

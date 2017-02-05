@@ -3,12 +3,19 @@
   "buildOptions": {
     "debugType": "portable"
   },
-  "dependencies": {},
+  "dependencies": {
+    "Microsoft.NETCore.App": {
+      "version": "1.1.0",
+      "type": "platform"
+    },
+    "Microsoft.AspNetCore.Hosting":"1.1.0"
+  },
   "frameworks": {
-    "netstandard1.6": {
-      "dependencies": {
-        "NETStandard.Library": "1.6.1"
-      }
+    "netcoreapp1.1": {
+      "imports": [
+        "dotnet5.6",
+        "portable-net45+win8"
+      ]
     }
   }
 }

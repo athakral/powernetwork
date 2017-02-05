@@ -1,0 +1,58 @@
+﻿Home.Header					Funcionalidades del Despacho de Baja Tensión
+Home.Login.Username			Usuario
+Home.Login.Password			Contraseña
+Home.Login.Submit			Enviar
+Home.Login.Error			Nombre de usuario o la contraseña es incorrecta
+Home.Logout					desconectar
+
+
+
+Main.Header					Funcionalidades del Despacho de Baja Tensión
+Main.Box1.Header			Gestión de<br/>Sobrecargas
+Main.Box1.Content			La Gestión de la Sobrecarga de la Red permite identificar los Centros de Transformación con Sobreintensidad y los Desbalanceos entre salidas mediante el envío de alarmas al sistema, reduciendo las visitas a campo
+Main.Box2.Header			Gestión de<br/>Pérdidas
+Main.Box2.Content			La Gestión de las Pérdidas permite ver los Desbalances de Intensidad que se producen entre la energía suministrada y la consumida, permitiendo identificar si son pérdidas gestionables o no gestionables
+Main.Box3.Header			Probabilidad<br/>de Fallo
+Main.Box3.Content			El cálculo de la Probabilidad de Fallo permite identificar qué activos están en riesgo para definir los mantenimientos críticos y extraordinarios
+
+
+
+Power.Header				Gestión de Sobrecargas de la Red
+Power.Menu.Home				Inicio
+Power.Menu.Power			Gestión de<br/>Sobrecargas
+Power.Menu.Fraud			Gestión de<br/>Pérdidas
+Power.Menu.Fail				Probabilidad<br/>de Fallo
+Power.Menu.Download			Descargar<br/>Informe
+
+Power.Filter.Region			Región
+Power.Filter.City			Ciudad
+Power.Filter.Center			Bases de Operaciones
+Power.Filter.CTCode			Código del CT
+Power.Filter.MeterCode		Código del Smart Meter
+Power.Filter.Date			Fecha
+
+Power.Map.Legend.Overloading	Sobreintensidad CT
+Power.Map.Legend.Unbalance		Desbalanceo CT
+Power.Map.Legend.Both			Sobreintensidad & Desbalanceo
+Power.Map.Legend.Normal			Centro de Transformación
+Power.Map.Legend.MeterGroup		Caja Genenal de Protección
+
+Power.Alarm.Overloading		Alarma de Sobreintensidad
+Power.Alarm.Unbalance		Alarma de Desbalanceo<br/>entre Intensidades de Salidas
+Power.Alarm.Code			Código
+Power.Alarm.Access			Acceso
+Power.Alarm.Ratio1			# horas<br/>Sobreintensidad
+Power.Alarm.Ratio2			Diferencias<br/>entre salidas
+
+Power.Graph.Intensity		Curva de Intensidad de Sobrecarga de la Red
+Power.Graph.Histogram		Histograma de Intensidades
+Power.Graph.Daily			Diario
+Power.Graph.Monthly			Mensual
+Power.Graph.Yearly			Anual
+
+
+
+Fraud.Header				Gestión de las Pérdidas
+Fraud.Alarm.Unbalance		Desbalances de Intensidad<br/>entre Salidas y CT
+Fraud.Alarm.Ratio1			Pérdidas entre<br/>CT y ∑Salidas (%)
+Fraud.Graph.Energy			Curva de Desbalances entre Salidas y CT
