@@ -70,11 +70,16 @@ namespace PowerNetwor.Controllers
             {
                 _logger.LogInformation("Passed Code " + code);
                 var client = new HttpClient();
-                client.DefaultRequestHeaders.Clear();
-                client.DefaultRequestHeaders.Add("ContentType", "application/x-amz-json-1.1");
-                client.DefaultRequestHeaders.Add("X-Amz-Target", "AWSCognitoIdentityProviderService.GetUser");
-                client.DefaultRequestHeaders.Add("X-Amz-User-Agent", "aws-sdk-js/2.6.4");
+                // client.DefaultRequestHeaders.Clear();
+                // client.DefaultRequestHeaders.Add("ContentType", "application/x-amz-json-1.1");
+                // client.DefaultRequestHeaders.Add("X-Amz-Target", "AWSCognitoIdentityProviderService.GetUser");
+                // client.DefaultRequestHeaders.Add("X-Amz-User-Agent", "aws-sdk-js/2.6.4");
                 var requestContent = new StringContent("{\"AccessToken\":\"" + code + "\"}", System.Text.Encoding.UTF8, "application/json");
+                requestContent.Headers.Remove("Content-Type");
+                requestContent.Headers.Add("ContentType", "application/x-amz-json-1.1");
+                requestContent.Headers.Add("X-Amz-Target", "AWSCognitoIdentityProviderService.GetUser");
+                requestContent.Headers.Add("X-Amz-User-Agent", "aws-sdk-js/2.6.4");
+
 
                 var response = client.PostAsync("https://cognito-idp.eu-west-1.amazonaws.com/", requestContent).Result;
                 _logger.LogInformation("Server's Reponse", response);
