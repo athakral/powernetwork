@@ -1,0 +1,708 @@
+﻿@using PowerNetwork.Core.Helpers
+@{
+    var texts = ResourceService.Instance(ViewBag.HostingEnvironment, ViewBag.LanguageCode);
+}
+
+<div class="container-fluid" id="outletView">
+    <img src="~/images/logo.png" class="logo" />
+
+    <ul id="topMenu">
+        <li>
+            <a href="/main">
+                <img src="~/images/home1.png" />
+                <span>@texts["Power.Menu.Home"]</span>
+            </a>
+        </li>
+        <li>
+            <a href="/power-outlet">
+                <img src="~/images/power1-sm.png" />
+                <span>@Html.Raw(texts["Power.Menu.Power"])</span>
+            </a>
+        </li>
+        <li>
+            <a href="/fraud" class="active">
+                <img src="~/images/fraud0-sm.png" />
+                <span>@Html.Raw(texts["Power.Menu.Fraud"])</span>
+            </a>
+        </li>
+        <li style="padding-left: 40px;">
+            <a href="#" class="active">
+                <img src="~/images/download-pdf.png" />
+                <span>@Html.Raw(texts["Power.Menu.Download"])</span>
+            </a>
+        </li>
+    </ul>
+    <h1>
+        @if (User.Identity.IsAuthenticated) {
+            <small>(@User.Identity.Name: <a href="/home/logout"><span class="glyphicon glyphicon-off"></span> @texts["Home.Logout"]</a>)</small>
+        }
+        @texts["Fraud.Header"]
+    </h1>
+    <div class="row">
+        <div class="col-md-3 overlay-container" id="filterContainer">
+            <div class="form-group">
+                <select id="ddlRegion" class="form-control">
+                    <option value="">-- @texts["Power.Filter.Region"] --</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <select id="ddlCity" class="form-control" disabled="disabled">
+                    <option value="">-- @texts["Power.Filter.City"] --</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <select id="ddlCenter" class="form-control">
+                    <option value="">-- @texts["Power.Filter.Center"] --</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <input id="txtCTSearch" type="text" class="form-control" placeholder="@texts["Power.Filter.CTCode"]">
+                    <span class="input-group-btn">
+                        <button id="btnCTSearch" class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group error" id="ctSearchMessage" style="display: none;"></div>
+            <div class="form-group">
+                <div class="input-group">
+                    <input id="txtMeterSearch" type="text" class="form-control" placeholder="@texts["Power.Filter.MeterCode"]">
+                    <span class="input-group-btn">
+                        <button id="btnMeterSearch" class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group error" id="meterSearchMessage" style="display: none;"></div>
+            <label>@texts["Power.Filter.Date"]</label>
+            <div class="row">
+                <div class="col-xs-6">
+                    <div class="form-group">
+                        <div class='input-group date' id='dpkFrom'>
+                            <input type='text' class="form-control" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <div class="form-group">
+                        <div class='input-group date' id='dpkTo'>
+                            <input type='text' class="form-control" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr/>
+            <p>
+                @texts["Power.Map.Legend.Normal"]
+                <img src="~/images/b-green.png" />
+            </p>
+            <p>
+                @texts["Power.Map.Legend.MeterGroup"]
+                <img src="~/images/b-mgroup.png" />
+            </p>
+        </div>
+
+        <div class="col-md-6">
+            <div id="map" style="height: 520px;"></div>
+        </div>
+
+        <div class="col-md-3 overlay-container" id="fraudAlarms">
+            <div class="panel panel-default">
+                <div class="panel-heading">@Html.Raw(texts["Fraud.Alarm.Unbalance"])</div>
+                <div class="panel-body">
+                    <table id="tblUnbalanceAlarms" class="table table-condensed table-striped table-responsive">
+                        <thead>
+                            <tr>
+                                <th>@texts["Power.Alarm.Code"]</th>
+                                <th>@Html.Raw(texts["Fraud.Alarm.Ratio1"])</th>
+                                <th>@texts["Power.Alarm.Access"]</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" id="outletCharts">
+        <div class="col-md-12">
+            <div class="panel panel-default overlay-container" id="energyContainer">
+                <div class="panel-heading">@texts["Fraud.Graph.Energy"]</div>
+                <div class="panel-body">
+                    <div id="energyChart" style="height: 240px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <h3><b>Significado Indicadores Operativos</b></h3>
+        <p>
+            <b>Desbalances de Intensidad entre Salidas y Centros de Transformación:</b> recoge la diferencia porcentual media de Intensidad entre el 
+            CT y la suma de sus salidas durante los últimos 31 días . La información aparece ordenada de mayor diferencia a menor.
+        </p>
+        <p>
+            <b>Curva de Desbalances entre salidas y Centros de Transformación:</b> compara la energía suministrada y la consumida para detectar posibles 
+            pérdidas mediante la suma de las intensidades de todas las Salidas de un CT y la del CT, durante un período de tiempo determinado (por defecto, 31 días).
+        </p>
+        <br/><br/>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/moment.min.js"></script>
+    <script src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+    <script src="~/Scripts/d3.v4.min.js"></script>
+    <script>
+        var $region = $("#ddlRegion");
+        var $city = $("#ddlCity");
+        var $center = $("#ddlCenter");
+
+        var currentCts;
+        var animateCts;
+
+        var map;
+        var mapInfo;
+        var mapData = {};
+        var mapMarkers = { regions: [], cities: [], cts: [], meterGroups: [], cityDict: {}, ctsDict: {}, ctsCenter: null };
+
+        var mapOrigin = { center: { lat: 40.431075, lng: -3.703578 }, zoom: [6, 10, 13, 18] };
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: mapOrigin.zoom[0],
+                center: mapOrigin.center,
+                minZoom: mapOrigin.zoom[0],
+                maxZoom: mapOrigin.zoom[3]
+            });
+
+            mapInfo = new google.maps.InfoWindow({ content: '' });
+
+            map.addListener('idle', function() {
+                if (mapData.regions == null) {
+                    setTimeout(function() {
+                        google.maps.event.trigger(map, 'idle');
+                    }, 2000);
+                    return;
+                }
+
+                var zoom = map.getZoom();
+                var bounds = map.getBounds().toJSON();
+                //console.log(zoom);
+
+                if (zoom < mapOrigin.zoom[1]) {
+                    if (mapMarkers.cities.length > 0 && mapMarkers.cities[0].getVisible() == true) {
+                        mapMarkers.cities.forEach(function(m) {
+                            m.setVisible(false);
+                        });
+                    }
+
+                    if (mapMarkers.cts.length > 0 && mapMarkers.cts[0].getVisible() == true) {
+                        mapMarkers.cts.forEach(function(m) {
+                            m.setVisible(false);
+                        });
+                    }
+
+                    if (mapMarkers.regions.length == 0) {
+                        mapData.regions.forEach(function(r) {
+                            var m = new google.maps.Marker({
+                                map: map,
+                                position: { lat: r.lat, lng: r.lng },
+                                label: {
+                                    text: r.count.toString(),
+                                    fontSize: '11px'
+                                },
+                                icon: {
+                                    url: '/content/images/m-red.png',
+                                    labelOrigin: new google.maps.Point(33, 34)
+                                }
+                            });
+
+                            m.addListener('click', function() {
+                                map.setZoom(mapOrigin.zoom[1]);
+                                map.setCenter(m.getPosition());
+                            });
+
+                            mapMarkers.regions.push(m);
+                        });
+
+                    } else if (mapMarkers.regions[0].getVisible() == false) {
+                        mapMarkers.regions.forEach(function(m) {
+                            m.setVisible(true);
+                        });
+                    }
+
+                } else if (zoom < mapOrigin.zoom[2]) {
+                    if (mapMarkers.regions.length > 0 && mapMarkers.regions[0].getVisible() == true) {
+                        mapMarkers.regions.forEach(function(m) {
+                            m.setVisible(false);
+                        });
+                    }
+
+                    if (mapMarkers.cts.length > 0 && mapMarkers.cts[0].getVisible() == true) {
+                        mapMarkers.cts.forEach(function(m) {
+                            m.setVisible(false);
+                        });
+                    }
+
+                    if (mapMarkers.cities.length > 0 && mapMarkers.cities[0].getVisible() == false) {
+                        mapMarkers.cities.forEach(function(m) {
+                            m.setVisible(true);
+                        });
+                    }
+
+                    mapData.cities.forEach(function(c) {
+                        if (c.lng > bounds.west && c.lng < bounds.east && c.lat > bounds.south && c.lat < bounds.north && mapMarkers.cityDict[c.name] == null) {
+                            var m = new google.maps.Marker({
+                                map: map,
+                                position: { lat: c.lat, lng: c.lng },
+                                label: {
+                                    text: c.count.toString(),
+                                    fontSize: '11px'
+                                },
+                                icon: {
+                                    url: '/content/images/m-yellow.png',
+                                    labelOrigin: new google.maps.Point(28, 28)
+                                }
+                            });
+
+                            m.addListener('click', function() {
+                                map.setZoom(mapOrigin.zoom[2]);
+                                map.setCenter(m.getPosition());
+                            });
+
+                            mapMarkers.cities.push(m);
+                            mapMarkers.cityDict[c.name] = m;
+                        }
+                    });
+
+                } else {
+                    if (mapMarkers.regions.length > 0 && mapMarkers.regions[0].getVisible() == true) {
+                        mapMarkers.regions.forEach(function(m) {
+                            m.setVisible(false);
+                        });
+                    }
+
+                    if (mapMarkers.cities.length > 0 && mapMarkers.cities[0].getVisible() == true) {
+                        mapMarkers.cities.forEach(function(m) {
+                            m.setVisible(false);
+                        });
+                    }
+
+                    if (mapMarkers.cts.length > 0 && mapMarkers.cts[0].getVisible() == false) {
+                        mapMarkers.cts.forEach(function(m) {
+                            m.setVisible(true);
+                        });
+                    }
+
+                    toggleOverlay($("#map"), true);
+                    $.ajax({
+                        url: '/data/cts',
+                        data: { x1: bounds.west, x2: bounds.east, y1: bounds.south, y2: bounds.north },
+                        success: function(data) {
+                            data.forEach(function(c) {
+                                if (mapMarkers.ctsDict[c.othercode] == null) {
+                                    var m = new google.maps.Marker({
+                                        map: map,
+                                        position: { lat: c.lat, lng: c.lng },
+                                        icon: {
+                                            url: '/content/images/b-green.png'
+                                        }
+                                    });
+
+                                    m.addListener('click', function() {
+                                        mapMarkers.meterGroups.forEach(function(gm) {
+                                            gm.setMap(null);
+                                        });
+                                        mapMarkers.meterGroups = [];
+                                        
+                                        if (mapMarkers.ctsCenter != null) {
+                                            var ctsCenterIcon = mapMarkers.ctsCenter.getIcon().url;
+                                            if (ctsCenterIcon.indexOf('-2.png') > 0) {
+                                                ctsCenterIcon = ctsCenterIcon.replace('-2.png', '.png');
+                                                mapMarkers.ctsCenter.setIcon({ url: ctsCenterIcon });
+                                            }
+                                        }
+
+                                        var iconUrl = this.getIcon().url;
+                                        if (iconUrl.indexOf('-2.png') < 0) {
+                                            iconUrl = iconUrl.replace('.png', '-2.png');
+                                            this.setIcon({ url: iconUrl });
+                                        }
+                                        mapMarkers.ctsCenter = this;
+                                        
+                                        if (mapInfo) {
+                                            mapInfo.close();
+                                        }
+                                        mapInfo.setContent("<p>" + c.othercode + "</p>");
+                                        mapInfo.open(map, m);
+
+                                        toggleOverlay($("#map"), true);
+                                        $.ajax({
+                                            url: '/data/metergroups',
+                                            data: { otherCode: c.othercode, exitCalc: false },
+                                            success: function(meterGroupData) {
+
+                                                meterGroupData.groups.forEach(function(groupItem) {
+                                                    var gm = new google.maps.Marker({
+                                                        map: map,
+                                                        position: { lat: groupItem.Lat, lng: groupItem.Lng },
+                                                        icon: {
+                                                            url: '/content/images/b-mgroup.png'
+                                                        },
+                                                        infoExit: groupItem.Exit
+                                                    });
+
+                                                    gm.addListener('click', function() {
+                                                        toggleOverlay($("#map"), true);
+                                                        $.ajax({
+                                                            url: '/data/meters',
+                                                            data: { groupCode: groupItem.Code },
+                                                            success: function(meterData) {
+                                                                if (mapInfo) {
+                                                                    mapInfo.close();
+                                                                }
+
+                                                                var html = "<p>" + groupItem.Code + "</p>";
+                                                                html += "<p>Salida: " + groupItem.Exit + "</p>";
+
+                                                                html += "<p>" + meterData.length + " smart meter(s):</p>";
+                                                                meterData.forEach(function(meterItem) {
+                                                                    html += "<p> - " + meterItem.Code + " (type " + meterItem.Type + ")</p>";
+                                                                });
+
+                                                                mapInfo.setContent(html);
+                                                                mapInfo.open(map, gm);
+                                                            },
+                                                            complete: function() {
+                                                                toggleOverlay($("#map"), false);
+                                                            }
+                                                        });
+                                                    });
+
+                                                    mapMarkers.meterGroups.push(gm);
+                                                });
+                                            },
+                                            complete: function() {
+                                                toggleOverlay($("#map"), false);
+                                            }
+                                        });
+
+                                        currentCts = c.othercode;
+                                        refreshEnergy();
+                                    });
+
+                                    mapMarkers.cts.push(m);
+                                    mapMarkers.ctsDict[c.othercode] = m;
+                                }
+                            });
+
+                            if (animateCts != null) {
+                                var animatedCts = mapMarkers.ctsDict[animateCts];
+                                if (animatedCts != null) {
+                                    google.maps.event.trigger(animatedCts, 'click');
+                                }
+                                animateCts = null;
+                            }
+                        },
+                        complete: function() {
+                            toggleOverlay($("#map"), false);
+                        }
+                    });
+                }
+            });
+        }
+
+        function initFilters() {
+            toggleOverlay($("#filterContainer"), true);
+            $.ajax({
+                url: '/data/common',
+                success: function(data) {
+                    mapData.regions = data.regions;
+                    mapData.cities = data.cities;
+                    mapData.centers = data.centers;
+
+                    data.regions.forEach(function(r) {
+                        $region.append('<option data-lat="' + r.lat + '" data-lng="' + r.lng + '" value="' + r.name + '">' + r.name + '</option>');
+                    });
+
+                    data.centers.forEach(function(c) {
+                        $center.append('<option data-lat="' + c.lat + '" data-lng="' + c.lng + '" value="' + c.name + '">' + c.name + '</option>');
+                    });
+                },
+                complete: function() {
+                    toggleOverlay($("#filterContainer"), false);
+                }
+            });
+
+            $region.change(function() {
+                var option = $region.find(":selected");
+
+                $city.find("option[data-lat]").remove();
+
+                if (option.attr("data-lat") != null) {
+                    map.setZoom(mapOrigin.zoom[1]);
+                    map.setCenter({ lat: parseFloat(option.attr("data-lat")), lng: parseFloat(option.attr("data-lng")) });
+
+                    mapData.cities.forEach(function(c) {
+                        if (c.region == option.attr("value")) {
+                            $city.append('<option data-lat="' + c.lat + '" data-lng="' + c.lng + '" value="' + c.name + '">' + c.name + ' (' + c.region + ')' + '</option>');
+                        }
+                    });
+                    $city.prop("disabled", false);
+
+                } else {
+                    map.setZoom(mapOrigin.zoom[0]);
+                    map.setCenter(mapOrigin.center);
+
+                    $city.attr("disabled", "disabled");
+                }
+
+                $center.val("");
+                $("#txtCTSearch").val("");
+                $("#txtMeterSearch").val("");
+                currentCts = null;
+                refreshAlarms();
+            });
+
+            $city.change(function() {
+                var option = $city.find(":selected");
+
+                if (option.attr("data-lat") != null) {
+                    map.setZoom(mapOrigin.zoom[2]);
+                    map.setCenter({ lat: parseFloat(option.attr("data-lat")), lng: parseFloat(option.attr("data-lng")) });
+
+                    $("#txtCTSearch").val("");
+                    $("#txtMeterSearch").val("");
+                    refreshAlarms();
+                } else {
+                    $region.trigger("change");
+                }
+            });
+
+            $center.change(function() {
+                var option = $center.find(":selected");
+
+                if (option.attr("data-lat") != null) {
+                    map.setZoom(mapOrigin.zoom[2]);
+                    map.setCenter({ lat: parseFloat(option.attr("data-lat")), lng: parseFloat(option.attr("data-lng")) });
+
+                } else {
+                    map.setZoom(mapOrigin.zoom[0]);
+                    map.setCenter(mapOrigin.center);
+                }
+
+                $region.val("");
+                $city.find("option[data-lat]").remove();
+                $city.attr("disabled", "disabled");
+                $("#txtCTSearch").val("");
+                $("#txtMeterSearch").val("");
+                currentCts = null;
+                refreshAlarms();
+            });
+
+            $("#btnCTSearch").click(function() {
+                $("#ctSearchMessage").hide();
+                var code = $("#txtCTSearch").val().trim();
+
+                if (code == '') {
+                    //$("#ctSearchMessage").html("<p>Please input CT code</p>").show();
+                    $("#ctSearchMessage").html("<p>Código del CT no encontrado</p>").show();
+
+                } else {
+                    toggleOverlay($("#map"), true);
+                    $.ajax({
+                        url: '/data/ctssearch?code=' + code,
+                        success: function(data) {
+                            if (data.length > 0) {
+                                $region.val("");
+                                $city.find("option[data-lat]").remove();
+                                $city.attr("disabled", "disabled");
+                                $center.val("");
+
+                                map.setZoom(mapOrigin.zoom[3]);
+                                map.setCenter({ lat: data[0].lat, lng: data[0].lng });
+                                animateCts = data[0].othercode;
+
+                                currentCts = data[0].othercode;
+                                refreshAlarms();
+                            } else {
+                                //$("#ctSearchMessage").html("<p>CT code not found</p>").show();
+                                $("#ctSearchMessage").html("<p>Código del CT no encontrado</p>").show();
+                            }
+                        },
+                        complete: function() {
+                            toggleOverlay($("#map"), false);
+                        }
+                    });
+                }
+            });
+
+            $("#btnMeterSearch").click(function() {
+                $("#meterSearchMessage").hide();
+                var code = $("#txtMeterSearch").val().trim();
+
+                if (code.length < 9) {
+                    //$("#meterSearchMessage").html("<p>Please input at least 9 meaningful chars</p>").show();
+                    $("#meterSearchMessage").html("<p>El código debe contener al menos 9 caracteres</p>").show();
+
+                } else {
+                    toggleOverlay($("#map"), true);
+                    $.ajax({
+                        url: '/data/metersearch?code=' + code,
+                        success: function(data) {
+                            if (data.length > 0) {
+                                $region.val("");
+                                $city.find("option[data-lat]").remove();
+                                $city.attr("disabled", "disabled");
+                                $center.val("");
+
+                                map.setZoom(mapOrigin.zoom[3]);
+                                map.setCenter({ lat: data[0].lat, lng: data[0].lng });
+                                animateCts = data[0].othercode;
+
+                                currentCts = data[0].othercode;
+                                refreshAlarms();
+                            } else {
+                                //$("#meterSearchMessage").html("<p>Smart Meter code not found</p>").show();
+                                $("#meterSearchMessage").html("<p>Código del Smart Meter no encontrado</p>").show();
+                            }
+                        },
+                        complete: function() {
+                            toggleOverlay($("#map"), false);
+                        }
+                    });
+                }
+            });
+
+            $('#dpkFrom').datetimepicker({
+                format: 'YYYY-MM-DD',
+                defaultDate: '2015-10-01',
+                //minDate: '2015-07-31',
+                //maxDate: '2015-10-31'
+            });
+            $('#dpkFrom').data("DateTimePicker").date('2015-10-01');
+
+            $('#dpkTo').datetimepicker({
+                format: 'YYYY-MM-DD',
+                defaultDate: '2015-10-31',
+                //minDate: '2015-07-31',
+                //maxDate: '2015-10-31'
+            });
+            $('#dpkTo').data("DateTimePicker").date('2015-10-31');
+
+            $('#dpkFrom, #dpkTo').on("dp.change", function() {
+                refreshEnergy();
+            });
+        }
+
+        function refreshAlarms() {
+            toggleOverlay($("#fraudAlarms"), true);
+            $.ajax({
+                url: '/data/fraudalarms',
+                data: { region: $region.val(), city: $city.val(), center: $center.val(), code: currentCts },
+                success: function (data) {
+                    var $unbalanceAlarms = $("#tblUnbalanceAlarms > tbody");
+                    $unbalanceAlarms.html("");
+
+                    data.forEach(function (a) {
+                        $unbalanceAlarms.append('<tr><td>' + a.code + '</td><td>' + Math.round(a.ratio * 10) / 10 +
+                            '</td><td><a class="btn btn-sm btn-warning" data-code="' + a.code + '" data-lat="' + a.lat + '" data-lng="' + a.lng +
+                            '"><span class="glyphicon glyphicon-map-marker"></span></a></td></tr>');
+                    });
+                },
+                complete: function () {
+                    toggleOverlay($("#fraudAlarms"), false);
+                }
+            });
+        }
+
+        function refreshEnergy() {
+            if (currentCts == null) return;
+
+            toggleOverlay($("#energyContainer"), true);
+            $.ajax({
+                url: '/data/fraud',
+                data: { code: currentCts, from: $('#dpkFrom input').val(), to: $('#dpkTo input').val() },
+                success: function (data) {
+
+                    data.items.forEach(function (d) {
+                        d.time = new Date(d.date);
+                    });
+
+                    var container = d3.select("#energyChart");
+                    container.html("");
+
+                    if (data.items.length == 0) {
+                        container.html("<span>No hay datos disponibles</span>");
+                        return;
+                    }
+
+                    var containerSize = container.node().getBoundingClientRect(),
+                        svg = container.append("svg").attr("width", containerSize.width).attr("height", containerSize.height),
+                        margin = { top: 20, right: 20, bottom: 70, left: 70 },
+                        width = containerSize.width - margin.left - margin.right,
+                        height = containerSize.height - margin.top - margin.bottom,
+                        g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+                    var clip = g.append("defs").append("clipPath").attr("id", "clipEnergy").append("rect").attr("width", 0).attr("height", height);
+
+                    var x = d3.scaleTime().rangeRound([0, width]);
+                    var y = d3.scaleLinear().rangeRound([height, 0]);
+
+                    var lineCt = d3.line().x(function (d) { return x(d.time); }).y(function (d) { return y(d.ct); });
+                    var lineExit = d3.line().x(function (d) { return x(d.time); }).y(function (d) { return y(d.exit); });
+
+                    x.domain(d3.extent(data.items, function (d) { return d.time; }));
+
+                    var domainCt = d3.extent(data.items, function (d) { return d.ct; });
+                    var domainExit = d3.extent(data.items, function (d) { return d.exit; });
+                    y.domain([d3.min([domainCt[0], domainExit[0]]), d3.max([domainCt[1], domainExit[1]])]);
+
+                    g.append("g").attr("class", "axis axis--x").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x).ticks(10));
+
+                    g.append("g").attr("class", "axis axis--y").call(d3.axisLeft(y).tickFormat(d3.format(".2s")))
+                        .append("text").attr("fill", "#000").attr("transform", "rotate(-90)")
+                        .attr("y", -52).attr("dy", "0.71em").style("text-anchor", "end").text("Energy values (kWh)");
+
+                    var clipG = g.append("g").attr("clip-path", "url(#clipEnergy)");
+
+                    var pathCt = clipG.append("path").datum(data.items).attr("class", "line").attr("d", lineCt).style("stroke", "#f00");
+                    var pathExit = clipG.append("path").datum(data.items).attr("class", "line").attr("d", lineExit).style("stroke", "#0f0");
+                    
+                    var legends = g.append("g").attr("class", "legend").attr("transform", "translate(0," + (height + 50) + ")");
+
+                    var legendCt = legends.append("g").attr("transform", "translate(0,0)");
+                    legendCt.append("line").attr("x1", 0).attr("y1", 0).attr("x2", 20).attr("y2", 0).attr("stroke", "#f00").attr("stroke-width", 2);
+                    legendCt.append("text").attr("x", 25).attr("y", 4).text("CT");
+
+                    var legendExit = legends.append("g").attr("transform", "translate(80,0)");
+                    legendExit.append("line").attr("x1", 0).attr("y1", 0).attr("x2", 20).attr("y2", 0).attr("stroke", "#0f0").attr("stroke-width", 2);
+                    legendExit.append("text").attr("x", 25).attr("y", 4).text("∑Salidas");
+
+                    clip.transition().duration(1500).attr("width", width);
+                },
+                complete: function () {
+                    toggleOverlay($("#energyContainer"), false);
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            initFilters();
+            refreshAlarms();
+
+            $("#fraudAlarms").on("click", "a.btn", function () {
+                map.setZoom(mapOrigin.zoom[3]);
+                map.setCenter({ lat: parseFloat($(this).attr("data-lat")), lng: parseFloat($(this).attr("data-lng")) });
+                animateCts = $(this).attr("data-code");
+            });
+        });
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8hJQ2tSEH8-t-KRk83qVegBwYGzGLJ8k&callback=initMap"></script>
+}

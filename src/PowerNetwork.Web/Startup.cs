@@ -59,7 +59,8 @@ namespace PowerNetwork
                 AuthenticationScheme = "Cookie",
                 LoginPath = new PathString("/Home/Index/"),
                 AccessDeniedPath = new PathString("/Home/Index/"),
-                AutomaticAuthenticate = false
+                AutomaticAuthenticate = false,
+                AutomaticChallenge = true 
             });
 
             app.UseMvc(routes =>

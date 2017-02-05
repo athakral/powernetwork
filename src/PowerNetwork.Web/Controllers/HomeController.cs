@@ -48,8 +48,8 @@ namespace PowerNetwor.Controllers
         public IActionResult Index(string l)
         {
             ViewBag.LanguageCode = l;
-            ViewBag.HostingEnvironment = this._hostingEnvironment;
             ViewBag.AppConf = this._appConf;
+            ViewBag.HostingEnvironment = this._hostingEnvironment;
             _logger.LogInformation("Application COnfiguration", this._appConf);
             return View();
         }
@@ -125,6 +125,7 @@ namespace PowerNetwor.Controllers
         public IActionResult Main(string l)
         {
             ViewBag.LanguageCode = l;
+            ViewBag.HostingEnvironment = this._hostingEnvironment;
             return View();
         }
 
@@ -132,6 +133,7 @@ namespace PowerNetwor.Controllers
         public IActionResult PowerOutlet(string l)
         {
             ViewBag.LanguageCode = l;
+            ViewBag.HostingEnvironment = this._hostingEnvironment;
             return View();
         }
 
@@ -139,6 +141,7 @@ namespace PowerNetwor.Controllers
         public IActionResult Fraud(string l)
         {
             ViewBag.LanguageCode = l;
+            ViewBag.HostingEnvironment = this._hostingEnvironment;
             return View();
         }
 
