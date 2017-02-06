@@ -4,11 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft​.AspNetCore​.Http;
+using Newtonsoft.Json;
 using PowerNetwork.Core.DataModels;
+using PowerNetwork.Core.Loggers;
 
 namespace PowerNetwork
 {
@@ -29,8 +32,12 @@ namespace PowerNetwork
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            
             // Add framework services.
-            services.AddMvc();
+            services.AddMvc().AddJsonOptions(jsonOptions =>
+            {
+                jsonOptions.SerializerSettings.MissingMemberHandling = MissingMemberHandling.Ignore;
+            });
             services.AddOptions();
             services.Configure<AppConfig>(options => Configuration.GetSection("AppConfig").Bind(options));
 
@@ -56,13 +63,17 @@ namespace PowerNetwork
 
             app.UseCookieAuthentication(new CookieAuthenticationOptions()
             {
-                AuthenticationScheme = "Cookie",
+                AuthenticationScheme = "Cookies",
                 LoginPath = new PathString("/Home/Index/"),
                 AccessDeniedPath = new PathString("/Home/Index/"),
                 AutomaticAuthenticate = false,
                 AutomaticChallenge = true 
             });
 
+            // add logging middleware
+            app.UseMiddleware<LogResponseMiddleware>();
+            app.UseMiddleware<LogRequestMiddleware>();
+            
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

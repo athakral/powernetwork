@@ -88,7 +88,7 @@
                         $.ajax({
                             type: 'POST',
                             url: '/home/login',
-                            data: JSON.stringify({ code: result.getAccessToken().getJwtToken() }),
+                            data: JSON.stringify(result.getAccessToken().getJwtToken()),
                             contentType: 'application/json; charset=utf-8',
                             success: function (loginResult) {
                                 if (loginResult == $("#txtUsername").val()) {
