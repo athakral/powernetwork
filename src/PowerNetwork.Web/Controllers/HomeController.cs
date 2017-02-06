@@ -12,7 +12,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using PowerNetwork.Core.DataModels;
-using Jeffijoe.HttpClientGoodies;
 using Newtonsoft.Json.Linq;
 
 namespace PowerNetwork.Web.Controllers
@@ -29,19 +28,7 @@ namespace PowerNetwork.Web.Controllers
             this._appConf = appConfig.Value;
             this._logger = logger;
         }
-        public IActionResult About()
-        {
-            ViewData["Message"] = "Your application description page.";
-
-            return View();
-        }
-
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
-
-            return View();
-        }
+        
 
         public IActionResult Error()
         {
@@ -68,31 +55,10 @@ namespace PowerNetwork.Web.Controllers
                 return BadRequest(errors);
             }
 
-            //var anotherResponse = await RequestBuilder.Post("https://cognito-idp.eu-west-1.amazonaws.com/")
-            //    .Content(new StringContent(JsonConvert.SerializeObject(new { AccessToken = code })))
-            //    .AddHeaders(new List<KeyValuePair<string, object>>()
-            //    {
-            //        new KeyValuePair<string, object>("Content-Type", "application/x-amz-json-1.1"),
-            //        new KeyValuePair<string, object>("X-Amz-Target", "AWSCognitoIdentityProviderService.GetUser"),
-            //        new KeyValuePair<string, object>("X-Amz-User-Agent", "aws-sdk-js/2.6.4")
-            //    })
-            //    .SendAsync()
-            //    .AsJson<dynamic>();
-            //var clntHand = new HttpClientHandler()
-            //{
-            //    CookieContainer = new CookieContainer(),
-            //    Proxy = new WebProxy(),
-            //    UseProxy = true,
-            //    UseDefaultCredentials = false
-            //};
+            
 
             _logger.LogInformation("Passed Code " + code);
             var client = new HttpClient();
-            //var client = new HttpClient(clntHand);
-            // client.DefaultRequestHeaders.Clear();
-            // client.DefaultRequestHeaders.Add("ContentType", "application/x-amz-json-1.1");
-            // client.DefaultRequestHeaders.Add("X-Amz-Target", "AWSCognitoIdentityProviderService.GetUser");
-            // client.DefaultRequestHeaders.Add("X-Amz-User-Agent", "aws-sdk-js/2.6.4");
             var requestContent = new StringContent("{\"AccessToken\":\"" + code + "\"}", System.Text.Encoding.UTF8, "application/json");
             requestContent.Headers.Clear();
             requestContent.Headers.TryAddWithoutValidation("Content-Type", "application/x-amz-json-1.1");
@@ -106,8 +72,6 @@ namespace PowerNetwork.Web.Controllers
             if (response.IsSuccessStatusCode)
             {
 
-                //(awsUser as Newtonsoft.Json.Linq.JObject).GetValue("Username").ToString()
-
                 var awsUser = (await response.Content.ReadAsStringAsync()
                         .ContinueWith<JObject>(postTask => JsonConvert.DeserializeObject<JObject>(postTask.Result)))
                     .GetValue("Username");
@@ -115,12 +79,12 @@ namespace PowerNetwork.Web.Controllers
                 if (string.IsNullOrEmpty(awsUser?.ToString())) return Json("");
                 var claims = new List<Claim> {
                     new Claim(ClaimTypes.Name,awsUser.ToString()),
+                    new Claim("Read","true")
                 };
 
                 var claimsIdentity = new ClaimsIdentity(claims, "password");
                 var claimsPrinciple = new ClaimsPrincipal(claimsIdentity);
                 await HttpContext.Authentication.SignInAsync("Cookies", claimsPrinciple);
-                // FormsAuthentication.SetAuthCookie(username, true);
                 return Json(awsUser.ToString());
             }
 
@@ -133,7 +97,8 @@ namespace PowerNetwork.Web.Controllers
             return RedirectToAction("Index");
         }
 
-        [Authorize]
+        [Authorize(Policy = "ReadPolicy")]
+        [Route("main")]
         public IActionResult Main(string l)
         {
             ViewBag.LanguageCode = l;
@@ -141,7 +106,9 @@ namespace PowerNetwork.Web.Controllers
             return View();
         }
 
-        [Authorize]
+        [Authorize(Policy = "ReadPolicy")]
+        [Route("power-outlet")]
+        // [Route("Home/Index")]
         public IActionResult PowerOutlet(string l)
         {
             ViewBag.LanguageCode = l;
@@ -149,7 +116,8 @@ namespace PowerNetwork.Web.Controllers
             return View();
         }
 
-        [Authorize]
+        [Authorize(Policy = "ReadPolicy")]
+        [Route("fraud")]
         public IActionResult Fraud(string l)
         {
             ViewBag.LanguageCode = l;

@@ -27,7 +27,6 @@
         "Microsoft.AspNetCore.Authorization": "1.1.0",
         "Microsoft.Net.Http": "2.2.29",
         "System.Net.Primitives": "4.3.0",
-        "HttpClientGoodies": "0.0.3",
         "PowerNetwork.Core": "1.0.0-*"
     },
 

@@ -32,12 +32,21 @@ namespace PowerNetwork
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            
+
             // Add framework services.
             services.AddMvc().AddJsonOptions(jsonOptions =>
             {
                 jsonOptions.SerializerSettings.MissingMemberHandling = MissingMemberHandling.Ignore;
             });
+            services.AddAuthorization(options =>   {
+                    options.AddPolicy("ReadPolicy", policyBuilder => 
+                    {
+                        policyBuilder.RequireAuthenticatedUser()
+                            .RequireAssertion(context => context.User.HasClaim("Read", "true"))
+                            .Build();
+                     });
+                 });
+
             services.AddOptions();
             services.Configure<AppConfig>(options => Configuration.GetSection("AppConfig").Bind(options));
 
@@ -66,14 +75,14 @@ namespace PowerNetwork
                 AuthenticationScheme = "Cookies",
                 LoginPath = new PathString("/Home/Index/"),
                 AccessDeniedPath = new PathString("/Home/Index/"),
-                AutomaticAuthenticate = false,
-                AutomaticChallenge = true 
+                AutomaticAuthenticate = true,
+                AutomaticChallenge = true
             });
 
             // add logging middleware
-            app.UseMiddleware<LogResponseMiddleware>();
-            app.UseMiddleware<LogRequestMiddleware>();
-            
+            // app.UseMiddleware<LogResponseMiddleware>();
+            // app.UseMiddleware<LogRequestMiddleware>();
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
