@@ -205,7 +205,6 @@ namespace PowerNetwork.Core.Helpers
                             result.Add(model);
                         }
 
-                        reader.Close();
                     }
                 }
             }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Hosting;
 using CsvHelper;
 using System.IO;
+using CsvHelper.Configuration;
 using PowerNetwork.Core.Helpers;
 using PowerNetwork.Web.Models;
 using Microsoft.Extensions.Options;
@@ -36,15 +37,22 @@ namespace PowerNetwork.Web.Controllers
             if (_ctsRegions == null)
             {
                 var csvReaderRegion = new CsvReader(System.IO.File.OpenText(
-                    Path.Combine(this._hostingEnvironment.WebRootPath, "data/region_v1.2.csv")));
+                    Path.Combine(this._hostingEnvironment.WebRootPath, "data/region_v1.2.csv")), new CsvConfiguration()
+                    {
+                        HasHeaderRecord = false
+                    });
 
+                //csvReaderRegion.Configuration.RegisterClassMap<CtsRegionModelMap>();
                 _ctsRegions = csvReaderRegion.GetRecords<CtsRegionModel>().ToArray();
             }
 
             if (_ctsCities == null)
             {
                 var csvReaderCity = new CsvReader(System.IO.File.OpenText(
-                   Path.Combine(this._hostingEnvironment.WebRootPath, "data/city_v1.2.csv")));
+                   Path.Combine(this._hostingEnvironment.WebRootPath, "data/city_v1.2.csv")), new CsvConfiguration()
+                   {
+                       HasHeaderRecord = false
+                   });
 
                 _ctsCities = csvReaderCity.GetRecords<CtsCityModel>().ToArray();
             }
@@ -52,7 +60,10 @@ namespace PowerNetwork.Web.Controllers
             if (_ctsCenters == null)
             {
                 var csvReaderCenter = new CsvReader(System.IO.File.OpenText(
-                  Path.Combine(this._hostingEnvironment.WebRootPath, "data/center_v1.2.csv")));
+                  Path.Combine(this._hostingEnvironment.WebRootPath, "data/center_v1.2.csv")), new CsvConfiguration()
+                  {
+                      HasHeaderRecord = false
+                  });
 
                 _ctsCenters = csvReaderCenter.GetRecords<CtsCenterModel>().ToArray();
             }
@@ -74,7 +85,10 @@ namespace PowerNetwork.Web.Controllers
             if (_ctsItems == null)
             {
                 var csvReaderCts = new CsvReader(System.IO.File.OpenText(
-                 Path.Combine(this._hostingEnvironment.WebRootPath, "data/cts_v1.2.csv")));
+                 Path.Combine(this._hostingEnvironment.WebRootPath, "data/cts_v1.2.csv")), new CsvConfiguration()
+                 {
+                     HasHeaderRecord = false
+                 });
 
                 _ctsItems = csvReaderCts.GetRecords<CtsModel>().ToArray();
             }
@@ -87,7 +101,10 @@ namespace PowerNetwork.Web.Controllers
             if (_ctsItems == null)
             {
                 var csvReaderCts = new CsvReader(System.IO.File.OpenText(
-                 Path.Combine(this._hostingEnvironment.WebRootPath, "data/cts_v1.2.csv")));
+                 Path.Combine(this._hostingEnvironment.WebRootPath, "data/cts_v1.2.csv")), new CsvConfiguration()
+                 {
+                     HasHeaderRecord = false
+                 });
 
                 _ctsItems = csvReaderCts.GetRecords<CtsModel>().ToArray();
             }
@@ -100,7 +117,10 @@ namespace PowerNetwork.Web.Controllers
             if (_ctsItems == null)
             {
                 var csvReaderCts = new CsvReader(System.IO.File.OpenText(
-                 Path.Combine(this._hostingEnvironment.WebRootPath, "data/cts_v1.2.csv")));
+                 Path.Combine(this._hostingEnvironment.WebRootPath, "data/cts_v1.2.csv")), new CsvConfiguration()
+                 {
+                     HasHeaderRecord = false
+                 });
 
                 _ctsItems = csvReaderCts.GetRecords<CtsModel>().ToArray();
             }
@@ -151,7 +171,10 @@ namespace PowerNetwork.Web.Controllers
             if (_ctsItems == null)
             {
                 var csvReaderCts = new CsvReader(System.IO.File.OpenText(
-                 Path.Combine(this._hostingEnvironment.WebRootPath, "data/cts_v1.2.csv")));
+                 Path.Combine(this._hostingEnvironment.WebRootPath, "data/cts_v1.2.csv")), new CsvConfiguration()
+                 {
+                     HasHeaderRecord = false
+                 });
 
                 _ctsItems = csvReaderCts.GetRecords<CtsModel>().ToArray();
             }
@@ -196,7 +219,11 @@ namespace PowerNetwork.Web.Controllers
             if (_ctsItems == null)
             {
                 var csvReaderCts = new CsvReader(System.IO.File.OpenText(
-                 Path.Combine(this._hostingEnvironment.WebRootPath, "data/cts_v1.2.csv")));
+                 Path.Combine(this._hostingEnvironment.WebRootPath, "data/cts_v1.2.csv")), new CsvConfiguration()
+                 {
+                     HasHeaderRecord = false,
+                     WillThrowOnMissingField = false
+                 });
 
                 _ctsItems = csvReaderCts.GetRecords<CtsModel>().ToArray();
             }
@@ -224,7 +251,10 @@ namespace PowerNetwork.Web.Controllers
             if (_intensityCsvItems == null)
             {
                 var csvReaderIntensity = new CsvReader(System.IO.File.OpenText(
-                 Path.Combine(this._hostingEnvironment.WebRootPath, "data/intensity.txt")));
+                 Path.Combine(this._hostingEnvironment.WebRootPath, "data/intensity.txt")), new CsvConfiguration()
+                 {
+                     HasHeaderRecord = false
+                 });
 
                 _intensityCsvItems = csvReaderIntensity.GetRecords<IntensityCsvModel>().ToArray();
             }
