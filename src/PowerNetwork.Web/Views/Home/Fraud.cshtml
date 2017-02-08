@@ -218,7 +218,7 @@
                                     fontSize: '11px'
                                 },
                                 icon: {
-                                    url: '/content/images/m-red.png',
+                                    url: '/images/m-red.png',
                                     labelOrigin: new google.maps.Point(33, 34)
                                 }
                             });
@@ -266,7 +266,7 @@
                                     fontSize: '11px'
                                 },
                                 icon: {
-                                    url: '/content/images/m-yellow.png',
+                                    url: '/images/m-yellow.png',
                                     labelOrigin: new google.maps.Point(28, 28)
                                 }
                             });
@@ -311,7 +311,7 @@
                                         map: map,
                                         position: { lat: c.lat, lng: c.lng },
                                         icon: {
-                                            url: '/content/images/b-green.png'
+                                            url: '/images/b-green.png'
                                         }
                                     });
 
@@ -353,7 +353,7 @@
                                                         map: map,
                                                         position: { lat: groupItem.Lat, lng: groupItem.Lng },
                                                         icon: {
-                                                            url: '/content/images/b-mgroup.png'
+                                                            url: '/images/b-mgroup.png'
                                                         },
                                                         infoExit: groupItem.Exit
                                                     });
@@ -606,11 +606,11 @@
             $.ajax({
                 url: '/data/fraudalarms',
                 data: { region: $region.val(), city: $city.val(), center: $center.val(), code: currentCts },
-                success: function (data) {
+                success: function (response) {
                     var $unbalanceAlarms = $("#tblUnbalanceAlarms > tbody");
                     $unbalanceAlarms.html("");
 
-                    data.forEach(function (a) {
+                    response.data.forEach(function (a) {
                         $unbalanceAlarms.append('<tr><td>' + a.code + '</td><td>' + Math.round(a.ratio * 10) / 10 +
                             '</td><td><a class="btn btn-sm btn-warning" data-code="' + a.code + '" data-lat="' + a.lat + '" data-lng="' + a.lng +
                             '"><span class="glyphicon glyphicon-map-marker"></span></a></td></tr>');
