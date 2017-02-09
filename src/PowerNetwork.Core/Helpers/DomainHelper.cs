@@ -11,7 +11,7 @@ namespace PowerNetwork.Core.Helpers
         public static string GetSubDomain(this HttpRequest request)
         {
             var hostParts = request.Host.ToString().Split('.');
-            return hostParts.Length > 3 ? hostParts[0] : "gnf";
+            return hostParts.Length >= 3 ? hostParts[0] : "gnf";
         }
     }
 }
