@@ -40,3 +40,10 @@
 #loginView-gnf .bottom img {
     max-height: 100px;
 }
+
+#homeView .logo-gnf {
+    position: absolute;
+    right: 0;
+    top: 20px;
+    height: 120px;
+}

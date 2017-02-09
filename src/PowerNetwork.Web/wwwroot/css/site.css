@@ -57,12 +57,7 @@ hr {
     position: relative;
 }
 
-#homeView .logo {
-    position: absolute;
-    right: 0;
-    top: 20px;
-    height: 120px;
-}
+
 
 #homeView h1 {
     margin-top: 80px;
