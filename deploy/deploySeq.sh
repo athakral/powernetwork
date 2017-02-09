@@ -1,5 +1,7 @@
 cd ~/PowerNetwork
 git checkout .; 
+# this is using ssh key of user 
+# username: deploy_readonly_user, password : Deploy-1232
 git pull origin master
 cd src/PowerNetwork.Web
 sudo systemctl stop kestrel-powernetwork-ui.service
