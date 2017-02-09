@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using PowerNetwork.Core.DataModels;
 using PowerNetwork.Core.Loggers;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace PowerNetwork
 {
@@ -68,6 +69,11 @@ namespace PowerNetwork
             }
 
             app.UseStaticFiles();
+
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
 
             app.UseCookieAuthentication(new CookieAuthenticationOptions()
             {
