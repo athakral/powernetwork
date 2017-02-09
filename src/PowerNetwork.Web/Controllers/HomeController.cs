@@ -13,6 +13,7 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using PowerNetwork.Core.DataModels;
 using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.Http; // Needed for the SetString and GetString extension methods
 
 namespace PowerNetwork.Web.Controllers
 {
@@ -28,7 +29,7 @@ namespace PowerNetwork.Web.Controllers
             this._appConf = appConfig.Value;
             this._logger = logger;
         }
-        
+
 
         public IActionResult Error()
         {
@@ -37,11 +38,15 @@ namespace PowerNetwork.Web.Controllers
 
         public IActionResult Index(string l)
         {
+            HttpContext.Session.SetString("current_lang", l);
+            var subDomain = Request.Host.ToString().Split('.')[0];
+            subDomain = subDomain.IsNullOrEmpty() ? "gnf" : subDomain;
+
             ViewBag.LanguageCode = l;
             ViewBag.AppConf = this._appConf;
             ViewBag.HostingEnvironment = this._hostingEnvironment;
             _logger.LogInformation("Application COnfiguration", this._appConf);
-            return View();
+            return View(subDomain);
         }
 
         [HttpPost]
@@ -55,7 +60,7 @@ namespace PowerNetwork.Web.Controllers
                 return BadRequest(errors);
             }
 
-            
+
 
             _logger.LogInformation("Passed Code " + code);
             var client = new HttpClient();

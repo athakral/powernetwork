@@ -1,0 +1,50 @@
+    #loginView-connect {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background-image: url("/images/background-connect.jpg");
+    }
+    
+    #loginView-connect img {
+        max-width: 100%;
+    }
+    
+    #loginView-connect .left {
+        background-color: #eee;
+        position: fixed;
+        display: none;
+        height: 100%;
+    }
+    
+    #loginView-connect .left h1 {
+        color: #808080;
+        font-weight: bold;
+        margin-top: 60px;
+        margin-bottom: 60px;
+    }
+    
+    #loginView-connect .right {
+        position: fixed;
+        background-color: white;
+        top: 304px;
+        width: 23%;
+        padding-top: 40px;
+        /*right: -100;*/
+    }
+    
+    #loginView-connect .right .logo {
+        margin-top: 40px;
+        margin-bottom: 60px;
+        display: none;
+    }
+    
+    #loginView-connect .bottom {
+        margin-top: 80px;
+        display: none;
+    }
+    
+    #loginView-connect .bottom img {
+        max-height: 100px;
+    }

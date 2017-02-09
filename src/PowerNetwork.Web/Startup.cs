@@ -32,12 +32,14 @@ namespace PowerNetwork
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddDistributedMemoryCache(); // Adds a default in-memory implementation of IDistributedCache
+            services.AddSession();
             // Add framework services.
             services.AddMvc().AddJsonOptions(jsonOptions =>
             {
                 jsonOptions.SerializerSettings.MissingMemberHandling = MissingMemberHandling.Ignore;
             });
+            
             services.AddAuthorization(options =>   {
                     options.AddPolicy("ReadPolicy", policyBuilder => 
                     {
@@ -87,7 +89,9 @@ namespace PowerNetwork
             // add logging middleware
             // app.UseMiddleware<LogResponseMiddleware>();
             // app.UseMiddleware<LogRequestMiddleware>();
-
+            // IMPORTANT: This session call MUST go before UseMvc()
+            app.UseSession();
+            
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

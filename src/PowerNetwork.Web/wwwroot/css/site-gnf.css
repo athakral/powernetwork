@@ -1,0 +1,42 @@
+#loginView-gnf {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+
+#loginView-gnf img {
+    max-width: 100%;
+}
+
+#loginView-gnf .left {
+    background-color: #eee;
+    position: fixed;
+    height: 100%;
+}
+
+#loginView-gnf .left h1 {
+    color: #808080;
+    font-weight: bold;
+    margin-top: 60px;
+    margin-bottom: 60px;
+}
+
+#loginView-gnf .right {
+    position: fixed;
+    right: 0;
+}
+
+#loginView-gnf .right .logo {
+    margin-top: 40px;
+    margin-bottom: 60px;
+}
+
+#loginView-gnf .bottom {
+    margin-top: 80px;
+}
+
+#loginView-gnf .bottom img {
+    max-height: 100px;
+}

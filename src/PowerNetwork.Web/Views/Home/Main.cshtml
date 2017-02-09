@@ -1,11 +1,13 @@
 @using PowerNetwork.Core.Helpers
 @{
     var texts = ResourceService.Instance(ViewBag.HostingEnvironment, ViewBag.LanguageCode);
+    var subDomain = Context.Request.Host.ToString().Split('.')[0];
+    subDomain = subDomain.IsNullOrEmpty() ? "gnf" : subDomain;
 }
 
 
 <div class="container" id="homeView">
-    <img src="~/images/logo.png" class="logo" />
+    <img src="~/images/logo-@(subDomain).png" class="logo" />
     <h1>
         @if (User.Identity.IsAuthenticated) {
             <small>(@User.Identity.Name: <a href="/home/logout"><span class="glyphicon glyphicon-off"></span> @texts["Home.Logout"]</a>)</small>

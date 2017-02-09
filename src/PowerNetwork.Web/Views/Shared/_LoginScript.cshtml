@@ -1,0 +1,62 @@
+<script src="~/lib/jsbn/jsbn.js"></script>
+    <script src="~/lib/jsbn/jsbn2.js"></script>
+    <script src="~/lib/sjcl/sjcl.js"></script>
+    <script src="~/lib/moment/min/moment.min.js"></script>
+    <script src="~/lib/amazon-cognito-identity-js/dist/aws-cognito-sdk.min.js"></script>
+    <script src="~/lib/amazon-cognito-identity-js/dist/amazon-cognito-identity.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#btnSubmit").click(function (e) {
+                e.preventDefault();
+                toggleOverlay($("#loginControls"), true);
+
+                var authenticationData = {
+                    Username: $("#txtUsername").val(),
+                    Password: $("#txtPassword").val(),
+                };
+                var authenticationDetails = new AWSCognito.CognitoIdentityServiceProvider.AuthenticationDetails(authenticationData);
+
+                var poolData = {
+                    UserPoolId: '@ViewBag.AppConf.CognitoUserPoolId',
+                    ClientId: '@ViewBag.AppConf.CognitoClientId'
+                };
+                var userPool = new AWSCognito.CognitoIdentityServiceProvider.CognitoUserPool(poolData);
+
+                var userData = {
+                    Username: $("#txtUsername").val(),
+                    Pool: userPool
+                };
+                var cognitoUser = new AWSCognito.CognitoIdentityServiceProvider.CognitoUser(userData);
+
+                cognitoUser.authenticateUser(authenticationDetails, {
+                    onSuccess: function (result) {
+                        $.ajax({
+                            type: 'POST',
+                            url: '/home/login',
+                            data: JSON.stringify(result.getAccessToken().getJwtToken()),
+                            contentType: 'application/json; charset=utf-8',
+                            success: function (loginResult) {
+                                if (loginResult == $("#txtUsername").val()) {
+                                    window.location.href = "/main";
+                                } else {
+                                    $("#divError").show();
+                                }
+                            },
+                            complete: function () {
+                                toggleOverlay($("#loginControls"), false);
+                            }
+                        });
+                    },
+
+                    onFailure: function (err) {
+                        $("#divError").show();
+                        toggleOverlay($("#loginControls"), false);
+                    },
+
+                    newPasswordRequired: function (userAttributes, requiredAttributes) {
+                        cognitoUser.completeNewPasswordChallenge($("#txtPassword").val(), null, this);
+                    }
+                });
+            });
+        });
+    </script>
