@@ -32,7 +32,7 @@ namespace PowerNetwork.Web.Filters
             var controller = context.Controller as Controller;
             controller.ViewBag.Texts = ResourceService.Instance(this._hostingEnvironment).GetMap(currentLang);
             controller.ViewBag.SubDomain = context.HttpContext.Request.GetSubDomain();
-            _logger.LogInformation("Calculated SubDomain :: " + controller.ViewBag.SubDomain,null);
+            _logger.LogInformation("Calculated SubDomain :: " + controller.ViewBag.SubDomain as String);
         }
     }
 }
