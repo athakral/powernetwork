@@ -8,16 +8,18 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using PowerNetwork.Core.Helpers;
+using Microsoft.Extensions.Logging;
 
 namespace PowerNetwork.Web.Filters
 {
     public class SharedDataFilter : ResultFilterAttribute
     {
         private readonly IHostingEnvironment _hostingEnvironment;
-
-        public SharedDataFilter(IHostingEnvironment hostingEnvironment)
+        private readonly ILogger _logger;
+        public SharedDataFilter(IHostingEnvironment hostingEnvironment,ILogger<SharedDataFilter> logger)
         {
             _hostingEnvironment = hostingEnvironment;
+            this._logger = logger;
         }
         public override void OnResultExecuting(ResultExecutingContext context)
         {
@@ -30,6 +32,7 @@ namespace PowerNetwork.Web.Filters
             var controller = context.Controller as Controller;
             controller.ViewBag.Texts = ResourceService.Instance(this._hostingEnvironment).GetMap(currentLang);
             controller.ViewBag.SubDomain = context.HttpContext.Request.GetSubDomain();
+            _logger.LogInformation("Calculated SubDomain :: " + controller.ViewBag.SubDomain,null);
         }
     }
 }
