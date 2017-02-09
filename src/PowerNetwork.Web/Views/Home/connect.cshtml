@@ -1,17 +1,15 @@
 @using PowerNetwork.Core.Helpers
 @model PowerNetwork.Web.Models.LoginModel
 @{
-    ViewData["Title"] = "Home Page";
-    var texts = ResourceService.Instance(ViewBag.HostingEnvironment, ViewBag.LanguageCode);
-    var subDomain = Context.Request.Host.ToString().Split('.')[0];
-    subDomain = subDomain.IsNullOrEmpty() ? "gnf" : subDomain;
+    ViewData["Title"] = "Login";
+  
 }
 
 <form>
-    <div class="container-fluid" id="loginView-@(subDomain)">
+    <div class="container-fluid" id="loginView-@(ViewBag.SubDomain)">
         <div class="row">
             <div class="col-md-7 left text-center">
-                <h1>@texts["Home.Header"]</h1>
+                <h1>@ViewBag.Texts["Home.Header"]</h1>
                 <div class="row">
                     <div class="col-xs-8 col-xs-offset-2">
                         <img src="~/images/logo-big.png" />
@@ -21,22 +19,22 @@
             <div class="col-md-5 right">
                 <div class="row">
                     <div class="col-xs-8 col-xs-offset-2">
-                        <img src="~/images/logo-@(subDomain).png" class="logo" />
+                        <img src="~/images/logo-@(ViewBag.SubDomain).png" class="logo" />
                         <div id="loginControls" class="overlay-container">
                             <div class="form-group">
-                                <label class="control-label">@texts["Home.Login.Username"]</label>
+                                <label class="control-label">@ViewBag.Texts["Home.Login.Username"]</label>
                                 <input type="text" class="form-control" id="txtUsername" />
                             </div>
                             <div class="form-group">
-                                <label class="control-label">@texts["Home.Login.Password"]</label>
+                                <label class="control-label">@ViewBag.Texts["Home.Login.Password"]</label>
                                 <input type="password" class="form-control" id="txtPassword"/>
                             </div>
                             <div>
-                                <button id="btnSubmit" type="submit" class="btn btn-default">@texts["Home.Login.Submit"]</button>
+                                <button id="btnSubmit" type="submit" class="btn btn-default">@ViewBag.Texts["Home.Login.Submit"]</button>
                             </div>
                         </div>
                         <br />
-                        <div class="error" id="divError" style="display: none;">@texts["Home.Login.Error"]</div>
+                        <div class="error" id="divError" style="display: none;">@ViewBag.Texts["Home.Login.Error"]</div>
                     </div>
                 </div>
 

@@ -1,65 +1,59 @@
 ﻿@using PowerNetwork.Core.Helpers
-@{
-    var texts = ResourceService.Instance(ViewBag.HostingEnvironment, ViewBag.LanguageCode);
-    var subDomain = Context.Request.Host.ToString().Split('.')[0];
-    subDomain = subDomain.IsNullOrEmpty() ? "gnf" : subDomain;
-}
-
 <div class="container-fluid" id="outletView">
-    <img src="~/images/logo-@(subDomain).png" class="logo" />
+    <img src="~/images/logo-@(ViewBag.SubDomain).png" class="logo" />
 
     <ul id="topMenu">
         <li>
             <a href="/main">
                 <img src="~/images/home1.png" />
-                <span>@texts["Power.Menu.Home"]</span>
+                <span>@ViewBag.Texts["Power.Menu.Home"]</span>
             </a>
         </li>
         <li>
             <a href="/power-outlet">
                 <img src="~/images/power1-sm.png" />
-                <span>@Html.Raw(texts["Power.Menu.Power"])</span>
+                <span>@Html.Raw(ViewBag.Texts["Power.Menu.Power"])</span>
             </a>
         </li>
         <li>
             <a href="/fraud" class="active">
                 <img src="~/images/fraud0-sm.png" />
-                <span>@Html.Raw(texts["Power.Menu.Fraud"])</span>
+                <span>@Html.Raw(ViewBag.Texts["Power.Menu.Fraud"])</span>
             </a>
         </li>
         <li style="padding-left: 40px;">
             <a href="#" class="active">
                 <img src="~/images/download-pdf.png" />
-                <span>@Html.Raw(texts["Power.Menu.Download"])</span>
+                <span>@Html.Raw(ViewBag.Texts["Power.Menu.Download"])</span>
             </a>
         </li>
     </ul>
     <h1>
         @if (User.Identity.IsAuthenticated) {
-            <small>(@User.Identity.Name: <a href="/home/logout"><span class="glyphicon glyphicon-off"></span> @texts["Home.Logout"]</a>)</small>
+            <small>(@User.Identity.Name: <a href="/home/logout"><span class="glyphicon glyphicon-off"></span> @ViewBag.Texts["Home.Logout"]</a>)</small>
         }
-        @texts["Fraud.Header"]
+        @ViewBag.Texts["Fraud.Header"]
     </h1>
     <div class="row">
         <div class="col-md-3 overlay-container" id="filterContainer">
             <div class="form-group">
                 <select id="ddlRegion" class="form-control">
-                    <option value="">-- @texts["Power.Filter.Region"] --</option>
+                    <option value="">-- @ViewBag.Texts["Power.Filter.Region"] --</option>
                 </select>
             </div>
             <div class="form-group">
                 <select id="ddlCity" class="form-control" disabled="disabled">
-                    <option value="">-- @texts["Power.Filter.City"] --</option>
+                    <option value="">-- @ViewBag.Texts["Power.Filter.City"] --</option>
                 </select>
             </div>
             <div class="form-group">
                 <select id="ddlCenter" class="form-control">
-                    <option value="">-- @texts["Power.Filter.Center"] --</option>
+                    <option value="">-- @ViewBag.Texts["Power.Filter.Center"] --</option>
                 </select>
             </div>
             <div class="form-group">
                 <div class="input-group">
-                    <input id="txtCTSearch" type="text" class="form-control" placeholder="@texts["Power.Filter.CTCode"]">
+                    <input id="txtCTSearch" type="text" class="form-control" placeholder="@ViewBag.Texts["Power.Filter.CTCode"]">
                     <span class="input-group-btn">
                         <button id="btnCTSearch" class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
                     </span>
@@ -68,14 +62,14 @@
             <div class="form-group error" id="ctSearchMessage" style="display: none;"></div>
             <div class="form-group">
                 <div class="input-group">
-                    <input id="txtMeterSearch" type="text" class="form-control" placeholder="@texts["Power.Filter.MeterCode"]">
+                    <input id="txtMeterSearch" type="text" class="form-control" placeholder="@ViewBag.Texts["Power.Filter.MeterCode"]">
                     <span class="input-group-btn">
                         <button id="btnMeterSearch" class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
                     </span>
                 </div>
             </div>
             <div class="form-group error" id="meterSearchMessage" style="display: none;"></div>
-            <label>@texts["Power.Filter.Date"]</label>
+            <label>@ViewBag.Texts["Power.Filter.Date"]</label>
             <div class="row">
                 <div class="col-xs-6">
                     <div class="form-group">
@@ -100,11 +94,11 @@
             </div>
             <hr/>
             <p>
-                @texts["Power.Map.Legend.Normal"]
+                @ViewBag.Texts["Power.Map.Legend.Normal"]
                 <img src="~/images/b-green.png" />
             </p>
             <p>
-                @texts["Power.Map.Legend.MeterGroup"]
+                @ViewBag.Texts["Power.Map.Legend.MeterGroup"]
                 <img src="~/images/b-mgroup.png" />
             </p>
         </div>
@@ -115,14 +109,14 @@
 
         <div class="col-md-3 overlay-container" id="fraudAlarms">
             <div class="panel panel-default">
-                <div class="panel-heading">@Html.Raw(texts["Fraud.Alarm.Unbalance"])</div>
+                <div class="panel-heading">@Html.Raw(ViewBag.Texts["Fraud.Alarm.Unbalance"])</div>
                 <div class="panel-body">
                     <table id="tblUnbalanceAlarms" class="table table-condensed table-striped table-responsive">
                         <thead>
                             <tr>
-                                <th>@texts["Power.Alarm.Code"]</th>
-                                <th>@Html.Raw(texts["Fraud.Alarm.Ratio1"])</th>
-                                <th>@texts["Power.Alarm.Access"]</th>
+                                <th>@ViewBag.Texts["Power.Alarm.Code"]</th>
+                                <th>@Html.Raw(ViewBag.Texts["Fraud.Alarm.Ratio1"])</th>
+                                <th>@ViewBag.Texts["Power.Alarm.Access"]</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -135,7 +129,7 @@
     <div class="row" id="outletCharts">
         <div class="col-md-12">
             <div class="panel panel-default overlay-container" id="energyContainer">
-                <div class="panel-heading">@texts["Fraud.Graph.Energy"]</div>
+                <div class="panel-heading">@ViewBag.Texts["Fraud.Graph.Energy"]</div>
                 <div class="panel-body">
                     <div id="energyChart" style="height: 240px;"></div>
                 </div>

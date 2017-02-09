@@ -1,32 +1,29 @@
 @using PowerNetwork.Core.Helpers
 @{
-    var texts = ResourceService.Instance(ViewBag.HostingEnvironment, ViewBag.LanguageCode);
-    var subDomain = Context.Request.Host.ToString().Split('.')[0];
-    subDomain = subDomain.IsNullOrEmpty() ? "gnf" : subDomain;
+    ViewData["Title"] = "Home Page";
 }
 
-
 <div class="container" id="homeView">
-    <img src="~/images/logo-@(subDomain).png" class="logo" />
+    <img src="~/images/logo-@(ViewBag.SubDomain).png" class="logo" />
     <h1>
         @if (User.Identity.IsAuthenticated) {
-            <small>(@User.Identity.Name: <a href="/home/logout"><span class="glyphicon glyphicon-off"></span> @texts["Home.Logout"]</a>)</small>
+            <small>(@User.Identity.Name: <a href="/home/logout"><span class="glyphicon glyphicon-off"></span> @ViewBag.Texts["Home.Logout"]</a>)</small>
         }
-        @texts["Main.Header"]
+        @ViewBag.Texts["Main.Header"]
     </h1>
     <div class="row">
         <div class="col-md-4 col-md-offset-2">
             <div class="box" data-url="/power-outlet">
-                <h3>@Html.Raw(texts["Main.Box1.Header"])</h3>
+                <h3>@Html.Raw(ViewBag.Texts["Main.Box1.Header"])</h3>
                 <img src="~/images/power0.png" />
-                <p>@Html.Raw(texts["Main.Box1.Content"])</p>
+                <p>@Html.Raw(ViewBag.Texts["Main.Box1.Content"])</p>
             </div>
         </div>
         <div class="col-md-4">
             <div class="box" data-url="/fraud">
-                <h3>@Html.Raw(texts["Main.Box2.Header"])</h3>
+                <h3>@Html.Raw(ViewBag.Texts["Main.Box2.Header"])</h3>
                 <img src="~/images/fraud0.png" />
-                <p>@Html.Raw(texts["Main.Box2.Content"])</p>
+                <p>@Html.Raw(ViewBag.Texts["Main.Box2.Content"])</p>
             </div>
         </div>
     </div>

@@ -13,19 +13,20 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using PowerNetwork.Core.DataModels;
 using Newtonsoft.Json.Linq;
-using Microsoft.AspNetCore.Http; // Needed for the SetString and GetString extension methods
+using Microsoft.AspNetCore.Http;
+using PowerNetwork.Core.Helpers;
+
+// Needed for the SetString and GetString extension methods
 
 namespace PowerNetwork.Web.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IHostingEnvironment _hostingEnvironment;
         private readonly AppConfig _appConf;
         private readonly ILogger _logger;
 
-        public HomeController(IHostingEnvironment hostingEnvironment, IOptions<AppConfig> appConfig, ILogger<HomeController> logger)
+        public HomeController( IOptions<AppConfig> appConfig, ILogger<HomeController> logger)
         {
-            this._hostingEnvironment = hostingEnvironment;
             this._appConf = appConfig.Value;
             this._logger = logger;
         }
@@ -38,15 +39,10 @@ namespace PowerNetwork.Web.Controllers
 
         public IActionResult Index(string l)
         {
-            HttpContext.Session.SetString("current_lang", l);
-            var subDomain = Request.Host.ToString().Split('.')[0];
-            subDomain = subDomain.IsNullOrEmpty() ? "gnf" : subDomain;
-
-            ViewBag.LanguageCode = l;
+            HttpContext.Session.SetString("current_lang", l??"es");
             ViewBag.AppConf = this._appConf;
-            ViewBag.HostingEnvironment = this._hostingEnvironment;
-            _logger.LogInformation("Application COnfiguration", this._appConf);
-            return View(subDomain);
+            _logger.LogInformation("Application Configuration", this._appConf);
+            return View(Request.GetSubDomain());
         }
 
         [HttpPost]
@@ -104,29 +100,23 @@ namespace PowerNetwork.Web.Controllers
 
         [Authorize(Policy = "ReadPolicy")]
         [Route("main")]
-        public IActionResult Main(string l)
+        public IActionResult Main()
         {
-            ViewBag.LanguageCode = l;
-            ViewBag.HostingEnvironment = this._hostingEnvironment;
             return View();
         }
 
         [Authorize(Policy = "ReadPolicy")]
         [Route("power-outlet")]
         // [Route("Home/Index")]
-        public IActionResult PowerOutlet(string l)
+        public IActionResult PowerOutlet()
         {
-            ViewBag.LanguageCode = l;
-            ViewBag.HostingEnvironment = this._hostingEnvironment;
             return View();
         }
 
         [Authorize(Policy = "ReadPolicy")]
         [Route("fraud")]
-        public IActionResult Fraud(string l)
+        public IActionResult Fraud()
         {
-            ViewBag.LanguageCode = l;
-            ViewBag.HostingEnvironment = this._hostingEnvironment;
             return View();
         }
 

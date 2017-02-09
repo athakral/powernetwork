@@ -12,6 +12,8 @@ using Newtonsoft.Json;
 using PowerNetwork.Core.DataModels;
 using PowerNetwork.Core.Loggers;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Mvc;
+using PowerNetwork.Web.Filters;
 
 namespace PowerNetwork
 {
@@ -38,6 +40,9 @@ namespace PowerNetwork
             services.AddMvc().AddJsonOptions(jsonOptions =>
             {
                 jsonOptions.SerializerSettings.MissingMemberHandling = MissingMemberHandling.Ignore;
+            }).AddMvcOptions(options =>
+            {
+                options.Filters.Add(new TypeFilterAttribute(typeof(SharedDataFilter)));
             });
             
             services.AddAuthorization(options =>   {
