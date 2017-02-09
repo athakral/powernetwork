@@ -39,7 +39,6 @@ namespace PowerNetwork.Web.Controllers
 
         public IActionResult Index(string l)
         {
-            HttpContext.Session.SetString("current_lang", l??"es");
             ViewBag.AppConf = this._appConf;
             _logger.LogInformation("Application Configuration", this._appConf);
             return View(Request.GetSubDomain());
