@@ -266,3 +266,6 @@ __pycache__/
 
 # Cake - Uncomment if you are using it
 # tools/
+wwwroot/css/site.min.css
+wwwroot/js/site.min.js
+wwwroot/js/site.min.js.map
