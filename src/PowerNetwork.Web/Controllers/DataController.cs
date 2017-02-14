@@ -266,7 +266,7 @@ namespace PowerNetwork.Web.Controllers
 
             foreach (var item in items)
             {
-                result.Add(new IntensityOutModel { date = item.Date.ToString("yyyy-MM-dd") + " " + item.Hour + ":00:00", r = item.R, s = item.S, t = item.T });
+                result.Add(new IntensityOutModel { date = item.Date.ToString("yyyy-MM-dd") + " " + item.Hour.ToString("D2") + ":00:00", r = item.R, s = item.S, t = item.T });
             }
 
             return Json(new { items = result });
@@ -280,7 +280,7 @@ namespace PowerNetwork.Web.Controllers
 
             foreach (var item in items)
             {
-                result.Add(new IntensityOutModel { date = item.Date.ToString("yyyy-MM-dd") + " " + item.Hour + ":00:00", r = item.R, s = item.S, t = item.T });
+                result.Add(new IntensityOutModel { date = item.Date.ToString("yyyy-MM-dd") + " " + item.Hour.ToString("D2") + ":00:00", r = item.R, s = item.S, t = item.T });
             }
 
             return Json(new { items = result });

@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -15,7 +16,7 @@ using PowerNetwork.Core.DataModels;
 using Newtonsoft.Json.Linq;
 using Microsoft.AspNetCore.Http;
 using PowerNetwork.Core.Helpers;
-
+using PowerNetwork.Web.Models;
 // Needed for the SetString and GetString extension methods
 
 namespace PowerNetwork.Web.Controllers
@@ -25,7 +26,7 @@ namespace PowerNetwork.Web.Controllers
         private readonly AppConfig _appConf;
         private readonly ILogger _logger;
 
-        public HomeController( IOptions<AppConfig> appConfig, ILogger<HomeController> logger)
+        public HomeController(IOptions<AppConfig> appConfig, ILogger<HomeController> logger)
         {
             this._appConf = appConfig.Value;
             this._logger = logger;
@@ -39,13 +40,17 @@ namespace PowerNetwork.Web.Controllers
 
         public IActionResult Index(string l)
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Main");
+            }
             ViewBag.AppConf = this._appConf;
             _logger.LogInformation("Application Configuration", this._appConf);
             return View(Request.GetSubDomain());
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login([FromBody] string code)
+        public async Task<IActionResult> Login([FromBody] LoginModel loginModel)
         {
             if (!ModelState.IsValid)
             {
@@ -57,9 +62,9 @@ namespace PowerNetwork.Web.Controllers
 
 
 
-            _logger.LogInformation("Passed Code " + code);
+            _logger.LogInformation("Passed Code " + loginModel.Code);
             var client = new HttpClient();
-            var requestContent = new StringContent("{\"AccessToken\":\"" + code + "\"}", System.Text.Encoding.UTF8, "application/json");
+            var requestContent = new StringContent("{\"AccessToken\":\"" + loginModel.Code + "\"}", System.Text.Encoding.UTF8, "application/json");
             requestContent.Headers.Clear();
             requestContent.Headers.TryAddWithoutValidation("Content-Type", "application/x-amz-json-1.1");
             requestContent.Headers.Add("X-Amz-Target", "AWSCognitoIdentityProviderService.GetUser");
@@ -84,7 +89,10 @@ namespace PowerNetwork.Web.Controllers
 
                 var claimsIdentity = new ClaimsIdentity(claims, "password");
                 var claimsPrinciple = new ClaimsPrincipal(claimsIdentity);
-                await HttpContext.Authentication.SignInAsync("Cookies", claimsPrinciple);
+                await HttpContext.Authentication.SignInAsync("Cookies", claimsPrinciple, new AuthenticationProperties
+                {
+                    IsPersistent = true
+                });
                 return Json(awsUser.ToString());
             }
 

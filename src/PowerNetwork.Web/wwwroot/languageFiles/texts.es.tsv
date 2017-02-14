@@ -1,6 +1,7 @@
 ﻿Home.Header					Funcionalidades del Despacho de Baja Tensión
 Home.Login.Username			Usuario
 Home.Login.Password			Contraseña
+Home.Login.Remember			Recuérdame
 Home.Login.Submit			Enviar
 Home.Login.Error			Nombre de usuario o la contraseña es incorrecta
 Home.Logout					desconectar
@@ -42,7 +43,7 @@ Power.Alarm.Unbalance		Alarma de Desbalanceo<br/>entre Intensidades de Salidas
 Power.Alarm.Code			Código
 Power.Alarm.Access			Acceso
 Power.Alarm.Ratio1			# horas<br/>Sobreintensidad
-Power.Alarm.Ratio2			Diferencias<br/>entre salidas
+Power.Alarm.Ratio2			Diferencias<br/>entre salidas (%)
 
 Power.Graph.Intensity		Curva de Intensidad de Sobrecarga de la Red
 Power.Graph.Histogram		Histograma de Intensidades

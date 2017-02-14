@@ -628,7 +628,7 @@
                 success: function (data) {
 
                     data.items.forEach(function (d) {
-                        d.time = new Date(d.date);
+                        d.time = moment(d.date).toDate();
                     });
 
                     var container = d3.select("#energyChart");

@@ -1,6 +1,7 @@
 ﻿Home.Header					Power Network Use cases
 Home.Login.Username			Username
 Home.Login.Password			Password
+Home.Login.Remember			Remember me
 Home.Login.Submit			Login
 Home.Login.Error			Username or password is incorrect
 Home.Logout					log out

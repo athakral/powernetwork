@@ -1,9 +1,4 @@
-@using PowerNetwork.Core.Helpers
-@model PowerNetwork.Web.Models.LoginModel
-@{
-    ViewData["Title"] = "Login";
-
-}
+@using PowerNetwork.Core.Helpers @model PowerNetwork.Web.Models.LoginModel @{ ViewData["Title"] = "Login"; }
 
 <form>
     <div class="container-fluid" id="loginView-@(ViewBag.SubDomain)">
@@ -33,14 +28,22 @@
                         <div id="loginControls" class="overlay-container">
                             <div class="form-group">
                                 <label class="control-label">@ViewBag.Texts["Home.Login.Username"]</label>
-                                <input type="text" class="form-control" id="txtUsername"/>
+                                <input type="text" class="form-control" id="txtUsername" />
                             </div>
                             <div class="form-group">
                                 <label class="control-label">@ViewBag.Texts["Home.Login.Password"]</label>
-                                <input type="password" class="form-control" id="txtPassword"/>
+                                <input type="password" class="form-control" id="txtPassword" />
                             </div>
-                            <div class="login-button">
+                            <div class="checkbox">
+                                <label>
+                                        <input type="checkbox" id="chkRemember" /> @texts["Home.Login.Remember"]
+                                    </label>
+                            </div>
+                            <div class="form-group">
                                 <button id="btnSubmit" type="submit" class="btn btn-default">@ViewBag.Texts["Home.Login.Submit"]</button>
+                            </div>
+                            <div>
+                                <a href="javascript:void(0)" id="lnkResetPassword">Reset your password</a>
                             </div>
                         </div>
                         <br/>
@@ -65,6 +68,4 @@
 </form>
 
 
-@section scripts {
-    @Html.Partial("_LoginScript")
-}
+@section scripts { @Html.Partial("_LoginScript") }

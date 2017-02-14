@@ -1,0 +1,78 @@
+<div class="container-fluid">
+    <div class="page-header">
+        <h3>Users management</h3>
+    </div>
+    <div id="divLogin">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" class="form-control" id="txtUsername" />
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" class="form-control" id="txtPassword" />
+                </div>
+                <button class="btn btn-default" id="btnSubmit">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+<script src="~/lib/jsbn/jsbn.js"></script>
+<script src="~/lib/jsbn/jsbn2.js"></script>
+<script src="~/lib/sjcl/sjcl.js"></script>
+<script src="~/lib/moment/min/moment.min.js"></script>
+<script src="~/lib/amazon-cognito-identity-js/dist/aws-cognito-sdk.min.js"></script>
+<script src="~/lib/amazon-cognito-identity-js/dist/amazon-cognito-identity.min.js"></script>
+<script>
+    $(document).ready(function () {
+        var poolData = {
+            UserPoolId: '@ViewBag.AppConf.CognitoUserPoolId',
+            ClientId: '@ViewBag.AppConf.CognitoClientId'
+        };
+        var userPool = new AWSCognito.CognitoIdentityServiceProvider.CognitoUserPool(poolData);
+
+        var accessToken;
+
+        $("#btnSubmit").click(function (e) {
+            toggleOverlay($("#divLogin"), true);
+
+            var authenticationData = {
+                Username: $("#txtUsername").val(),
+                Password: $("#txtPassword").val(),
+            };
+            var authenticationDetails = new AWSCognito.CognitoIdentityServiceProvider.AuthenticationDetails(authenticationData);
+
+            var userData = {
+                Username: $("#txtUsername").val(),
+                Pool: userPool
+            };
+            var cognitoUser = new AWSCognito.CognitoIdentityServiceProvider.CognitoUser(userData);
+
+            cognitoUser.authenticateUser(authenticationDetails, {
+                onSuccess: function (result) {
+                    accessToken = result.getAccessToken().getJwtToken();
+
+                    cognitoUser.client.makeUnauthenticatedRequest("listUsers",
+                        {
+                            UserPoolId: poolData.UserPoolId
+                        },
+                        function (err, data) {
+
+                        }
+                    );
+                },
+                onFailure: function (err) {
+                    alert(err);
+                    toggleOverlay($("#divLogin"), false);
+                },
+                newPasswordRequired: function () {
+                    alert("Error: new password required.");
+                }
+            });
+        });
+    });
+</script>
+}
