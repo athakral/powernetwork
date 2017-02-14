@@ -30,9 +30,7 @@
     </ul>
     <h1>
         @if (User.Identity.IsAuthenticated) {
-            <small>(@User.Identity.Name: <a href="/home/logout"><span class="glyphicon glyphicon-off"></span> @ViewBag.Texts["Home.Logout"]</a>)</small>
-        }
-        @ViewBag.Texts["Fraud.Header"]
+        <small>(@User.Identity.Name: <a href="/home/logout"><span class="glyphicon glyphicon-off"></span> @ViewBag.Texts["Home.Logout"]</a>)</small>        } @ViewBag.Texts["Fraud.Header"]
     </h1>
     <div class="row">
         <div class="col-md-3 overlay-container" id="filterContainer">
@@ -53,7 +51,7 @@
             </div>
             <div class="form-group">
                 <div class="input-group">
-                    <input id="txtCTSearch" type="text" class="form-control" placeholder="@ViewBag.Texts["Power.Filter.CTCode"]">
+                    <input id="txtCTSearch" type="text" class="form-control" placeholder="@ViewBag.Texts[" Power.Filter.CTCode "]">
                     <span class="input-group-btn">
                         <button id="btnCTSearch" class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
                     </span>
@@ -62,33 +60,42 @@
             <div class="form-group error" id="ctSearchMessage" style="display: none;"></div>
             <div class="form-group">
                 <div class="input-group">
-                    <input id="txtMeterSearch" type="text" class="form-control" placeholder="@ViewBag.Texts["Power.Filter.MeterCode"]">
+                    <input id="txtMeterSearch" type="text" class="form-control" placeholder="@ViewBag.Texts[" Power.Filter.MeterCode "]">
                     <span class="input-group-btn">
                         <button id="btnMeterSearch" class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
                     </span>
                 </div>
             </div>
             <div class="form-group error" id="meterSearchMessage" style="display: none;"></div>
-            <label>@ViewBag.Texts["Power.Filter.Date"]</label>
-            <div class="row">
-                <div class="col-xs-6">
-                    <div class="form-group">
-                        <div class='input-group date' id='dpkFrom'>
-                            <input type='text' class="form-control" />
-                            <span class="input-group-addon">
-                                <span class="glyphicon glyphicon-calendar"></span>
-                            </span>
-                        </div>
-                    </div>
+            <div class="form-group">
+                <label>Nivel de Telegestión</label>
+                <div style="padding-left: 20px;">
+                    <input type="text" id="sliderTeleLevel" /> &nbsp;&nbsp;
+                    <button id="btnTeleLevel" class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
                 </div>
-                <div class="col-xs-6">
-                    <div class="form-group">
-                        <div class='input-group date' id='dpkTo'>
-                            <input type='text' class="form-control" />
-                            <span class="input-group-addon">
-                                <span class="glyphicon glyphicon-calendar"></span>
-                            </span>
-                        </div>
+            </div>
+            <div class="form-group">
+                <label>Tipo de PS</label>
+                <div class="form-inline" style="padding-left: 10px;">
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="radTipo" value="0" checked />
+                            Todos
+                        </label>
+                    </div>
+                    &nbsp;&nbsp;
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="radTipo" value="5" />
+                            T5
+                        </label>
+                    </div>
+                    &nbsp;&nbsp;
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="radTipo" value="4" />
+                            T4
+                        </label>
                     </div>
                 </div>
             </div>
@@ -128,6 +135,24 @@
 
     <div class="row" id="outletCharts">
         <div class="col-md-12">
+            <div class="form-inline">
+                <div class="form-group">
+                    <label>@ViewBag.Texts["Power.Filter.Date"]</label>
+                    <div class='input-group date' id='dpkFrom'>
+                        <input type='text' class="form-control" />
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                    <div class='input-group date' id='dpkTo'>
+                        <input type='text' class="form-control" />
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <br/>
             <div class="panel panel-default overlay-container" id="energyContainer">
                 <div class="panel-heading">@ViewBag.Texts["Fraud.Graph.Energy"]</div>
                 <div class="panel-body">
@@ -139,566 +164,619 @@
     <div>
         <h3><b>Significado Indicadores Operativos</b></h3>
         <p>
-            <b>Desbalances de Intensidad entre Salidas y Centros de Transformación:</b> recoge la diferencia porcentual media de Intensidad entre el 
-            CT y la suma de sus salidas durante los últimos 31 días . La información aparece ordenada de mayor diferencia a menor.
+            <b>Desbalances de Intensidad entre Salidas y Centros de Transformación:</b> recoge la diferencia porcentual media
+            de Intensidad entre el CT y la suma de sus salidas durante los últimos 31 días . La información aparece ordenada
+            de mayor diferencia a menor.
         </p>
         <p>
-            <b>Curva de Desbalances entre salidas y Centros de Transformación:</b> compara la energía suministrada y la consumida para detectar posibles 
-            pérdidas mediante la suma de las intensidades de todas las Salidas de un CT y la del CT, durante un período de tiempo determinado (por defecto, 31 días).
+            <b>Curva de Desbalances entre salidas y Centros de Transformación:</b> compara la energía suministrada y la consumida
+            para detectar posibles pérdidas mediante la suma de las intensidades de todas las Salidas de un CT y la del CT,
+            durante un período de tiempo determinado (por defecto, 31 días).
         </p>
         <br/><br/>
     </div>
 </div>
 
 @section scripts {
-    <script src="~/lib/moment/min/moment.min.js"></script>
-    <script src="~/lib/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
-    <script src="~/lib/d3/d3.min.js"></script>
-    <script>
-        var $region = $("#ddlRegion");
-        var $city = $("#ddlCity");
-        var $center = $("#ddlCenter");
+<script src="~/lib/moment/min/moment.min.js"></script>
+<script src="~/lib/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+<script src="~/lib/d3/d3.min.js"></script>
+<script src="~/lib/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js"></script>
+<script>
+    var $region = $("#ddlRegion");
+    var $city = $("#ddlCity");
+    var $center = $("#ddlCenter");
+    var sliderTeleLevel;
 
-        var currentCts;
-        var animateCts;
+    var currentCts;
+    var animateCts;
 
-        var map;
-        var mapInfo;
-        var mapData = {};
-        var mapMarkers = { regions: [], cities: [], cts: [], meterGroups: [], cityDict: {}, ctsDict: {}, ctsCenter: null };
+    var map;
+    var mapInfoHover, mapInfoClick;
+    var mapInfo;
+    var mapData = {};
+    var mapMarkers = { regions: [], cities: [], cts: [], meterGroups: [], cityDict: {}, ctsDict: {}, ctsCenter: null };
 
-        var mapOrigin = { center: { lat: 40.431075, lng: -3.703578 }, zoom: [6, 10, 13, 18] };
+    var mapOrigin = { center: { lat: 40.431075, lng: -3.703578 }, zoom: [6, 10, 13, 18] };
 
-        function initMap() {
-            map = new google.maps.Map(document.getElementById('map'), {
-                zoom: mapOrigin.zoom[0],
-                center: mapOrigin.center,
-                minZoom: mapOrigin.zoom[0],
-                maxZoom: mapOrigin.zoom[3]
-            });
+    function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+            zoom: mapOrigin.zoom[0],
+            center: mapOrigin.center,
+            minZoom: mapOrigin.zoom[0],
+            maxZoom: mapOrigin.zoom[3]
+        });
 
-            mapInfo = new google.maps.InfoWindow({ content: '' });
+        mapInfoHover = new google.maps.InfoWindow({ content: '' });
+        mapInfoClick = new google.maps.InfoWindow({ content: '' });
 
-            map.addListener('idle', function() {
-                if (mapData.regions == null) {
-                    setTimeout(function() {
-                        google.maps.event.trigger(map, 'idle');
-                    }, 2000);
+        map.addListener('idle', function () {
+            if (mapData.regions == null) {
+                setTimeout(function () {
+                    google.maps.event.trigger(map, 'idle');
+                }, 2000);
+                return;
+            }
+
+            var zoom = map.getZoom();
+            var bounds = map.getBounds().toJSON();
+            //console.log(zoom);
+
+            if (zoom < mapOrigin.zoom[1]) {
+                if (mapMarkers.cities.length > 0 && mapMarkers.cities[0].getVisible() == true) {
+                    mapMarkers.cities.forEach(function (m) {
+                        m.setVisible(false);
+                    });
+                }
+
+                if (mapMarkers.cts.length > 0 && mapMarkers.cts[0].getVisible() == true) {
+                    mapMarkers.cts.forEach(function (m) {
+                        m.setVisible(false);
+                    });
+                }
+
+                if (mapMarkers.regions.length == 0) {
+                    mapData.regions.forEach(function (r) {
+                        var m = new google.maps.Marker({
+                            map: map,
+                            position: { lat: r.lat, lng: r.lng },
+                            label: {
+                                text: r.count.toString(),
+                                fontSize: '11px'
+                            },
+                            icon: {
+                                url: '/images/m-red.png',
+                                labelOrigin: new google.maps.Point(33, 34)
+                            }
+                        });
+
+                        m.addListener('click', function () {
+                            map.setZoom(mapOrigin.zoom[1]);
+                            map.setCenter(m.getPosition());
+                        });
+
+                        mapMarkers.regions.push(m);
+                    });
+
+                } else if (mapMarkers.regions[0].getVisible() == false) {
+                    mapMarkers.regions.forEach(function (m) {
+                        m.setVisible(true);
+                    });
+                }
+
+            } else if (zoom < mapOrigin.zoom[2]) {
+                if (mapMarkers.regions.length > 0 && mapMarkers.regions[0].getVisible() == true) {
+                    mapMarkers.regions.forEach(function (m) {
+                        m.setVisible(false);
+                    });
+                }
+
+                if (mapMarkers.cts.length > 0 && mapMarkers.cts[0].getVisible() == true) {
+                    mapMarkers.cts.forEach(function (m) {
+                        m.setVisible(false);
+                    });
+                }
+
+                if (mapMarkers.cities.length > 0 && mapMarkers.cities[0].getVisible() == false) {
+                    mapMarkers.cities.forEach(function (m) {
+                        m.setVisible(true);
+                    });
+                }
+
+                mapData.cities.forEach(function (c) {
+                    if (c.lng > bounds.west && c.lng < bounds.east && c.lat > bounds.south && c.lat < bounds.north && mapMarkers.cityDict[c.name] == null) {
+                        var m = new google.maps.Marker({
+                            map: map,
+                            position: { lat: c.lat, lng: c.lng },
+                            label: {
+                                text: c.count.toString(),
+                                fontSize: '11px'
+                            },
+                            icon: {
+                                url: '/images/m-yellow.png',
+                                labelOrigin: new google.maps.Point(28, 28)
+                            }
+                        });
+
+                        m.addListener('click', function () {
+                            map.setZoom(mapOrigin.zoom[2]);
+                            map.setCenter(m.getPosition());
+                        });
+
+                        mapMarkers.cities.push(m);
+                        mapMarkers.cityDict[c.name] = m;
+                    }
+                });
+
+            } else {
+                if (mapMarkers.regions.length > 0 && mapMarkers.regions[0].getVisible() == true) {
+                    mapMarkers.regions.forEach(function (m) {
+                        m.setVisible(false);
+                    });
+                }
+
+                if (mapMarkers.cities.length > 0 && mapMarkers.cities[0].getVisible() == true) {
+                    mapMarkers.cities.forEach(function (m) {
+                        m.setVisible(false);
+                    });
+                }
+
+                if (mapMarkers.cts.length > 0 && mapMarkers.cts[0].getVisible() == false) {
+                    mapMarkers.cts.forEach(function (m) {
+                        m.setVisible(true);
+                    });
+                }
+
+                toggleOverlay($("#map"), true);
+                $.ajax({
+                    url: '/data/cts',
+                    data: {
+                        x1: bounds.west, x2: bounds.east, y1: bounds.south, y2: bounds.north,
+                        teleLevel0: sliderTeleLevel.slider('getValue')[0], teleLevel1: sliderTeleLevel.slider('getValue')[1], tipo: $("input[type=radio][name=radTipo]").val()
+                    },
+                    success: function (data) {
+                        data.forEach(function (c) {
+                            if (mapMarkers.ctsDict[c.othercode] == null) {
+                                var m = new google.maps.Marker({
+                                    map: map,
+                                    position: { lat: c.lat, lng: c.lng },
+                                    icon: {
+                                        url: '/images/b-green.png'
+                                    }
+                                });
+
+                                m.addListener('mouseover', function () {
+                                    if (mapInfoHover) {
+                                        mapInfoHover.close();
+                                    }
+                                    mapInfoHover.setContent("<p>" + c.othercode + "</p>");
+                                    mapInfoHover.open(map, m);
+                                });
+
+                                m.addListener('click', function () {
+                                    mapMarkers.meterGroups.forEach(function (gm) {
+                                        gm.setMap(null);
+                                    });
+                                    mapMarkers.meterGroups = [];
+
+                                    if (mapMarkers.ctsCenter != null) {
+                                        var ctsCenterIcon = mapMarkers.ctsCenter.getIcon().url;
+                                        if (ctsCenterIcon.indexOf('-2.png') > 0) {
+                                            ctsCenterIcon = ctsCenterIcon.replace('-2.png', '.png');
+                                            mapMarkers.ctsCenter.setIcon({ url: ctsCenterIcon });
+                                        }
+                                    }
+
+                                    var iconUrl = this.getIcon().url;
+                                    if (iconUrl.indexOf('-2.png') < 0) {
+                                        iconUrl = iconUrl.replace('.png', '-2.png');
+                                        this.setIcon({ url: iconUrl });
+                                    }
+                                    mapMarkers.ctsCenter = this;
+
+                                    toggleOverlay($("#map"), true);
+                                    $.ajax({
+                                        url: '/data/metergroups',
+                                        data: { otherCode: c.othercode, exitCalc: false },
+                                        success: function (meterGroupData) {
+
+                                            if (mapInfoHover) {
+                                                mapInfoHover.close();
+                                            }
+                                            if (mapInfoClick) {
+                                                mapInfoClick.close();
+                                            }
+
+                                            var ctClickHtml = "<p>" + c.othercode + "</p>";
+                                            if (meterGroupData.tipo != null) {
+                                                ctClickHtml += "<p> &bull; " + meterGroupData.tipo.T5 + " % T5</p>";
+                                                ctClickHtml += "<p> &bull; " + meterGroupData.tipo.T4 + " % T4</p>";
+                                                ctClickHtml += "<p> &bull; " + meterGroupData.tipo.Other + " % Other</p>";
+                                            }
+
+                                            mapInfoClick.setContent(ctClickHtml);
+                                            mapInfoClick.open(map, m);
+
+                                            meterGroupData.groups.forEach(function (groupItem) {
+                                                var gm = new google.maps.Marker({
+                                                    map: map,
+                                                    position: { lat: groupItem.Lat, lng: groupItem.Lng },
+                                                    icon: {
+                                                        url: '/images/b-mgroup.png'
+                                                    },
+                                                    infoExit: groupItem.Exit
+                                                });
+
+                                                gm.addListener('click', function () {
+                                                    toggleOverlay($("#map"), true);
+                                                    $.ajax({
+                                                        url: '/data/meters',
+                                                        data: { groupCode: groupItem.Code },
+                                                        success: function (meterData) {
+                                                            if (mapInfoHover) {
+                                                                mapInfoHover.close();
+                                                            }
+                                                            if (mapInfoClick) {
+                                                                mapInfoClick.close();
+                                                            }
+
+                                                            var html = "<p>" + groupItem.Code + "</p>";
+                                                            html += "<p>Salida: " + groupItem.Exit + "</p>";
+
+                                                            html += "<p>" + meterData.length + " smart meter(s):</p>";
+                                                            meterData.forEach(function (meterItem) {
+                                                                html += "<p> - " + meterItem.Code + " (type " + meterItem.Type + ")</p>";
+                                                            });
+
+                                                            mapInfoClick.setContent(html);
+                                                            mapInfoClick.open(map, gm);
+                                                        },
+                                                        complete: function () {
+                                                            toggleOverlay($("#map"), false);
+                                                        }
+                                                    });
+                                                });
+
+                                                mapMarkers.meterGroups.push(gm);
+                                            });
+                                        },
+                                        complete: function () {
+                                            toggleOverlay($("#map"), false);
+                                        }
+                                    });
+
+                                    currentCts = c.othercode;
+                                    refreshEnergy();
+                                });
+
+                                mapMarkers.cts.push(m);
+                                mapMarkers.ctsDict[c.othercode] = m;
+                            }
+                        });
+
+                        if (animateCts != null) {
+                            var animatedCts = mapMarkers.ctsDict[animateCts];
+                            if (animatedCts != null) {
+                                google.maps.event.trigger(animatedCts, 'click');
+                            }
+                            animateCts = null;
+                        }
+                    },
+                    complete: function () {
+                        toggleOverlay($("#map"), false);
+                    }
+                });
+            }
+        });
+    }
+
+    function initFilters() {
+        toggleOverlay($("#filterContainer"), true);
+        $.ajax({
+            url: '/data/common',
+            success: function (data) {
+                mapData.regions = data.regions;
+                mapData.cities = data.cities;
+                mapData.centers = data.centers;
+
+                data.regions.forEach(function (r) {
+                    $region.append('<option data-lat="' + r.lat + '" data-lng="' + r.lng + '" value="' + r.name + '">' + r.name + '</option>');
+                });
+
+                data.centers.forEach(function (c) {
+                    $center.append('<option data-lat="' + c.lat + '" data-lng="' + c.lng + '" value="' + c.name + '">' + c.name + '</option>');
+                });
+            },
+            complete: function () {
+                toggleOverlay($("#filterContainer"), false);
+            }
+        });
+
+        $region.change(function () {
+            var option = $region.find(":selected");
+
+            $city.find("option[data-lat]").remove();
+
+            if (option.attr("data-lat") != null) {
+                map.setZoom(mapOrigin.zoom[1]);
+                map.setCenter({ lat: parseFloat(option.attr("data-lat")), lng: parseFloat(option.attr("data-lng")) });
+
+                mapData.cities.forEach(function (c) {
+                    if (c.region == option.attr("value")) {
+                        $city.append('<option data-lat="' + c.lat + '" data-lng="' + c.lng + '" value="' + c.name + '">' + c.name + ' (' + c.region + ')' + '</option>');
+                    }
+                });
+                $city.prop("disabled", false);
+
+            } else {
+                map.setZoom(mapOrigin.zoom[0]);
+                map.setCenter(mapOrigin.center);
+
+                $city.attr("disabled", "disabled");
+            }
+
+            $center.val("");
+            $("#txtCTSearch").val("");
+            $("#txtMeterSearch").val("");
+            currentCts = null;
+            refreshAlarms();
+        });
+
+        $city.change(function () {
+            var option = $city.find(":selected");
+
+            if (option.attr("data-lat") != null) {
+                map.setZoom(mapOrigin.zoom[2]);
+                map.setCenter({ lat: parseFloat(option.attr("data-lat")), lng: parseFloat(option.attr("data-lng")) });
+
+                $("#txtCTSearch").val("");
+                $("#txtMeterSearch").val("");
+                refreshAlarms();
+            } else {
+                $region.trigger("change");
+            }
+        });
+
+        $center.change(function () {
+            var option = $center.find(":selected");
+
+            if (option.attr("data-lat") != null) {
+                map.setZoom(mapOrigin.zoom[2]);
+                map.setCenter({ lat: parseFloat(option.attr("data-lat")), lng: parseFloat(option.attr("data-lng")) });
+
+            } else {
+                map.setZoom(mapOrigin.zoom[0]);
+                map.setCenter(mapOrigin.center);
+            }
+
+            $region.val("");
+            $city.find("option[data-lat]").remove();
+            $city.attr("disabled", "disabled");
+            $("#txtCTSearch").val("");
+            $("#txtMeterSearch").val("");
+            currentCts = null;
+            refreshAlarms();
+        });
+
+        $("#btnCTSearch").click(function () {
+            $("#ctSearchMessage").hide();
+            var code = $("#txtCTSearch").val().trim();
+
+            if (code == '') {
+                //$("#ctSearchMessage").html("<p>Please input CT code</p>").show();
+                $("#ctSearchMessage").html("<p>Código del CT no encontrado</p>").show();
+
+            } else {
+                toggleOverlay($("#map"), true);
+                $.ajax({
+                    url: '/data/ctssearch?code=' + code,
+                    success: function (data) {
+                        if (data.length > 0) {
+                            $region.val("");
+                            $city.find("option[data-lat]").remove();
+                            $city.attr("disabled", "disabled");
+                            $center.val("");
+
+                            map.setZoom(mapOrigin.zoom[3]);
+                            map.setCenter({ lat: data[0].lat, lng: data[0].lng });
+                            animateCts = data[0].othercode;
+
+                            currentCts = data[0].othercode;
+                            refreshAlarms();
+                        } else {
+                            //$("#ctSearchMessage").html("<p>CT code not found</p>").show();
+                            $("#ctSearchMessage").html("<p>Código del CT no encontrado</p>").show();
+                        }
+                    },
+                    complete: function () {
+                        toggleOverlay($("#map"), false);
+                    }
+                });
+            }
+        });
+
+        $("#btnMeterSearch").click(function () {
+            $("#meterSearchMessage").hide();
+            var code = $("#txtMeterSearch").val().trim();
+
+            if (code.length < 9) {
+                //$("#meterSearchMessage").html("<p>Please input at least 9 meaningful chars</p>").show();
+                $("#meterSearchMessage").html("<p>El código debe contener al menos 9 caracteres</p>").show();
+
+            } else {
+                toggleOverlay($("#map"), true);
+                $.ajax({
+                    url: '/data/metersearch?code=' + code,
+                    success: function (data) {
+                        if (data.length > 0) {
+                            $region.val("");
+                            $city.find("option[data-lat]").remove();
+                            $city.attr("disabled", "disabled");
+                            $center.val("");
+
+                            map.setZoom(mapOrigin.zoom[3]);
+                            map.setCenter({ lat: data[0].lat, lng: data[0].lng });
+                            animateCts = data[0].othercode;
+
+                            currentCts = data[0].othercode;
+                            refreshAlarms();
+                        } else {
+                            //$("#meterSearchMessage").html("<p>Smart Meter code not found</p>").show();
+                            $("#meterSearchMessage").html("<p>Código del Smart Meter no encontrado</p>").show();
+                        }
+                    },
+                    complete: function () {
+                        toggleOverlay($("#map"), false);
+                    }
+                });
+            }
+        });
+
+        sliderTeleLevel = $("#sliderTeleLevel").slider({
+            min: 0,
+            max: 100,
+            step: 5,
+            range: true,
+            value: [0, 100]
+        });
+
+        $("#btnTeleLevel").click(function () {
+            google.maps.event.trigger(map, 'idle');
+            refreshAlarms();
+        });
+
+        $("input[type=radio][name=radTipo]").change(function () {
+            google.maps.event.trigger(map, 'idle');
+            refreshAlarms();
+        });
+
+        $('#dpkFrom').datetimepicker({
+            format: 'YYYY-MM-DD',
+            defaultDate: '2016-12-01',
+            //minDate: '2015-07-31',
+            //maxDate: '2015-10-31'
+        });
+        $('#dpkFrom').data("DateTimePicker").date('2016-12-01');
+
+        $('#dpkTo').datetimepicker({
+            format: 'YYYY-MM-DD',
+            defaultDate: '2016-12-31',
+            //minDate: '2015-07-31',
+            //maxDate: '2015-10-31'
+        });
+        $('#dpkTo').data("DateTimePicker").date('2016-12-31');
+
+        $('#dpkFrom, #dpkTo').on("dp.change", function () {
+            refreshEnergy();
+        });
+    }
+
+    function refreshAlarms() {
+        toggleOverlay($("#fraudAlarms"), true);
+        $.ajax({
+            url: '/data/fraudalarms',
+            data: {
+                region: $region.val(), city: $city.val(), center: $center.val(), code: currentCts,
+                teleLevel0: sliderTeleLevel.slider('getValue')[0], teleLevel1: sliderTeleLevel.slider('getValue')[1], tipo: $("input[name=radTipo]:checked").val()
+            },
+            success: function (response) {
+                var $unbalanceAlarms = $("#tblUnbalanceAlarms > tbody");
+                $unbalanceAlarms.html("");
+
+                response.data.forEach(function (a) {
+                    $unbalanceAlarms.append('<tr><td>' + a.code + '</td><td>' + Math.round(a.ratio * 10) / 10 +
+                        '</td><td><a class="btn btn-sm btn-warning" data-code="' + a.code + '" data-lat="' + a.lat + '" data-lng="' + a.lng +
+                        '"><span class="glyphicon glyphicon-map-marker"></span></a></td></tr>');
+                });
+            },
+            complete: function () {
+                toggleOverlay($("#fraudAlarms"), false);
+            }
+        });
+    }
+
+    function refreshEnergy() {
+        if (currentCts == null) return;
+
+        toggleOverlay($("#energyContainer"), true);
+        $.ajax({
+            url: '/data/fraud',
+            data: { code: currentCts, from: $('#dpkFrom input').val(), to: $('#dpkTo input').val() },
+            success: function (data) {
+
+                data.items.forEach(function (d) {
+                    d.time = moment(d.date).toDate();
+                });
+
+                var container = d3.select("#energyChart");
+                container.html("");
+
+                if (data.items.length == 0) {
+                    container.html("<span>No hay datos disponibles</span>");
                     return;
                 }
 
-                var zoom = map.getZoom();
-                var bounds = map.getBounds().toJSON();
-                //console.log(zoom);
+                var containerSize = container.node().getBoundingClientRect(),
+                    svg = container.append("svg").attr("width", containerSize.width).attr("height", containerSize.height),
+                    margin = { top: 20, right: 20, bottom: 70, left: 70 },
+                    width = containerSize.width - margin.left - margin.right,
+                    height = containerSize.height - margin.top - margin.bottom,
+                    g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-                if (zoom < mapOrigin.zoom[1]) {
-                    if (mapMarkers.cities.length > 0 && mapMarkers.cities[0].getVisible() == true) {
-                        mapMarkers.cities.forEach(function(m) {
-                            m.setVisible(false);
-                        });
-                    }
+                var clip = g.append("defs").append("clipPath").attr("id", "clipEnergy").append("rect").attr("width", 0).attr("height", height);
 
-                    if (mapMarkers.cts.length > 0 && mapMarkers.cts[0].getVisible() == true) {
-                        mapMarkers.cts.forEach(function(m) {
-                            m.setVisible(false);
-                        });
-                    }
+                var x = d3.scaleTime().rangeRound([0, width]);
+                var y = d3.scaleLinear().rangeRound([height, 0]);
 
-                    if (mapMarkers.regions.length == 0) {
-                        mapData.regions.forEach(function(r) {
-                            var m = new google.maps.Marker({
-                                map: map,
-                                position: { lat: r.lat, lng: r.lng },
-                                label: {
-                                    text: r.count.toString(),
-                                    fontSize: '11px'
-                                },
-                                icon: {
-                                    url: '/images/m-red.png',
-                                    labelOrigin: new google.maps.Point(33, 34)
-                                }
-                            });
+                var lineCt = d3.line().x(function (d) { return x(d.time); }).y(function (d) { return y(d.ct); });
+                var lineExit = d3.line().x(function (d) { return x(d.time); }).y(function (d) { return y(d.exit); });
 
-                            m.addListener('click', function() {
-                                map.setZoom(mapOrigin.zoom[1]);
-                                map.setCenter(m.getPosition());
-                            });
+                x.domain(d3.extent(data.items, function (d) { return d.time; }));
 
-                            mapMarkers.regions.push(m);
-                        });
+                var domainCt = d3.extent(data.items, function (d) { return d.ct; });
+                var domainExit = d3.extent(data.items, function (d) { return d.exit; });
+                y.domain([d3.min([domainCt[0], domainExit[0]]), d3.max([domainCt[1], domainExit[1]])]);
 
-                    } else if (mapMarkers.regions[0].getVisible() == false) {
-                        mapMarkers.regions.forEach(function(m) {
-                            m.setVisible(true);
-                        });
-                    }
+                g.append("g").attr("class", "axis axis--x").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x).ticks(10));
 
-                } else if (zoom < mapOrigin.zoom[2]) {
-                    if (mapMarkers.regions.length > 0 && mapMarkers.regions[0].getVisible() == true) {
-                        mapMarkers.regions.forEach(function(m) {
-                            m.setVisible(false);
-                        });
-                    }
+                g.append("g").attr("class", "axis axis--y").call(d3.axisLeft(y).tickFormat(d3.format(".2s")))
+                    .append("text").attr("fill", "#000").attr("transform", "rotate(-90)")
+                    .attr("y", -52).attr("dy", "0.71em").style("text-anchor", "end").text("Energy values (kWh)");
 
-                    if (mapMarkers.cts.length > 0 && mapMarkers.cts[0].getVisible() == true) {
-                        mapMarkers.cts.forEach(function(m) {
-                            m.setVisible(false);
-                        });
-                    }
+                var clipG = g.append("g").attr("clip-path", "url(#clipEnergy)");
 
-                    if (mapMarkers.cities.length > 0 && mapMarkers.cities[0].getVisible() == false) {
-                        mapMarkers.cities.forEach(function(m) {
-                            m.setVisible(true);
-                        });
-                    }
+                var pathCt = clipG.append("path").datum(data.items).attr("class", "line").attr("d", lineCt).style("stroke", "#f00");
+                var pathExit = clipG.append("path").datum(data.items).attr("class", "line").attr("d", lineExit).style("stroke", "#0f0");
 
-                    mapData.cities.forEach(function(c) {
-                        if (c.lng > bounds.west && c.lng < bounds.east && c.lat > bounds.south && c.lat < bounds.north && mapMarkers.cityDict[c.name] == null) {
-                            var m = new google.maps.Marker({
-                                map: map,
-                                position: { lat: c.lat, lng: c.lng },
-                                label: {
-                                    text: c.count.toString(),
-                                    fontSize: '11px'
-                                },
-                                icon: {
-                                    url: '/images/m-yellow.png',
-                                    labelOrigin: new google.maps.Point(28, 28)
-                                }
-                            });
+                var legends = g.append("g").attr("class", "legend").attr("transform", "translate(0," + (height + 50) + ")");
 
-                            m.addListener('click', function() {
-                                map.setZoom(mapOrigin.zoom[2]);
-                                map.setCenter(m.getPosition());
-                            });
+                var legendCt = legends.append("g").attr("transform", "translate(0,0)");
+                legendCt.append("line").attr("x1", 0).attr("y1", 0).attr("x2", 20).attr("y2", 0).attr("stroke", "#f00").attr("stroke-width", 2);
+                legendCt.append("text").attr("x", 25).attr("y", 4).text("CT");
 
-                            mapMarkers.cities.push(m);
-                            mapMarkers.cityDict[c.name] = m;
-                        }
-                    });
+                var legendExit = legends.append("g").attr("transform", "translate(80,0)");
+                legendExit.append("line").attr("x1", 0).attr("y1", 0).attr("x2", 20).attr("y2", 0).attr("stroke", "#0f0").attr("stroke-width", 2);
+                legendExit.append("text").attr("x", 25).attr("y", 4).text("∑Salidas");
 
-                } else {
-                    if (mapMarkers.regions.length > 0 && mapMarkers.regions[0].getVisible() == true) {
-                        mapMarkers.regions.forEach(function(m) {
-                            m.setVisible(false);
-                        });
-                    }
-
-                    if (mapMarkers.cities.length > 0 && mapMarkers.cities[0].getVisible() == true) {
-                        mapMarkers.cities.forEach(function(m) {
-                            m.setVisible(false);
-                        });
-                    }
-
-                    if (mapMarkers.cts.length > 0 && mapMarkers.cts[0].getVisible() == false) {
-                        mapMarkers.cts.forEach(function(m) {
-                            m.setVisible(true);
-                        });
-                    }
-
-                    toggleOverlay($("#map"), true);
-                    $.ajax({
-                        url: '/data/cts',
-                        data: { x1: bounds.west, x2: bounds.east, y1: bounds.south, y2: bounds.north },
-                        success: function(data) {
-                            data.forEach(function(c) {
-                                if (mapMarkers.ctsDict[c.othercode] == null) {
-                                    var m = new google.maps.Marker({
-                                        map: map,
-                                        position: { lat: c.lat, lng: c.lng },
-                                        icon: {
-                                            url: '/images/b-green.png'
-                                        }
-                                    });
-
-                                    m.addListener('click', function() {
-                                        mapMarkers.meterGroups.forEach(function(gm) {
-                                            gm.setMap(null);
-                                        });
-                                        mapMarkers.meterGroups = [];
-                                        
-                                        if (mapMarkers.ctsCenter != null) {
-                                            var ctsCenterIcon = mapMarkers.ctsCenter.getIcon().url;
-                                            if (ctsCenterIcon.indexOf('-2.png') > 0) {
-                                                ctsCenterIcon = ctsCenterIcon.replace('-2.png', '.png');
-                                                mapMarkers.ctsCenter.setIcon({ url: ctsCenterIcon });
-                                            }
-                                        }
-
-                                        var iconUrl = this.getIcon().url;
-                                        if (iconUrl.indexOf('-2.png') < 0) {
-                                            iconUrl = iconUrl.replace('.png', '-2.png');
-                                            this.setIcon({ url: iconUrl });
-                                        }
-                                        mapMarkers.ctsCenter = this;
-                                        
-                                        if (mapInfo) {
-                                            mapInfo.close();
-                                        }
-                                        mapInfo.setContent("<p>" + c.othercode + "</p>");
-                                        mapInfo.open(map, m);
-
-                                        toggleOverlay($("#map"), true);
-                                        $.ajax({
-                                            url: '/data/metergroups',
-                                            data: { otherCode: c.othercode, exitCalc: false },
-                                            success: function(meterGroupData) {
-
-                                                meterGroupData.groups.forEach(function(groupItem) {
-                                                    var gm = new google.maps.Marker({
-                                                        map: map,
-                                                        position: { lat: groupItem.Lat, lng: groupItem.Lng },
-                                                        icon: {
-                                                            url: '/images/b-mgroup.png'
-                                                        },
-                                                        infoExit: groupItem.Exit
-                                                    });
-
-                                                    gm.addListener('click', function() {
-                                                        toggleOverlay($("#map"), true);
-                                                        $.ajax({
-                                                            url: '/data/meters',
-                                                            data: { groupCode: groupItem.Code },
-                                                            success: function(meterData) {
-                                                                if (mapInfo) {
-                                                                    mapInfo.close();
-                                                                }
-
-                                                                var html = "<p>" + groupItem.Code + "</p>";
-                                                                html += "<p>Salida: " + groupItem.Exit + "</p>";
-
-                                                                html += "<p>" + meterData.length + " smart meter(s):</p>";
-                                                                meterData.forEach(function(meterItem) {
-                                                                    html += "<p> - " + meterItem.Code + " (type " + meterItem.Type + ")</p>";
-                                                                });
-
-                                                                mapInfo.setContent(html);
-                                                                mapInfo.open(map, gm);
-                                                            },
-                                                            complete: function() {
-                                                                toggleOverlay($("#map"), false);
-                                                            }
-                                                        });
-                                                    });
-
-                                                    mapMarkers.meterGroups.push(gm);
-                                                });
-                                            },
-                                            complete: function() {
-                                                toggleOverlay($("#map"), false);
-                                            }
-                                        });
-
-                                        currentCts = c.othercode;
-                                        refreshEnergy();
-                                    });
-
-                                    mapMarkers.cts.push(m);
-                                    mapMarkers.ctsDict[c.othercode] = m;
-                                }
-                            });
-
-                            if (animateCts != null) {
-                                var animatedCts = mapMarkers.ctsDict[animateCts];
-                                if (animatedCts != null) {
-                                    google.maps.event.trigger(animatedCts, 'click');
-                                }
-                                animateCts = null;
-                            }
-                        },
-                        complete: function() {
-                            toggleOverlay($("#map"), false);
-                        }
-                    });
-                }
-            });
-        }
-
-        function initFilters() {
-            toggleOverlay($("#filterContainer"), true);
-            $.ajax({
-                url: '/data/common',
-                success: function(data) {
-                    mapData.regions = data.regions;
-                    mapData.cities = data.cities;
-                    mapData.centers = data.centers;
-
-                    data.regions.forEach(function(r) {
-                        $region.append('<option data-lat="' + r.lat + '" data-lng="' + r.lng + '" value="' + r.name + '">' + r.name + '</option>');
-                    });
-
-                    data.centers.forEach(function(c) {
-                        $center.append('<option data-lat="' + c.lat + '" data-lng="' + c.lng + '" value="' + c.name + '">' + c.name + '</option>');
-                    });
-                },
-                complete: function() {
-                    toggleOverlay($("#filterContainer"), false);
-                }
-            });
-
-            $region.change(function() {
-                var option = $region.find(":selected");
-
-                $city.find("option[data-lat]").remove();
-
-                if (option.attr("data-lat") != null) {
-                    map.setZoom(mapOrigin.zoom[1]);
-                    map.setCenter({ lat: parseFloat(option.attr("data-lat")), lng: parseFloat(option.attr("data-lng")) });
-
-                    mapData.cities.forEach(function(c) {
-                        if (c.region == option.attr("value")) {
-                            $city.append('<option data-lat="' + c.lat + '" data-lng="' + c.lng + '" value="' + c.name + '">' + c.name + ' (' + c.region + ')' + '</option>');
-                        }
-                    });
-                    $city.prop("disabled", false);
-
-                } else {
-                    map.setZoom(mapOrigin.zoom[0]);
-                    map.setCenter(mapOrigin.center);
-
-                    $city.attr("disabled", "disabled");
-                }
-
-                $center.val("");
-                $("#txtCTSearch").val("");
-                $("#txtMeterSearch").val("");
-                currentCts = null;
-                refreshAlarms();
-            });
-
-            $city.change(function() {
-                var option = $city.find(":selected");
-
-                if (option.attr("data-lat") != null) {
-                    map.setZoom(mapOrigin.zoom[2]);
-                    map.setCenter({ lat: parseFloat(option.attr("data-lat")), lng: parseFloat(option.attr("data-lng")) });
-
-                    $("#txtCTSearch").val("");
-                    $("#txtMeterSearch").val("");
-                    refreshAlarms();
-                } else {
-                    $region.trigger("change");
-                }
-            });
-
-            $center.change(function() {
-                var option = $center.find(":selected");
-
-                if (option.attr("data-lat") != null) {
-                    map.setZoom(mapOrigin.zoom[2]);
-                    map.setCenter({ lat: parseFloat(option.attr("data-lat")), lng: parseFloat(option.attr("data-lng")) });
-
-                } else {
-                    map.setZoom(mapOrigin.zoom[0]);
-                    map.setCenter(mapOrigin.center);
-                }
-
-                $region.val("");
-                $city.find("option[data-lat]").remove();
-                $city.attr("disabled", "disabled");
-                $("#txtCTSearch").val("");
-                $("#txtMeterSearch").val("");
-                currentCts = null;
-                refreshAlarms();
-            });
-
-            $("#btnCTSearch").click(function() {
-                $("#ctSearchMessage").hide();
-                var code = $("#txtCTSearch").val().trim();
-
-                if (code == '') {
-                    //$("#ctSearchMessage").html("<p>Please input CT code</p>").show();
-                    $("#ctSearchMessage").html("<p>Código del CT no encontrado</p>").show();
-
-                } else {
-                    toggleOverlay($("#map"), true);
-                    $.ajax({
-                        url: '/data/ctssearch?code=' + code,
-                        success: function(data) {
-                            if (data.length > 0) {
-                                $region.val("");
-                                $city.find("option[data-lat]").remove();
-                                $city.attr("disabled", "disabled");
-                                $center.val("");
-
-                                map.setZoom(mapOrigin.zoom[3]);
-                                map.setCenter({ lat: data[0].lat, lng: data[0].lng });
-                                animateCts = data[0].othercode;
-
-                                currentCts = data[0].othercode;
-                                refreshAlarms();
-                            } else {
-                                //$("#ctSearchMessage").html("<p>CT code not found</p>").show();
-                                $("#ctSearchMessage").html("<p>Código del CT no encontrado</p>").show();
-                            }
-                        },
-                        complete: function() {
-                            toggleOverlay($("#map"), false);
-                        }
-                    });
-                }
-            });
-
-            $("#btnMeterSearch").click(function() {
-                $("#meterSearchMessage").hide();
-                var code = $("#txtMeterSearch").val().trim();
-
-                if (code.length < 9) {
-                    //$("#meterSearchMessage").html("<p>Please input at least 9 meaningful chars</p>").show();
-                    $("#meterSearchMessage").html("<p>El código debe contener al menos 9 caracteres</p>").show();
-
-                } else {
-                    toggleOverlay($("#map"), true);
-                    $.ajax({
-                        url: '/data/metersearch?code=' + code,
-                        success: function(data) {
-                            if (data.length > 0) {
-                                $region.val("");
-                                $city.find("option[data-lat]").remove();
-                                $city.attr("disabled", "disabled");
-                                $center.val("");
-
-                                map.setZoom(mapOrigin.zoom[3]);
-                                map.setCenter({ lat: data[0].lat, lng: data[0].lng });
-                                animateCts = data[0].othercode;
-
-                                currentCts = data[0].othercode;
-                                refreshAlarms();
-                            } else {
-                                //$("#meterSearchMessage").html("<p>Smart Meter code not found</p>").show();
-                                $("#meterSearchMessage").html("<p>Código del Smart Meter no encontrado</p>").show();
-                            }
-                        },
-                        complete: function() {
-                            toggleOverlay($("#map"), false);
-                        }
-                    });
-                }
-            });
-
-            $('#dpkFrom').datetimepicker({
-                format: 'YYYY-MM-DD',
-                defaultDate: '2016-12-01',
-                //minDate: '2015-07-31',
-                //maxDate: '2015-10-31'
-            });
-            $('#dpkFrom').data("DateTimePicker").date('2016-12-01');
-
-            $('#dpkTo').datetimepicker({
-                format: 'YYYY-MM-DD',
-                defaultDate: '2016-12-31',
-                //minDate: '2015-07-31',
-                //maxDate: '2015-10-31'
-            });
-            $('#dpkTo').data("DateTimePicker").date('2016-12-31');
-
-            $('#dpkFrom, #dpkTo').on("dp.change", function() {
-                refreshEnergy();
-            });
-        }
-
-        function refreshAlarms() {
-            toggleOverlay($("#fraudAlarms"), true);
-            $.ajax({
-                url: '/data/fraudalarms',
-                data: { region: $region.val(), city: $city.val(), center: $center.val(), code: currentCts },
-                success: function (response) {
-                    var $unbalanceAlarms = $("#tblUnbalanceAlarms > tbody");
-                    $unbalanceAlarms.html("");
-
-                    response.data.forEach(function (a) {
-                        $unbalanceAlarms.append('<tr><td>' + a.code + '</td><td>' + Math.round(a.ratio * 10) / 10 +
-                            '</td><td><a class="btn btn-sm btn-warning" data-code="' + a.code + '" data-lat="' + a.lat + '" data-lng="' + a.lng +
-                            '"><span class="glyphicon glyphicon-map-marker"></span></a></td></tr>');
-                    });
-                },
-                complete: function () {
-                    toggleOverlay($("#fraudAlarms"), false);
-                }
-            });
-        }
-
-        function refreshEnergy() {
-            if (currentCts == null) return;
-
-            toggleOverlay($("#energyContainer"), true);
-            $.ajax({
-                url: '/data/fraud',
-                data: { code: currentCts, from: $('#dpkFrom input').val(), to: $('#dpkTo input').val() },
-                success: function (data) {
-
-                    data.items.forEach(function (d) {
-                        d.time = moment(d.date).toDate();
-                    });
-
-                    var container = d3.select("#energyChart");
-                    container.html("");
-
-                    if (data.items.length == 0) {
-                        container.html("<span>No hay datos disponibles</span>");
-                        return;
-                    }
-
-                    var containerSize = container.node().getBoundingClientRect(),
-                        svg = container.append("svg").attr("width", containerSize.width).attr("height", containerSize.height),
-                        margin = { top: 20, right: 20, bottom: 70, left: 70 },
-                        width = containerSize.width - margin.left - margin.right,
-                        height = containerSize.height - margin.top - margin.bottom,
-                        g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-                    var clip = g.append("defs").append("clipPath").attr("id", "clipEnergy").append("rect").attr("width", 0).attr("height", height);
-
-                    var x = d3.scaleTime().rangeRound([0, width]);
-                    var y = d3.scaleLinear().rangeRound([height, 0]);
-
-                    var lineCt = d3.line().x(function (d) { return x(d.time); }).y(function (d) { return y(d.ct); });
-                    var lineExit = d3.line().x(function (d) { return x(d.time); }).y(function (d) { return y(d.exit); });
-
-                    x.domain(d3.extent(data.items, function (d) { return d.time; }));
-
-                    var domainCt = d3.extent(data.items, function (d) { return d.ct; });
-                    var domainExit = d3.extent(data.items, function (d) { return d.exit; });
-                    y.domain([d3.min([domainCt[0], domainExit[0]]), d3.max([domainCt[1], domainExit[1]])]);
-
-                    g.append("g").attr("class", "axis axis--x").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x).ticks(10));
-
-                    g.append("g").attr("class", "axis axis--y").call(d3.axisLeft(y).tickFormat(d3.format(".2s")))
-                        .append("text").attr("fill", "#000").attr("transform", "rotate(-90)")
-                        .attr("y", -52).attr("dy", "0.71em").style("text-anchor", "end").text("Energy values (kWh)");
-
-                    var clipG = g.append("g").attr("clip-path", "url(#clipEnergy)");
-
-                    var pathCt = clipG.append("path").datum(data.items).attr("class", "line").attr("d", lineCt).style("stroke", "#f00");
-                    var pathExit = clipG.append("path").datum(data.items).attr("class", "line").attr("d", lineExit).style("stroke", "#0f0");
-                    
-                    var legends = g.append("g").attr("class", "legend").attr("transform", "translate(0," + (height + 50) + ")");
-
-                    var legendCt = legends.append("g").attr("transform", "translate(0,0)");
-                    legendCt.append("line").attr("x1", 0).attr("y1", 0).attr("x2", 20).attr("y2", 0).attr("stroke", "#f00").attr("stroke-width", 2);
-                    legendCt.append("text").attr("x", 25).attr("y", 4).text("CT");
-
-                    var legendExit = legends.append("g").attr("transform", "translate(80,0)");
-                    legendExit.append("line").attr("x1", 0).attr("y1", 0).attr("x2", 20).attr("y2", 0).attr("stroke", "#0f0").attr("stroke-width", 2);
-                    legendExit.append("text").attr("x", 25).attr("y", 4).text("∑Salidas");
-
-                    clip.transition().duration(1500).attr("width", width);
-                },
-                complete: function () {
-                    toggleOverlay($("#energyContainer"), false);
-                }
-            });
-        }
-
-        $(document).ready(function() {
-            initFilters();
-            refreshAlarms();
-
-            $("#fraudAlarms").on("click", "a.btn", function () {
-                map.setZoom(mapOrigin.zoom[3]);
-                map.setCenter({ lat: parseFloat($(this).attr("data-lat")), lng: parseFloat($(this).attr("data-lng")) });
-                animateCts = $(this).attr("data-code");
-            });
+                clip.transition().duration(1500).attr("width", width);
+            },
+            complete: function () {
+                toggleOverlay($("#energyContainer"), false);
+            }
         });
-    </script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8hJQ2tSEH8-t-KRk83qVegBwYGzGLJ8k&callback=initMap"></script>
+    }
+
+    $(document).ready(function () {
+        initFilters();
+        refreshAlarms();
+
+        $("#fraudAlarms").on("click", "a.btn", function () {
+            map.setZoom(mapOrigin.zoom[3]);
+            map.setCenter({ lat: parseFloat($(this).attr("data-lat")), lng: parseFloat($(this).attr("data-lng")) });
+            animateCts = $(this).attr("data-code");
+        });
+    });
+
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8hJQ2tSEH8-t-KRk83qVegBwYGzGLJ8k&callback=initMap"></script>
 }

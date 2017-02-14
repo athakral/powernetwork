@@ -11,6 +11,8 @@ namespace PowerNetwork.Web.Controllers
         {
             this._appConf = appConfig.Value;
         }
+        
+        // TODO (Hoa): still in working with AWS credentials
         public IActionResult Index()
         {
             return View();

@@ -12,6 +12,7 @@ using PowerNetwork.Core.Helpers;
 using PowerNetwork.Web.Models;
 using Microsoft.Extensions.Options;
 using PowerNetwork.Core.DataModels;
+//using HiQPdf;
 
 namespace PowerNetwork.Web.Controllers
 {
@@ -80,7 +81,7 @@ namespace PowerNetwork.Web.Controllers
 
         private static CtsModel[] _ctsItems;
 
-        public IActionResult Cts(double x1, double x2, double y1, double y2)
+        public IActionResult Cts(double x1, double x2, double y1, double y2, int teleLevel0, int teleLevel1, int tipo)
         {
             if (_ctsItems == null)
             {
@@ -92,8 +93,14 @@ namespace PowerNetwork.Web.Controllers
 
                 _ctsItems = csvReaderCts.GetRecords<CtsModel>().ToArray();
             }
+            var result = _ctsItems.Where(o => o.lng > x1 && o.lng < x2 && o.lat > y1 && o.lat < y2);
 
-            return Json(_ctsItems.Where(o => o.lng > x1 && o.lng < x2 && o.lat > y1 && o.lat < y2).ToList());
+            //if (teleLevel0 > 0 || teleLevel1 < 100 || tipo > 0) {
+            //    var filteredCodes = DataService.Cts(x1, x2, y1, y2, teleLevel0, teleLevel1, tipo);
+            //    result = result.Where(o => filteredCodes.Contains(o.othercode));
+            //}
+
+            return Json(result.ToList());
         }
 
         public IActionResult CtsSearch(string code)
@@ -155,7 +162,7 @@ namespace PowerNetwork.Web.Controllers
                 exitMax = this._dataService.MaxExit(otherCode);
             }
 
-            return Json(new { groups, exits = exitCodes, exitMax });
+            return Json(new { groups, exits = exitCodes, exitMax, tipo = this._dataService.CtTipo(otherCode) });
         }
 
         public IActionResult Meters(string groupCode)
@@ -163,10 +170,10 @@ namespace PowerNetwork.Web.Controllers
             return Json(this._dataService.Meters(groupCode));
         }
 
-        public IActionResult Alarms(string region, string city, string center, string code)
+        public IActionResult Alarms(string region, string city, string center, string code, int teleLevel0, int teleLevel1, int tipo)
         {
-            var overloadAlarms = this._dataService.OverloadAlarms();
-            var unbalanceAlarms = this._dataService.UnbalanceAlarms();
+            var overloadAlarms = this._dataService.OverloadAlarms(teleLevel0,teleLevel1,tipo);
+            var unbalanceAlarms = this._dataService.UnbalanceAlarms(teleLevel0, teleLevel1, tipo);
 
             if (_ctsItems == null)
             {
@@ -213,9 +220,9 @@ namespace PowerNetwork.Web.Controllers
             return Json(new { overload, unbalance });
         }
 
-        public IActionResult FraudAlarms(string region, string city, string center, string code)
+        public IActionResult FraudAlarms(string region, string city, string center, string code, int teleLevel0, int teleLevel1, int tipo)
         {
-            var alarms = this._dataService.FraudAlarms();
+            var alarms = this._dataService.FraudAlarms(teleLevel0,teleLevel1,tipo);
 
             if (_ctsItems == null)
             {
@@ -326,6 +333,20 @@ namespace PowerNetwork.Web.Controllers
             }
 
             return Json(new { items = result });
+        }
+
+
+        // TODO (Hoa): conversion library is in evaluation
+        public ActionResult Export() {
+            //var html = new StreamReader(Request.InputStream).ReadToEnd();
+
+            //var htmlToPdfConverter = new HtmlToPdf();
+            //var pdfBuffer = htmlToPdfConverter.ConvertHtmlToMemory(html, "http://localhost:3922/");
+
+            var file = Guid.NewGuid() + ".pdf";
+            //System.IO.File.WriteAllBytes(Server.MapPath("~/temp/") + file, pdfBuffer);
+
+            return Json("/temp/" + file);
         }
 
     }

@@ -24,6 +24,46 @@ namespace PowerNetwork.Core.Helpers
             this._connectionString = connectionString;
         }
 
+        public List<string> Cts(double x1, double x2, double y1, double y2, int teleLevel0, int teleLevel1, int tipo)
+        {
+            var result = new List<string>();
+
+            using (var connection = new NpgsqlConnection(this._connectionString))
+            {
+                var text =
+                    @"select ct.matricula_ct
+                      from datos_geograficos_cts ct
+                    join cts_x_tipo tipo on tipo.matricula_ct = ct.matricula_ct
+                       where ct.log_sexadecimal > ? and ct.log_sexadecimal < ? and ct.lat_sexadecimal > ? and ct.lat_sexadecimal < ?";
+
+                if (teleLevel0 > 0) text += " and tipo.prc_telegestionados >= " + teleLevel0;
+                if (teleLevel1 < 100) text += " and tipo.prc_telegestionados <= " + teleLevel1;
+
+                if (tipo == 5) text += " and tipo.tp4 = 0 and tipo.tp5 = 1";
+                if (tipo == 4) text += " and tipo.tp4 = 1 and tipo.tp5 = 0";
+
+                var command = new NpgsqlCommand(text, connection);
+
+                command.Parameters.Add("x1", NpgsqlDbType.Double).Value = x1;
+                command.Parameters.Add("x2", NpgsqlDbType.Double).Value = x2;
+                command.Parameters.Add("y1", NpgsqlDbType.Double).Value = y1;
+                command.Parameters.Add("y2", NpgsqlDbType.Double).Value = y2;
+
+                connection.Open();
+
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    result.Add(reader["matricula_ct"] as string);
+                }
+
+                reader.Close();
+            }
+
+            return result;
+        }
+
+
         public List<MeterModel> Meters(string groupCode)
         {
             var result = new List<MeterModel>();
@@ -119,15 +159,40 @@ namespace PowerNetwork.Core.Helpers
             return result;
         }
 
-        public List<AlarmModel> OverloadAlarms()
+        public List<AlarmModel> OverloadAlarms(int teleLevel0, int teleLevel1, int tipo)
         {
             var result = new List<AlarmModel>();
 
             using (var connection = new NpgsqlConnection(this._connectionString))
             {
-                using (var command = new NpgsqlCommand(
-                     @"select matricula, ratio, potencia_instaladatotal, intervalo 
-                    from a1_balance_alarma_final_prueba1 order by ratio desc", connection))
+                var commandText = "";
+
+                if (teleLevel0 == 0 && teleLevel1 == 100 && tipo == 0)
+                {
+                    commandText = @"select matricula, ratio, potencia_instaladatotal, intervalo 
+                        from a1_balance_alarma_final_prueba1 order by ratio desc";
+
+                }
+                else
+                {
+                    var text =
+                        @"select a.matricula, a.ratio, a.potencia_instaladatotal, a.intervalo
+                        from a1_balance_alarma_final_prueba1 a
+                        join cts_x_tipo tipo on tipo.matricula_ct = a.matricula
+                        where ";
+
+                    var whereItems = new List<string>();
+
+                    if (teleLevel0 > 0) whereItems.Add("tipo.prc_telegestionados >= " + teleLevel0);
+                    if (teleLevel1 < 100) whereItems.Add("tipo.prc_telegestionados <= " + teleLevel1);
+
+                    if (tipo == 5) whereItems.Add("tipo.tp4 = 0 and tipo.tp5 = 1");
+                    if (tipo == 4) whereItems.Add("tipo.tp4 = 1 and tipo.tp5 = 0");
+
+                    commandText = text + string.Join(" and ", whereItems) + " order by a.ratio desc";
+                }
+
+                using (var command = new NpgsqlCommand(commandText, connection))
                 {
 
                     connection.Open();
@@ -156,16 +221,40 @@ namespace PowerNetwork.Core.Helpers
             return result;
         }
 
-        public List<AlarmModel> UnbalanceAlarms()
+        public List<AlarmModel> UnbalanceAlarms(int teleLevel0, int teleLevel1, int tipo)
         {
             var result = new List<AlarmModel>();
 
             using (var connection = new NpgsqlConnection(this._connectionString))
             {
-                using (var command = new NpgsqlCommand(
-                       @"select matricula, dif_prc_hora_desbalaceo_sobre_nominal 
-                    from balance_alarma_desbalanceo_final 
-                    order by dif_prc_hora_desbalaceo_sobre_nominal desc", connection))
+                var commandText = "";
+
+                if (teleLevel0 == 0 && teleLevel1 == 100 && tipo == 0)
+                {
+                    commandText = @"select matricula, dif_prc_hora_desbalaceo_sobre_nominal 
+                        from balance_alarma_desbalanceo_final 
+                        order by dif_prc_hora_desbalaceo_sobre_nominal desc";
+
+                }
+                else
+                {
+                    var text =
+                        @"select a.matricula, a.dif_prc_hora_desbalaceo_sobre_nominal
+                        from balance_alarma_desbalanceo_final a
+                        join cts_x_tipo tipo on tipo.matricula_ct = a.matricula
+                        where ";
+
+                    var whereItems = new List<string>();
+
+                    if (teleLevel0 > 0) whereItems.Add("tipo.prc_telegestionados >= " + teleLevel0);
+                    if (teleLevel1 < 100) whereItems.Add("tipo.prc_telegestionados <= " + teleLevel1);
+
+                    if (tipo == 5) whereItems.Add("tipo.tp4 = 0 and tipo.tp5 = 1");
+                    if (tipo == 4) whereItems.Add("tipo.tp4 = 1 and tipo.tp5 = 0");
+
+                    commandText = text + string.Join(" and ", whereItems) + " order by a.dif_prc_hora_desbalaceo_sobre_nominal desc";
+                }
+                using (var command = new NpgsqlCommand(commandText, connection))
                 {
 
                     connection.Open();
@@ -184,15 +273,38 @@ namespace PowerNetwork.Core.Helpers
             return result;
         }
 
-        public List<AlarmModel> FraudAlarms()
+        public List<AlarmModel> FraudAlarms(int teleLevel0, int teleLevel1, int tipo)
         {
             var result = new List<AlarmModel>();
 
             using (var connection = new NpgsqlConnection(this._connectionString))
             {
-                using (var command = new NpgsqlCommand(
-                       @"select matricula, med_dif_energia_ct_sal
-                    from tabla_diferencias_fraude order by med_dif_energia_ct_sal desc", connection))
+                var commandText = "";
+
+                if (teleLevel0 == 0 && teleLevel1 == 100 && tipo == 0)
+                {
+                    commandText = @"select matricula, med_dif_energia_ct_sal
+                        from tabla_diferencias_fraude order by med_dif_energia_ct_sal desc";
+                }
+                else
+                {
+                    var text =
+                        @"select a.matricula, a.med_dif_energia_ct_sal
+                        from tabla_diferencias_fraude a
+                        join cts_x_tipo tipo on tipo.matricula_ct = a.matricula
+                        where ";
+
+                    var whereItems = new List<string>();
+
+                    if (teleLevel0 > 0) whereItems.Add("tipo.prc_telegestionados >= " + teleLevel0);
+                    if (teleLevel1 < 100) whereItems.Add("tipo.prc_telegestionados <= " + teleLevel1);
+
+                    if (tipo == 5) whereItems.Add("tipo.tp4 = 0 and tipo.tp5 = 1");
+                    if (tipo == 4) whereItems.Add("tipo.tp4 = 1 and tipo.tp5 = 0");
+
+                    commandText = text + string.Join(" and ", whereItems) + " order by a.med_dif_energia_ct_sal desc";
+                }
+                using (var command = new NpgsqlCommand(commandText, connection))
                 {
 
                     connection.Open();
@@ -365,6 +477,38 @@ namespace PowerNetwork.Core.Helpers
             return result;
         }
 
+        public CtTipoModel CtTipo(string code)
+        {
+            CtTipoModel result = null;
+
+            using (var connection = new NpgsqlConnection(this._connectionString))
+            {
+                var command = new NpgsqlCommand(
+                    @"select top 1 prc_tp_5, prc_tp_4, prc_tp_otro
+                    from cts_x_tipo 
+                    where matricula_ct = ?", connection);
+
+                command.Parameters.Add("Code", NpgsqlDbType.Varchar).Value = code;
+
+                connection.Open();
+
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    result = new CtTipoModel
+                    {
+                        T5 = Math.Round((double)reader["prc_tp_5"], 2),
+                        T4 = Math.Round((double)reader["prc_tp_4"], 2),
+                        Other = Math.Round((double)reader["prc_tp_otro"], 2)
+                    };
+                    break;
+                }
+
+                reader.Close();
+            }
+
+            return result;
+        }
         public List<FraudModel> Fraud(string code, DateTime from, DateTime to)
         {
             var result = new List<FraudModel>();
