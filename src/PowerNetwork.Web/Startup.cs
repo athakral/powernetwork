@@ -40,6 +40,8 @@ namespace PowerNetwork
             services.AddMvc().AddJsonOptions(jsonOptions =>
             {
                 jsonOptions.SerializerSettings.MissingMemberHandling = MissingMemberHandling.Ignore;
+                jsonOptions.SerializerSettings.ContractResolver =
+                    new Newtonsoft.Json.Serialization.DefaultContractResolver();
             }).AddMvcOptions(options =>
             {
                 options.Filters.Add(new TypeFilterAttribute(typeof(SharedDataFilter)));

@@ -34,7 +34,7 @@ namespace PowerNetwork.Core.Helpers
                     @"select ct.matricula_ct
                       from datos_geograficos_cts ct
                     join cts_x_tipo tipo on tipo.matricula_ct = ct.matricula_ct
-                       where ct.log_sexadecimal > ? and ct.log_sexadecimal < ? and ct.lat_sexadecimal > ? and ct.lat_sexadecimal < ?";
+                       where ct.log_sexadecimal > @x1 and ct.log_sexadecimal < @x2 and ct.lat_sexadecimal > @y1 and ct.lat_sexadecimal < @y2";
 
                 if (teleLevel0 > 0) text += " and tipo.prc_telegestionados >= " + teleLevel0;
                 if (teleLevel1 < 100) text += " and tipo.prc_telegestionados <= " + teleLevel1;
@@ -77,7 +77,7 @@ namespace PowerNetwork.Core.Helpers
                     cmd.CommandText = @"select m.cups, m.tipo_punto 
                     from coordenadas_acometida g
                     join datos_geograficos_cups m on g.cups = m.cups
-                    where g.clave_acometida = ?";
+                    where g.clave_acometida = @GroupCode";
                     cmd.Parameters.Add("GroupCode", NpgsqlDbType.Double).Value = double.Parse(groupCode);
 
                     using (var reader = cmd.ExecuteReader())
@@ -104,7 +104,7 @@ namespace PowerNetwork.Core.Helpers
             {
                 using (var command = new NpgsqlCommand(
                     @"select clave_acometida, log_sexadecimal, lat_sexadecimal, matricula_salidabt 
-                    from coordenadas_acometida where matricula_ct = ?", connection))
+                    from coordenadas_acometida where matricula_ct = @OtherCode", connection))
                 {
                     command.Parameters.Add("OtherCode", NpgsqlDbType.Varchar).Value = otherCode;
 
@@ -139,7 +139,7 @@ namespace PowerNetwork.Core.Helpers
 
             using (var connection = new NpgsqlConnection(this._connectionString))
             {
-                using (var command = new NpgsqlCommand("select top 1 matricula_ct from datos_geograficos_cups where cups like ?", connection))
+                using (var command = new NpgsqlCommand("select top 1 matricula_ct from datos_geograficos_cups where cups like @MeterCode", connection))
                 {
                     command.Parameters.Add("MeterCode", NpgsqlDbType.Varchar).Value = "%" + meterCode + "%";
 
@@ -340,7 +340,7 @@ namespace PowerNetwork.Core.Helpers
                         command.CommandText =
                             @"select fecha, horas, fase_r, fase_s, fase_t 
                         from a1_curva_intesidad_sobrecarga 
-                        where matricula = ? and fecha >= ? and fecha <= ? and tpo_salida_max = 1";
+                        where matricula = @Code and fecha >= @From and fecha <= @To and tpo_salida_max = 1";
 
                         command.Parameters.Add("Code", NpgsqlDbType.Varchar).Value = code;
                         command.Parameters.Add("From", NpgsqlDbType.Timestamp).Value = from;
@@ -352,7 +352,7 @@ namespace PowerNetwork.Core.Helpers
                         command.CommandText =
                             @"select fecha, horas, fase_r, fase_s, fase_t 
                         from a1_curva_intesidad_sobrecarga 
-                        where matricula = ? and fecha >= ? and fecha <= ? and salida = ?";
+                        where matricula = @Code and fecha >= @From and fecha <= @To and salida = @Exit";
 
                         command.Parameters.Add("Code", NpgsqlDbType.Varchar).Value = code;
                         command.Parameters.Add("From", NpgsqlDbType.Timestamp).Value = from;
@@ -402,7 +402,7 @@ namespace PowerNetwork.Core.Helpers
                     {
                         command.CommandText = @"select fecha, fase, prc_nominal, num_horas
                         from a1_balance_prc_nominal_bcg_04_prueba1 
-                        where matricula = ? and fecha >= ? and fecha <= ? and fase <> 'TODAS FASES' and tpo_salida_max = 1";
+                        where matricula = @Code and fecha >= @From and fecha <= @To and fase <> 'TODAS FASES' and tpo_salida_max = 1";
 
                         command.Parameters.Add("Code", NpgsqlDbType.Varchar).Value = code;
                         command.Parameters.Add("From", NpgsqlDbType.Timestamp).Value = from;
@@ -414,7 +414,7 @@ namespace PowerNetwork.Core.Helpers
                         command.CommandText =
                             @"select fecha, fase, prc_nominal, num_horas
                         from a1_balance_prc_nominal_bcg_04_prueba1 
-                        where matricula = ? and fecha >= ? and fecha <= ? and fase <> 'TODAS FASES' and salida = ?";
+                        where matricula = @Code and fecha >= @From and fecha <= @To and fase <> 'TODAS FASES' and salida = @Exit";
 
                         command.Parameters.Add("Code", NpgsqlDbType.Varchar).Value = code;
                         command.Parameters.Add("From", NpgsqlDbType.Timestamp).Value = from;
@@ -455,7 +455,7 @@ namespace PowerNetwork.Core.Helpers
                 using (var command = new NpgsqlCommand(
                      @"select top 1 salida
                     from a1_balance_prc_nominal_bcg_04_prueba1 
-                    where matricula = ? and tpo_salida_max = 1"))
+                    where matricula = @Code and tpo_salida_max = 1",connection))
                 {
 
                     command.Parameters.Add("Code", NpgsqlDbType.Varchar).Value = code;
@@ -486,7 +486,7 @@ namespace PowerNetwork.Core.Helpers
                 var command = new NpgsqlCommand(
                     @"select top 1 prc_tp_5, prc_tp_4, prc_tp_otro
                     from cts_x_tipo 
-                    where matricula_ct = ?", connection);
+                    where matricula_ct = @Code", connection);
 
                 command.Parameters.Add("Code", NpgsqlDbType.Varchar).Value = code;
 
@@ -509,6 +509,7 @@ namespace PowerNetwork.Core.Helpers
 
             return result;
         }
+
         public List<FraudModel> Fraud(string code, DateTime from, DateTime to)
         {
             var result = new List<FraudModel>();
@@ -518,7 +519,7 @@ namespace PowerNetwork.Core.Helpers
                 using (var command = new NpgsqlCommand(
                     @"select fecha, energia_g03, sum_energia_imp_salidas 
                     from grafica_serie_fraude 
-                    where matricula = ? and fecha >= ? and fecha <= ?
+                    where matricula = @Code and fecha >= @From and fecha <= @To
                     order by fecha", connection))
                 {
 

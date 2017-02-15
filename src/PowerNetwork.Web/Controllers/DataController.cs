@@ -88,7 +88,8 @@ namespace PowerNetwork.Web.Controllers
                 var csvReaderCts = new CsvReader(System.IO.File.OpenText(
                  Path.Combine(this._hostingEnvironment.WebRootPath, "data/cts_v1.2.csv")), new CsvConfiguration()
                  {
-                     HasHeaderRecord = false
+                     HasHeaderRecord = false,
+                     WillThrowOnMissingField = false
                  });
 
                 _ctsItems = csvReaderCts.GetRecords<CtsModel>().ToArray();
