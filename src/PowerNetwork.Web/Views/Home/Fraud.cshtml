@@ -683,7 +683,7 @@
                 var $unbalanceAlarms = $("#tblUnbalanceAlarms > tbody");
                 $unbalanceAlarms.html("");
 
-                response.data.forEach(function (a) {
+                response.Data.forEach(function (a) {
                     $unbalanceAlarms.append('<tr><td>' + a.code + '</td><td>' + Math.round(a.ratio * 10) / 10 +
                         '</td><td><a class="btn btn-sm btn-warning" data-code="' + a.code + '" data-lat="' + a.lat + '" data-lng="' + a.lng +
                         '"><span class="glyphicon glyphicon-map-marker"></span></a></td></tr>');
