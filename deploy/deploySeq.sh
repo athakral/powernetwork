@@ -12,6 +12,7 @@ dotnet build
 cd ../PowerNetwork.Web
 dotnet restore
 dotnet build
+rm -rf release
 dotnet publish --configuration=debug --output=release
 sudo systemctl start kestrel-powernetwork-ui.service
 sudo systemctl status kestrel-powernetwork-ui.service
