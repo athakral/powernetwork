@@ -1,16 +1,18 @@
-# put this at /etc/systemd/system/kestrel-powernetwork-ui.service
-
+# put this sudo vim  /etc/systemd/system/kestrel-powernetwork-ui.service 
+# sudo systemctl restart kestrel-powernetwork-ui.service
+# sudo systemctl enable kestrel-powernetwork-ui.service
+# sudo systemctl status kestrel-powernetwork-ui.service
 [Unit]
 Description=BCG Powernetwork UI application service
 
 [Service]
-WorkingDirectory=/home/ubuntu/PowerNetwork/src/PowerNetwork.Web/bin/release/netcoreapp1.1/publish
-ExecStart=/usr/bin/dotnet /home/ubuntu/PowerNetwork/src/PowerNetwork.Web/bin/release/netcoreapp1.1/publish/PowerNetwork.Web.dll
+WorkingDirectory=/home/ubuntu/powernetwork/src/PowerNetwork.Web/release/
+ExecStart=/usr/bin/dotnet /home/ubuntu/powernetwork/src/PowerNetwork.Web/release/PowerNetwork.Web.dll
 Restart=always
 RestartSec=10        # Restart service after 10 seconds if dotnet service crashes
 SyslogIdentifier=powernetwork-ui
 User=www-data
-Environment=ASPNETCORE_ENVIRONMENT=Production
+Environment=ASPNETCORE_ENVIRONMENT=Development
 
 [Install]
 WantedBy=multi-user.target
