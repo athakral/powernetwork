@@ -4,21 +4,21 @@ h3 {
     color: #177B57;
 }
 
-h1 small {
-    font-size: 14px;
-    margin-bottom: 15px;
-    display: block;
-}
+    h1 small {
+        font-size: 14px;
+        margin-bottom: 15px;
+        display: block;
+    }
 
-h1 a {
-    color: #177B57;
-    text-decoration: none;
-}
+    h1 a {
+        color: #177B57;
+        text-decoration: none;
+    }
 
-h1 a:hover {
-    color: #DC8700;
-    text-decoration: none;
-}
+        h1 a:hover {
+            color: #DC8700;
+            text-decoration: none;
+        }
 
 hr {
     margin-top: 10px;
@@ -43,167 +43,430 @@ hr {
     z-index: 9999;
 }
 
-.overlay>span {
-    font-size: 30px;
-    color: #177B57;
-    position: absolute;
-    top: 45%;
-    left: 50%;
-    margin-top: -15px;
-    margin-left: -15px;
+    .overlay > span {
+        font-size: 30px;
+        color: #177B57;
+        position: absolute;
+        top: 45%;
+        left: 50%;
+        margin-top: -15px;
+        margin-left: -15px;
+    }
+
+#loginView {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: url('/images/bg-3.jpg') no-repeat center center fixed;
+    background-size: cover;
 }
+
+    #loginView .logo {
+        position: absolute;
+        top: 10px;
+        left: 30px;
+        height: 100px;
+    }
+
+    #loginView .login-container {
+        background-color: #fff;
+        position: absolute;
+        top: 50%;
+        right: 0;
+        padding: 20px;
+        margin-top: -150px;
+        width: 420px;
+        -webkit-border-top-left-radius: 5px;
+        border-top-left-radius: 5px;
+        -webkit-border-bottom-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+    }
+
+        #loginView .login-container .checkbox {
+            float: left;
+        }
+
+        #loginView .login-container .btn {
+            float: right;
+            margin-top: 5px;
+        }
+
+    #loginView h1 {
+        color: #004165;
+        font-size: 22px;
+        font-weight: bold;
+        position: absolute;
+        top: 50%;
+        margin-top: -210px;
+        right: 30px;
+    }
+
+    #loginView h3 {
+        color: #004165;
+        font-size: 24px;
+        font-weight: bold;
+        position: absolute;
+        top: 50%;
+        margin-top: 180px;
+        right: 0;
+        width: 420px;
+        text-align: center;
+    }
 
 #homeView {
     position: relative;
 }
 
+    #homeView .logo {
+        position: absolute;
+        right: 0;
+        top: 20px;
+        height: 120px;
+    }
 
+    #homeView h1 {
+        margin-top: 80px;
+        margin-bottom: 50px;
+        font-weight: bold;
+    }
 
-#homeView h1 {
-    margin-top: 80px;
-    margin-bottom: 50px;
-    font-weight: bold;
-}
+    #homeView .box {
+        text-align: center;
+        border: 1px solid #ccc;
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+        padding: 10px;
+        margin-bottom: 20px;
+        cursor: pointer;
+        -moz-transition: background-color 0.2s;
+        -o-transition: background-color 0.2s;
+        -webkit-transition: background-color 0.2s;
+        transition: background-color 0.2s;
+    }
 
-#homeView .box {
-    text-align: center;
-    border: 1px solid #ccc;
-    -moz-border-radius: 10px;
-    -webkit-border-radius: 10px;
-    border-radius: 10px;
-    padding: 10px;
-    margin-bottom: 20px;
-    cursor: pointer;
-    -moz-transition: background-color 0.2s;
-    -o-transition: background-color 0.2s;
-    -webkit-transition: background-color 0.2s;
-    transition: background-color 0.2s;
-}
+        #homeView .box:hover {
+            background-color: #eee;
+        }
 
-#homeView .box:hover {
-    background-color: #eee;
-}
+        #homeView .box h3 {
+            font-weight: bold;
+            margin-bottom: 30px;
+            -moz-transition: color 0.2s;
+            -o-transition: color 0.2s;
+            -webkit-transition: color 0.2s;
+            transition: color 0.2s;
+        }
 
-#homeView .box h3 {
-    font-weight: bold;
-    margin-bottom: 30px;
-    -moz-transition: color 0.2s;
-    -o-transition: color 0.2s;
-    -webkit-transition: color 0.2s;
-    transition: color 0.2s;
-}
+        #homeView .box.gray h3 {
+            color: #888;
+        }
 
-#homeView .box.gray h3 {
-    color: #888;
-}
+        #homeView .box:hover h3 {
+            color: #DC8700;
+        }
 
-#homeView .box:hover h3 {
-    color: #DC8700;
-}
+        #homeView .box img {
+            height: 120px;
+            margin-bottom: 30px;
+        }
 
-#homeView .box img {
-    height: 120px;
-    margin-bottom: 30px;
-}
-
-#homeView .box p {
-    min-height: 140px;
-}
+        #homeView .box p {
+            min-height: 140px;
+        }
 
 #outletView {
     position: relative;
 }
 
-#outletView .logo {
-    position: absolute;
-    left: 20px;
-    top: 10px;
-    height: 60px;
-}
+    #outletView .logo {
+        position: absolute;
+        left: 20px;
+        top: 10px;
+        height: 60px;
+    }
 
-#outletView #topMenu {
-    float: right;
-    list-style-type: none;
-    margin: 15px 0 0 0;
-    padding: 0;
-}
+    #outletView #topMenu {
+        float: right;
+        list-style-type: none;
+        margin: 15px 0 0 0;
+        padding: 0;
+    }
 
-#outletView #topMenu>li {
-    float: left;
-    text-align: center;
-}
+        #outletView #topMenu > li {
+            float: left;
+            text-align: center;
+        }
 
-#outletView #topMenu>li a {
-    display: inline-block;
-    padding: 0 10px;
-    color: #ccc;
-    font-weight: bold;
-    text-decoration: none;
-    -moz-transition: color 0.2s;
-    -o-transition: color 0.2s;
-    -webkit-transition: color 0.2s;
-    transition: color 0.2s;
-}
+            #outletView #topMenu > li a {
+                display: inline-block;
+                padding: 0 10px;
+                color: #ccc;
+                font-weight: bold;
+                text-decoration: none;
+                -moz-transition: color 0.2s;
+                -o-transition: color 0.2s;
+                -webkit-transition: color 0.2s;
+                transition: color 0.2s;
+            }
 
-#outletView #topMenu>li a:hover {
-    color: #DC8700;
-}
+                #outletView #topMenu > li a:hover {
+                    color: #DC8700;
+                }
 
-#outletView #topMenu>li a.active {
-    color: #177B57;
-}
+                #outletView #topMenu > li a.active {
+                    color: #177B57;
+                }
 
-#outletView #topMenu>li img {
-    height: 40px;
-    margin-bottom: 5px;
-}
+            #outletView #topMenu > li img {
+                height: 40px;
+                margin-bottom: 5px;
+            }
 
-#outletView #topMenu>li span {
-    display: block;
-}
+            #outletView #topMenu > li span {
+                display: block;
+            }
 
-#outletView h1 {
-    margin-top: 100px;
-    margin-bottom: 30px;
-    font-weight: bold;
-}
+    #outletView h1 {
+        margin-top: 100px;
+        margin-bottom: 30px;
+        font-weight: bold;
+    }
 
-#outletView #filterContainer>p {
-    font-style: italic;
-    text-align: right;
-}
+    #outletView #filterContainer > p {
+        font-style: italic;
+        text-align: right;
+    }
 
-#outletView #filterContainer>p img {
-    margin-bottom: 2px;
-}
+        #outletView #filterContainer > p img {
+            margin-bottom: 2px;
+        }
 
-#outletView #map {
-    margin-bottom: 20px;
-}
+    #outletView #map {
+        margin-bottom: 20px;
+    }
 
-#outletView #outletAlarms .panel-body {
-    height: 197px;
-    overflow-y: auto;
-}
+    #outletView #outletAlarms .panel-body {
+        height: 197px;
+        overflow-y: auto;
+    }
 
-#outletView #fraudAlarms .panel-body {
-    height: 457px;
-    overflow-y: auto;
-}
+    #outletView #fraudAlarms .panel-body {
+        height: 457px;
+        overflow-y: auto;
+    }
 
-#outletView #outletCharts .line {
-    fill: none;
-    stroke-width: 1.5px;
-}
+    #outletView #outletCharts .line {
+        fill: none;
+        stroke-width: 1.5px;
+    }
 
-#outletView #outletCharts .legend text {
-    font-size: 12px;
-}
+    #outletView #outletCharts .legend text {
+        font-size: 12px;
+    }
 
-#outletView #outletCharts .legend>g {
-    cursor: pointer;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    -webkit-user-select: none;
-    user-select: none;
-}
+    #outletView #outletCharts .legend > g {
+        cursor: pointer;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        -webkit-user-select: none;
+        user-select: none;
+    }
+
+    #outletView .chart-box {
+        border: none;
+        -moz-box-shadow: none;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+    }
+
+        #outletView .chart-box > .panel-heading {
+            background: none;
+            border: none;
+            border-top: 1px solid #ddd;
+            text-align: center;
+            font-weight: bold;
+            color: #177B57;
+            padding-left: 40px;
+        }
+
+        #outletView .chart-box > .panel-body {
+            border-bottom: 1px solid #ddd;
+            padding-left: 40px;
+        }
+
+        #outletView .chart-box .panel-body > div {
+            height: 240px;
+        }
+
+        #outletView .chart-box .chart-prefix {
+            width: 25px;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+            #outletView .chart-box .chart-prefix:before {
+                content: "";
+                position: absolute;
+                width: 100%;
+                height: 50%;
+                top: 0;
+                left: 0;
+                -ms-transform: skew(5deg, 0deg);
+                -webkit-transform: skew(5deg, 0deg);
+                -moz-transform: skew(5deg, 0deg);
+                -o-transform: skew(5deg, 0deg);
+                transform: skew(5deg, 0deg);
+            }
+
+            #outletView .chart-box .chart-prefix:after {
+                content: "";
+                position: absolute;
+                width: 100%;
+                height: 50%;
+                top: 50%;
+                left: 0;
+                -ms-transform: skew(-5deg, 0deg);
+                -webkit-transform: skew(-5deg, 0deg);
+                -moz-transform: skew(-5deg, 0deg);
+                -o-transform: skew(-5deg, 0deg);
+                transform: skew(-5deg, 0deg);
+            }
+
+    #outletView .chart-box-10 .chart-prefix:before, #outletView .chart-box-10 .chart-prefix:after {
+        background-color: #B2B2B2;
+    }
+
+    #outletView .chart-box-11 .chart-prefix:before, #outletView .chart-box-11 .chart-prefix:after {
+        background-color: #E2E2E2;
+    }
+
+    #outletView .chart-box-20 .chart-prefix:before, #outletView .chart-box-20 .chart-prefix:after {
+        background-color: #B8C7D0;
+    }
+
+    #outletView .chart-box-21 .chart-prefix:before, #outletView .chart-box-21 .chart-prefix:after {
+        background-color: #E5EBEF;
+    }
+
+    #outletView .chart-box .chart-postfix {
+        width: 1px;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+
+        #outletView .chart-box .chart-postfix:before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 50%;
+            top: 0;
+            left: 6px;
+            background-color: #ddd;
+            -ms-transform: skew(5deg, 0deg);
+            -webkit-transform: skew(5deg, 0deg);
+            -moz-transform: skew(5deg, 0deg);
+            -o-transform: skew(5deg, 0deg);
+            transform: skew(5deg, 0deg);
+        }
+
+        #outletView .chart-box .chart-postfix:after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 50%;
+            top: 50%;
+            left: 6px;
+            background-color: #ddd;
+            -ms-transform: skew(-5deg, 0deg);
+            -webkit-transform: skew(-5deg, 0deg);
+            -moz-transform: skew(-5deg, 0deg);
+            -o-transform: skew(-5deg, 0deg);
+            transform: skew(-5deg, 0deg);
+        }
+
+    #outletView .chart-box-11, #outletView .chart-box-21 {
+        border-right: 1px solid #ddd;
+    }
+
+    #outletView .chart-with-menu {
+        padding-left: 135px;
+    }
+
+    #outletView .chart-menu {
+        width: 100px;
+        height: 100%;
+        position: absolute;
+        left: -120px;
+        padding: 10px;
+        color: #fff;
+        font-size: 13px;
+    }
+
+    #outletView .chart-box-10 .chart-menu {
+        background-color: #808080;
+    }
+
+    #outletView .chart-box-20 .chart-menu {
+        background-color: #6F8FA1;
+    }
+
+    #outletView .chart-menu ul {
+        padding-left: 20px;
+    }
+
+    #outletView .chart-menu > div:first-child {
+        position: absolute;
+        top: 50%;
+        width: 80px;
+    }
+
+    #outletView .chart-menu-postfix {
+        width: 20px;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 85px;
+    }
+
+        #outletView .chart-menu-postfix:before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 50%;
+            top: 0;
+            left: 6px;
+            -ms-transform: skew(5deg, 0deg);
+            -webkit-transform: skew(5deg, 0deg);
+            -moz-transform: skew(5deg, 0deg);
+            -o-transform: skew(5deg, 0deg);
+            transform: skew(5deg, 0deg);
+        }
+
+        #outletView .chart-menu-postfix:after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 50%;
+            top: 50%;
+            left: 6px;
+            -ms-transform: skew(-5deg, 0deg);
+            -webkit-transform: skew(-5deg, 0deg);
+            -moz-transform: skew(-5deg, 0deg);
+            -o-transform: skew(-5deg, 0deg);
+            transform: skew(-5deg, 0deg);
+        }
+
+    #outletView .chart-box-10 .chart-menu-postfix:before, #outletView .chart-box-10 .chart-menu-postfix:after {
+        background-color: #808080;
+    }
+
+    #outletView .chart-box-20 .chart-menu-postfix:before, #outletView .chart-box-20 .chart-menu-postfix:after {
+        background-color: #6F8FA1;
+    }

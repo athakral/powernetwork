@@ -1,6 +1,9 @@
-﻿@using PowerNetwork.Core.Helpers
+﻿@{
+    ViewData["Title"] = "Power Outlet";
+}
+
 <div class="container-fluid" id="outletView">
-    <img src="~/images/logo-@(ViewBag.SubDomain).png" class="logo" />
+    <img src="~/images/logo.png" class="logo" />
 
     <ul id="topMenu">
         <li>
@@ -30,7 +33,9 @@
     </ul>
     <h1>
         @if (User.Identity.IsAuthenticated) {
-        <small>(@User.Identity.Name: <a href="/home/logout"><span class="glyphicon glyphicon-off"></span> @ViewBag.Texts["Home.Logout"]</a>)</small>        } @ViewBag.Texts["Power.Header"]
+            <small>(@User.Identity.Name: <a href="/home/logout"><span class="glyphicon glyphicon-off"></span> @ViewBag.Texts["Home.Logout"]</a>)</small>        
+        } 
+        @ViewBag.Texts["Power.Header"]
     </h1>
     <div class="row">
         <div class="col-md-3 overlay-container" id="filterContainer">
@@ -70,7 +75,8 @@
             <div class="form-group">
                 <label>Nivel de Telegestión</label>
                 <div style="padding-left: 20px;">
-                    <input type="text" id="sliderTeleLevel" /> &nbsp;&nbsp;
+                    <input type="text" id="sliderTeleLevel" /> 
+                    &nbsp;&nbsp;
                     <button id="btnTeleLevel" class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
                 </div>
             </div>
@@ -87,14 +93,14 @@
                     <div class="radio">
                         <label>
                             <input type="radio" name="radTipo" value="5" />
-                            T5
+                            Solo PS T5
                         </label>
                     </div>
                     &nbsp;&nbsp;
                     <div class="radio">
                         <label>
                             <input type="radio" name="radTipo" value="4" />
-                            T4
+                            Incluye algún T4
                         </label>
                     </div>
                 </div>
@@ -136,8 +142,7 @@
                                 <th>@ViewBag.Texts["Power.Alarm.Code"]</th>
                                 <th>@Html.Raw(ViewBag.Texts["Power.Alarm.Ratio1"])</th>
                                 <th>Pnominal</th>
-                                @*
-                                <th>I/Inominal</th>*@
+                                @*                                <th>I/Inominal</th>*@
                                 <th>@ViewBag.Texts["Power.Alarm.Access"]</th>
                             </tr>
                         </thead>
@@ -162,888 +167,1108 @@
             </div>
         </div>
     </div>
+    
+    <br />
 
-    <div class="row" id="outletCharts">
-        <div class="col-md-12">
-            <br />
-            <div class="form-inline">
-                <div class="form-group">
-                    <select id="ddlExit" class="form-control" style="width: 150px;">
-                        <option value="">-- Salida --</option>
-                    </select>
+    <div id="outletCharts" style="page-break-before: always">
+        <div class="form-inline">
+            <div class="form-group">
+                <label>@ViewBag.Texts["Power.Filter.Date"]</label>
+                <div class='input-group date' id='dpkFrom'>
+                    <input type='text' class="form-control" />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
                 </div>
-                &nbsp;
-                <button id="btnExitMax" class="btn btn-default">Salida Máxima</button> &nbsp;&nbsp;&nbsp;
-                <div class="form-group">
-                    <label>@ViewBag.Texts["Power.Filter.Date"]</label>
-                    <div class='input-group date' id='dpkFrom'>
-                        <input type='text' class="form-control" />
-                        <span class="input-group-addon">
-                            <span class="glyphicon glyphicon-calendar"></span>
-                        </span>
-                    </div>
-                    <div class='input-group date' id='dpkTo'>
-                        <input type='text' class="form-control" />
-                        <span class="input-group-addon">
-                            <span class="glyphicon glyphicon-calendar"></span>
-                        </span>
-                    </div>
-                </div>
-            </div>
-            <br/>
-        </div>
-
-        <div class="col-md-6">
-            <div class="panel panel-default overlay-container" id="intensityContainer">
-                <div class="panel-heading">@ViewBag.Texts["Power.Graph.Intensity"]</div>
-                <div class="panel-body">
-                    <div id="intensityChart" style="height: 240px;"></div>
+                <div class='input-group date' id='dpkTo'>
+                    <input type='text' class="form-control" />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
                 </div>
             </div>
         </div>
+        <br />
 
-        <div class="col-md-6">
-            <div class="panel panel-default overlay-container" id="histogramContainer">
-                <div class="panel-heading">@ViewBag.Texts["Power.Graph.Histogram"]</div>
-                <div class="panel-body">
-                    <div id="histogramChart" style="height: 240px;"></div>
+        <div class="row">
+            <div class="col-md-6 chart-with-menu">
+                <div class="panel panel-default overlay-container chart-box chart-box-10" id="allIntensityContainer">
+                    <div class="chart-menu">
+                        <div style="margin-top: -42px;">
+                            Indicadores del CT
+                            <ul>
+                                <li>Intensidad</li>
+                                <li>Tensión</li>
+                            </ul>
+                        </div>
+                        <div class="chart-menu-postfix"></div>
+                    </div>
+                    <div class="chart-prefix"></div>
+                    <div class="panel-heading">Intensidad del transformador</div>
+                    <div class="panel-body">
+                        <div id="allIntensityChart"></div>
+                    </div>
+                    <div class="chart-postfix"></div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="panel panel-default overlay-container chart-box chart-box-11" id="allTensionContainer">
+                    <div class="chart-prefix"></div>
+                    <div class="panel-heading">Tensión del transformador</div>
+                    <div class="panel-body">
+                        <div id="allTensionChart"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-inline">
+            <div class="form-group">
+                <select id="ddlExit" class="form-control" style="width: 150px;">
+                    <option value="">-- Salida --</option>
+                </select>
+            </div>
+            &nbsp;
+            <button id="btnExitMax" class="btn btn-default">Salida Máxima</button>
+        </div>
+        <br />
+
+        <div class="row">
+            <div class="col-md-6 chart-with-menu">
+                <div class="panel panel-default overlay-container chart-box chart-box-20" id="intensityContainer">
+                    <div class="chart-menu">
+                        <div style="margin-top: -60px;">
+                            Indicadores por salida y fase del CT
+                            <ul>
+                                <li>Ratio intensidad</li>
+                                <li>Monótona</li>
+                            </ul>
+                        </div>
+                        <div class="chart-menu-postfix"></div>
+                    </div>
+                    <div class="chart-prefix"></div>
+                    <div class="panel-heading">@ViewBag.Texts["Power.Graph.Intensity"]</div>
+                    <div class="panel-body">
+                        <div id="intensityChart" style="height: 240px;"></div>
+                    </div>
+                    <div class="chart-postfix"></div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="panel panel-default overlay-container chart-box chart-box-21" id="histogramContainer">
+                    <div class="chart-prefix"></div>
+                    <div class="panel-heading">@ViewBag.Texts["Power.Graph.Histogram"]</div>
+                    <div class="panel-body">
+                        <div id="histogramChart" style="height: 240px;"></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <div>
+
+    <div style="page-break-before: always">
         <h3><b>Significado Indicadores Operativos</b></h3>
         <p>
-            <b>Alarma de Sobreintensidad:</b> recoge los centros de transformación que han estado más del 25% de las horas
-            del mes (últimos 31 días) trabajando a una intensidad superior al 85% de la intensidad nominal
+            <b>Alarma de Sobreintensidad:</b> recoge los centros de transformación que han estado más del 25% de las horas del mes
+            (últimos 31 días) trabajando a una intensidad superior al 85% de la intensidad nominal
         </p>
         <ul>
             <li>
-                <span style="text-decoration: underline">Número de horas de sobreintensidad:</span> número de horas que ha
-                estado un centro de transformación trabajando bajo la alarma de sobreintensidad
+                <span style="text-decoration: underline">Número de horas de sobreintensidad:</span>
+                número de horas que ha estado un centro de transformación trabajando bajo la alarma de sobreintensidad
             </li>
             <li>
                 <span style="text-decoration: underline">Potencia nominal:</span> potencia instalada por centro de transformación
             </li>
             <li>
-                <span style="text-decoration: underline">Ratio Intensidad frente Intensidad nominal:</span> rango formado
-                por la el menor y el mayor ratio de Intensidad horario alcanzado en un centro de transformación en los últimos
-                31 días
+                <span style="text-decoration: underline">Ratio Intensidad frente Intensidad nominal:</span>
+                rango formado por la el menor y el mayor ratio de Intensidad horario alcanzado en un centro de transformación en los últimos 31 días
             </li>
         </ul>
         <p>
-            <b>Alarma de Desbalanceo entre Intensidades de Salidas:</b> recoge los centros de transformación cuya diferencia
-            entre la salida con mayor y menor ratio de intensidad sobre la nominal sea superior a 60 puntos porcentuales,
-            durante más de 10 horas del último mes (últimos 31 días)
+            <b>Alarma de Desbalanceo entre Intensidades de Salidas:</b> recoge los centros de transformación cuya diferencia entre la salida con mayor
+            y menor ratio de intensidad sobre la nominal sea superior a 60 puntos porcentuales, durante más de 10 horas del último mes (últimos 31 días)
         </p>
         <ul>
             <li>
-                <span style="text-decoration: underline">Diferencia entre salidas:</span> diferencia de Intensidad entre
-                la salida con más carga y la que menos
+                <span style="text-decoration: underline">Diferencia entre salidas:</span>
+                diferencia de Intensidad entre la salida con más carga y la que menos
             </li>
         </ul>
         <p>
-            <b>Curva de Intensidad de Sobrecarga de la Red:</b> recoge los valores del ratio de Intensidades (Intensidad/I
-            nominal) de las distintas salidas y fases de un CT durante un período de tiempo determinado
+            <b>Curva de Intensidad de Sobrecarga de la Red:</b> recoge los valores del ratio de Intensidades (Intensidad/I nominal) de las distintas salidas
+            y fases de un CT durante un período de tiempo determinado
         </p>
         <p>
-            <b>Histograma de Intensidades:</b> recoge el número de horas que ha estado cada salida y cada fase de un CT en
-            cada nivel de Intensidad (ratio de Intensidad sobre la nominal) durante un período de tiempo determinado
+            <b>Histograma de Intensidades:</b> recoge el número de horas que ha estado cada salida y cada fase de un CT en cada nivel de Intensidad
+            (ratio de Intensidad sobre la nominal) durante un período de tiempo determinado
         </p>
         <p>
-            <b>Salida máxima:</b> salida del CT que ha recogido el mayor ratio de Intensidad frente a la nominal durante
-            el último mes (últimos 31 días).
+            <b>Salida máxima:</b> salida del CT que ha recogido el mayor ratio de Intensidad frente a la nominal durante el último mes (últimos 31 días).
         </p>
-        <br/><br/>
+        <br /><br />
     </div>
 </div>
 
 @section scripts {
-<script src="~/lib/moment/min/moment.min.js"></script>
-<script src="~/lib/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
-<script src="~/lib/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js"></script>
-<script src="~/lib/d3/d3.min.js"></script>
-<script>
-    var $region = $("#ddlRegion");
-    var $city = $("#ddlCity");
-    var $center = $("#ddlCenter");
-    var $exit = $("#ddlExit");
-    var sliderTeleLevel;
+    <script src="~/lib/moment/min/moment.min.js"></script>
+    <script src="~/lib/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="~/lib/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js"></script>
+    <script src="~/lib/d3/d3.min.js"></script>
+    <script>
+        var $region = $("#ddlRegion");
+        var $city = $("#ddlCity");
+        var $center = $("#ddlCenter");
+        var $exit = $("#ddlExit");
+        var sliderTeleLevel;
 
-    var currentCts;
-    var animateCts;
+        var currentCts;
+        var animateCts;
 
-    var map;
-    var mapInfoHover, mapInfoClick;
-    var mapData = {};
-    var mapMarkers = { regions: [], cities: [], cts: [], meterGroups: [], cityDict: {}, ctsDict: {}, ctsCenter: null };
+        var map;
+        var mapInfoHover, mapInfoClick;
+        var mapData = {};
+        var mapMarkers = { regions: [], cities: [], cts: [], meterGroups: [], cityDict: {}, ctsDict: {}, ctsCenter: null };
 
-    var mapOrigin = { center: { lat: 40.431075, lng: -3.703578 }, zoom: [6, 10, 13, 18] };
+        var mapOrigin = { center: { lat: 40.431075, lng: -3.703578 }, zoom: [6, 10, 13, 18] };
 
-    function initMap() {
-        map = new google.maps.Map(document.getElementById('map'), {
-            zoom: mapOrigin.zoom[0],
-            center: mapOrigin.center,
-            minZoom: mapOrigin.zoom[0],
-            maxZoom: mapOrigin.zoom[3]
-        });
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: mapOrigin.zoom[0],
+                center: mapOrigin.center,
+                minZoom: mapOrigin.zoom[0],
+                maxZoom: mapOrigin.zoom[3]
+            });
 
-        mapInfoHover = new google.maps.InfoWindow({ content: '' });
-        mapInfoClick = new google.maps.InfoWindow({ content: '' });
+            mapInfoHover = new google.maps.InfoWindow({ content: '' });
+            mapInfoClick = new google.maps.InfoWindow({ content: '' });
 
-        map.addListener('idle', function () {
-            if (mapData.regions == null) {
-                setTimeout(function () {
-                    google.maps.event.trigger(map, 'idle');
-                }, 2000);
+            map.addListener('idle', function () {
+                if (mapData.regions == null) {
+                    setTimeout(function () {
+                        google.maps.event.trigger(map, 'idle');
+                    }, 2000);
+                    return;
+                }
+
+                var zoom = map.getZoom();
+                var bounds = map.getBounds().toJSON();
+                //console.log(zoom);
+
+                if (zoom < mapOrigin.zoom[1]) {
+                    if (mapMarkers.cities.length > 0 && mapMarkers.cities[0].getVisible() == true) {
+                        mapMarkers.cities.forEach(function (m) {
+                            m.setVisible(false);
+                        });
+                    }
+
+                    if (mapMarkers.cts.length > 0 && mapMarkers.cts[0].getVisible() == true) {
+                        mapMarkers.cts.forEach(function (m) {
+                            m.setVisible(false);
+                        });
+                    }
+
+                    if (mapMarkers.regions.length == 0) {
+                        mapData.regions.forEach(function (r) {
+                            var m = new google.maps.Marker({
+                                map: map,
+                                position: { lat: r.lat, lng: r.lng },
+                                label: {
+                                    text: r.count.toString(),
+                                    fontSize: '11px'
+                                },
+                                icon: {
+                                    url: '/images/m-red.png',
+                                    labelOrigin: new google.maps.Point(33, 34)
+                                }
+                            });
+
+                            m.addListener('click', function () {
+                                map.setZoom(mapOrigin.zoom[1]);
+                                map.setCenter(m.getPosition());
+                            });
+
+                            mapMarkers.regions.push(m);
+                        });
+
+                    } else if (mapMarkers.regions[0].getVisible() == false) {
+                        mapMarkers.regions.forEach(function (m) {
+                            m.setVisible(true);
+                        });
+                    }
+
+                } else if (zoom < mapOrigin.zoom[2]) {
+                    if (mapMarkers.regions.length > 0 && mapMarkers.regions[0].getVisible() == true) {
+                        mapMarkers.regions.forEach(function (m) {
+                            m.setVisible(false);
+                        });
+                    }
+
+                    if (mapMarkers.cts.length > 0 && mapMarkers.cts[0].getVisible() == true) {
+                        mapMarkers.cts.forEach(function (m) {
+                            m.setVisible(false);
+                        });
+                    }
+
+                    if (mapMarkers.cities.length > 0 && mapMarkers.cities[0].getVisible() == false) {
+                        mapMarkers.cities.forEach(function (m) {
+                            m.setVisible(true);
+                        });
+                    }
+
+                    mapData.cities.forEach(function (c) {
+                        if (c.lng > bounds.west && c.lng < bounds.east && c.lat > bounds.south && c.lat < bounds.north && mapMarkers.cityDict[c.name] == null) {
+                            var m = new google.maps.Marker({
+                                map: map,
+                                position: { lat: c.lat, lng: c.lng },
+                                label: {
+                                    text: c.count.toString(),
+                                    fontSize: '11px'
+                                },
+                                icon: {
+                                    url: '/images/m-yellow.png',
+                                    labelOrigin: new google.maps.Point(28, 28)
+                                }
+                            });
+
+                            m.addListener('click', function () {
+                                map.setZoom(mapOrigin.zoom[2]);
+                                map.setCenter(m.getPosition());
+                            });
+
+                            mapMarkers.cities.push(m);
+                            mapMarkers.cityDict[c.name] = m;
+                        }
+                    });
+
+                } else {
+                    if (mapMarkers.regions.length > 0 && mapMarkers.regions[0].getVisible() == true) {
+                        mapMarkers.regions.forEach(function (m) {
+                            m.setVisible(false);
+                        });
+                    }
+
+                    if (mapMarkers.cities.length > 0 && mapMarkers.cities[0].getVisible() == true) {
+                        mapMarkers.cities.forEach(function (m) {
+                            m.setVisible(false);
+                        });
+                    }
+
+                    var tipoFilter = {
+                        teleLevel0: sliderTeleLevel.slider('getValue')[0],
+                        teleLevel1: sliderTeleLevel.slider('getValue')[1],
+                        tipo: $("input[name=radTipo]:checked").val()
+                    };
+
+                    toggleOverlay($("#map"), true);
+                    $.ajax({
+                        url: '/data/cts',
+                        data: { x1: bounds.west, x2: bounds.east, y1: bounds.south, y2: bounds.north },
+                        success: function (data) {
+                            data.forEach(function (c) {
+                                if (mapMarkers.ctsDict[c.othercode] == null) {
+                                    var m = new google.maps.Marker({
+                                        map: map,
+                                        position: { lat: c.lat, lng: c.lng },
+                                        icon: {
+                                            url: '/images/' + (c.alarm == "" ? 'b-green.png' : c.alarm == "b" ? 'b-yellow.png' : c.alarm == "o" ? 'b-red.png' : 'b-redyellow.png')
+                                        },
+                                        tipo: { teleLevel: c.teleLevel, tp4: c.tp4, tp5: c.tp5, to: c.to }
+                                    });
+
+                                    m.addListener('mouseover', function () {
+                                        if (mapInfoHover) {
+                                            mapInfoHover.close();
+                                        }
+                                        mapInfoHover.setContent("<p>" + c.othercode + "</p>");
+                                        mapInfoHover.open(map, m);
+                                    });
+
+                                    m.addListener('click', function () {
+                                        mapMarkers.meterGroups.forEach(function (gm) {
+                                            gm.setMap(null);
+                                        });
+                                        mapMarkers.meterGroups = [];
+
+                                        if (mapMarkers.ctsCenter != null) {
+                                            var ctsCenterIcon = mapMarkers.ctsCenter.getIcon().url;
+                                            if (ctsCenterIcon.indexOf('-2.png') > 0) {
+                                                ctsCenterIcon = ctsCenterIcon.replace('-2.png', '.png');
+                                                mapMarkers.ctsCenter.setIcon({ url: ctsCenterIcon });
+                                            }
+                                        }
+
+                                        var iconUrl = this.getIcon().url;
+                                        if (iconUrl.indexOf('-2.png') < 0) {
+                                            iconUrl = iconUrl.replace('.png', '-2.png');
+                                            this.setIcon({ url: iconUrl });
+                                        }
+                                        mapMarkers.ctsCenter = this;
+
+                                        toggleOverlay($("#map"), true);
+                                        $.ajax({
+                                            url: '/data/metergroups',
+                                            data: { otherCode: c.othercode, exitCalc: true },
+                                            success: function (meterGroupData) {
+
+                                                if (mapInfoHover) {
+                                                    mapInfoHover.close();
+                                                }
+                                                if (mapInfoClick) {
+                                                    mapInfoClick.close();
+                                                }
+
+                                                var ctClickHtml = "<p>" + c.othercode + "</p>";
+                                                if (meterGroupData.tipo != null) {
+                                                    ctClickHtml += "<p> &bull; " + meterGroupData.tipo.T5Percent + " % T5</p>";
+                                                    ctClickHtml += "<p> &bull; " + meterGroupData.tipo.T4Percent + " % T4</p>";
+                                                    ctClickHtml += "<p> &bull; " + meterGroupData.tipo.Other + " % Other</p>";
+                                                }
+
+                                                mapInfoClick.setContent(ctClickHtml);
+                                                mapInfoClick.open(map, m);
+
+                                                meterGroupData.groups.forEach(function (groupItem) {
+                                                    var gm = new google.maps.Marker({
+                                                        map: map,
+                                                        position: { lat: groupItem.Lat, lng: groupItem.Lng },
+                                                        icon: {
+                                                            url: '/images/b-mgroup.png'
+                                                        },
+                                                        infoExit: groupItem.Exit
+                                                    });
+
+                                                    gm.addListener('click', function () {
+                                                        toggleOverlay($("#map"), true);
+                                                        $.ajax({
+                                                            url: '/data/meters',
+                                                            data: { groupCode: groupItem.Code },
+                                                            success: function (meterData) {
+                                                                if (mapInfoHover) {
+                                                                    mapInfoHover.close();
+                                                                }
+                                                                if (mapInfoClick) {
+                                                                    mapInfoClick.close();
+                                                                }
+
+                                                                var html = "<p>" + groupItem.Code + "</p>";
+                                                                html += "<p>Salida: " + groupItem.Exit + "</p>";
+
+                                                                html += "<p>" + meterData.length + " smart meter(s):</p>";
+                                                                meterData.forEach(function (meterItem) {
+                                                                    html += "<p> - " + meterItem.Code + " (type " + meterItem.Type + ")</p>";
+                                                                });
+
+                                                                mapInfoClick.setContent(html);
+                                                                mapInfoClick.open(map, gm);
+                                                            },
+                                                            complete: function () {
+                                                                toggleOverlay($("#map"), false);
+                                                            }
+                                                        });
+                                                    });
+
+                                                    mapMarkers.meterGroups.push(gm);
+                                                });
+
+                                                $exit.find("option").not(':first').remove();
+
+                                                meterGroupData.exits.forEach(function (exitCode) {
+                                                    if (exitCode < 10) {
+                                                        $exit.append('<option value="Salida_' + exitCode + '">Salida_0' + exitCode + '</option>');
+                                                    } else {
+                                                        $exit.append('<option value="Salida_' + exitCode + '">Salida_' + exitCode + '</option>');
+                                                    }
+                                                });
+
+                                                $("#btnExitMax").text("Salida Máxima (" + meterGroupData.exitMax + ")");
+                                            },
+                                            complete: function () {
+                                                toggleOverlay($("#map"), false);
+                                            }
+                                        });
+
+                                        currentCts = c.othercode;
+                                        refreshOverviewCharts();
+                                    });
+
+                                    mapMarkers.cts.push(m);
+                                    mapMarkers.ctsDict[c.othercode] = m;
+                                }
+
+                                // tipo filter
+                                var tipoMarker = mapMarkers.ctsDict[c.othercode];
+
+                                if (tipoFilter.teleLevel0 > 0 && (!tipoMarker.tipo || tipoMarker.tipo.teleLevel < tipoFilter.teleLevel0)) {
+                                    tipoMarker.setVisible(false);
+                                } else if (tipoFilter.teleLevel1 < 100 && (!tipoMarker.tipo || tipoMarker.tipo.teleLevel > tipoFilter.teleLevel1)) {
+                                    tipoMarker.setVisible(false);
+                                } else if (tipoFilter.tipo == 5 && (!tipoMarker.tipo || tipoMarker.tipo.tp4 == 1 || tipoMarker.tipo.tp5 == 0 || tipoMarker.tipo.to == 1)) {
+                                    tipoMarker.setVisible(false);
+                                } else if (tipoFilter.tipo == 4 && (!tipoMarker.tipo || tipoMarker.tipo.tp4 == 0)) {
+                                    tipoMarker.setVisible(false);
+                                } else {
+                                    tipoMarker.setVisible(true);
+                                }
+                            });
+
+                            if (animateCts != null) {
+                                var animatedCts = mapMarkers.ctsDict[animateCts];
+                                if (animatedCts != null) {
+                                    google.maps.event.trigger(animatedCts, 'click');
+                                }
+                                animateCts = null;
+                            }
+                        },
+                        complete: function () {
+                            toggleOverlay($("#map"), false);
+                        }
+                    });
+                }
+            });
+        }
+
+        function initFilters() {
+            toggleOverlay($("#filterContainer"), true);
+            $.ajax({
+                url: '/data/common',
+                success: function (data) {
+                    mapData.regions = data.regions;
+                    mapData.cities = data.cities;
+                    mapData.centers = data.centers;
+
+                    data.regions.forEach(function (r) {
+                        $region.append('<option data-lat="' + r.lat + '" data-lng="' + r.lng + '" value="' + r.name + '">' + r.name + '</option>');
+                    });
+
+                    data.centers.forEach(function (c) {
+                        $center.append('<option data-lat="' + c.lat + '" data-lng="' + c.lng + '" value="' + c.name + '">' + c.name + '</option>');
+                    });
+                },
+                complete: function () {
+                    toggleOverlay($("#filterContainer"), false);
+                }
+            });
+
+            $region.change(function () {
+                var option = $region.find(":selected");
+
+                $city.find("option[data-lat]").remove();
+
+                if (option.attr("data-lat") != null) {
+                    map.setZoom(mapOrigin.zoom[1]);
+                    map.setCenter({ lat: parseFloat(option.attr("data-lat")), lng: parseFloat(option.attr("data-lng")) });
+
+                    mapData.cities.forEach(function (c) {
+                        if (c.region == option.attr("value")) {
+                            $city.append('<option data-lat="' + c.lat + '" data-lng="' + c.lng + '" value="' + c.name + '">' + c.name + ' (' + c.region + ')' + '</option>');
+                        }
+                    });
+                    $city.prop("disabled", false);
+
+                } else {
+                    map.setZoom(mapOrigin.zoom[0]);
+                    map.setCenter(mapOrigin.center);
+
+                    $city.attr("disabled", "disabled");
+                }
+
+                $center.val("");
+                $("#txtCTSearch").val("");
+                $("#txtMeterSearch").val("");
+                currentCts = null;
+                refreshAlarms();
+            });
+
+            $city.change(function () {
+                var option = $city.find(":selected");
+
+                if (option.attr("data-lat") != null) {
+                    map.setZoom(mapOrigin.zoom[2]);
+                    map.setCenter({ lat: parseFloat(option.attr("data-lat")), lng: parseFloat(option.attr("data-lng")) });
+
+                    $("#txtCTSearch").val("");
+                    $("#txtMeterSearch").val("");
+                    refreshAlarms();
+                } else {
+                    $region.trigger("change");
+                }
+            });
+
+            $center.change(function () {
+                var option = $center.find(":selected");
+
+                if (option.attr("data-lat") != null) {
+                    map.setZoom(mapOrigin.zoom[2]);
+                    map.setCenter({ lat: parseFloat(option.attr("data-lat")), lng: parseFloat(option.attr("data-lng")) });
+
+                } else {
+                    map.setZoom(mapOrigin.zoom[0]);
+                    map.setCenter(mapOrigin.center);
+                }
+
+                $region.val("");
+                $city.find("option[data-lat]").remove();
+                $city.attr("disabled", "disabled");
+                $("#txtCTSearch").val("");
+                $("#txtMeterSearch").val("");
+                currentCts = null;
+                refreshAlarms();
+            });
+
+            $("#btnCTSearch").click(function () {
+                $("#ctSearchMessage").hide();
+                var code = $("#txtCTSearch").val().trim();
+
+                if (code == '') {
+                    //$("#ctSearchMessage").html("<p>Please input CT code</p>").show();
+                    $("#ctSearchMessage").html("<p>Código del CT no encontrado</p>").show();
+
+                } else {
+                    toggleOverlay($("#map"), true);
+                    $.ajax({
+                        url: '/data/ctssearch?code=' + code,
+                        success: function (data) {
+                            if (data.length > 0) {
+                                $region.val("");
+                                $city.find("option[data-lat]").remove();
+                                $city.attr("disabled", "disabled");
+                                $center.val("");
+
+                                map.setZoom(mapOrigin.zoom[3]);
+                                map.setCenter({ lat: data[0].lat, lng: data[0].lng });
+                                animateCts = data[0].othercode;
+
+                                currentCts = data[0].othercode;
+                                refreshAlarms();
+                            } else {
+                                //$("#ctSearchMessage").html("<p>CT code not found</p>").show();
+                                $("#ctSearchMessage").html("<p>Código del CT no encontrado</p>").show();
+                            }
+                        },
+                        complete: function () {
+                            toggleOverlay($("#map"), false);
+                        }
+                    });
+                }
+            });
+
+            $("#btnMeterSearch").click(function () {
+                $("#meterSearchMessage").hide();
+                var code = $("#txtMeterSearch").val().trim();
+
+                if (code.length < 9) {
+                    //$("#meterSearchMessage").html("<p>Please input at least 9 meaningful chars</p>").show();
+                    $("#meterSearchMessage").html("<p>El código debe contener al menos 9 caracteres</p>").show();
+
+                } else {
+                    toggleOverlay($("#map"), true);
+                    $.ajax({
+                        url: '/data/metersearch?code=' + code,
+                        success: function (data) {
+                            if (data.length > 0) {
+                                $region.val("");
+                                $city.find("option[data-lat]").remove();
+                                $city.attr("disabled", "disabled");
+                                $center.val("");
+
+                                map.setZoom(mapOrigin.zoom[3]);
+                                map.setCenter({ lat: data[0].lat, lng: data[0].lng });
+                                animateCts = data[0].othercode;
+
+                                currentCts = data[0].othercode;
+                                refreshAlarms();
+                            } else {
+                                //$("#meterSearchMessage").html("<p>Smart Meter code not found</p>").show();
+                                $("#meterSearchMessage").html("<p>Código del Smart Meter no encontrado</p>").show();
+                            }
+                        },
+                        complete: function () {
+                            toggleOverlay($("#map"), false);
+                        }
+                    });
+                }
+            });
+
+            sliderTeleLevel = $("#sliderTeleLevel").slider({
+                min: 0,
+                max: 100,
+                step: 5,
+                range: true,
+                value: [0, 100]
+            });
+
+            $("#btnTeleLevel").click(function () {
+                currentCts = null;
+                google.maps.event.trigger(map, 'idle');
+                refreshAlarms();
+            });
+
+            $("input[type=radio][name=radTipo]").change(function () {
+                currentCts = null;
+                google.maps.event.trigger(map, 'idle');
+                refreshAlarms();
+            });
+
+            $('#dpkFrom').datetimepicker({
+                format: 'YYYY-MM-DD',
+                defaultDate: '2016-12-01',
+                //minDate: '2015-07-31',
+                //maxDate: '2015-10-31'
+            });
+            $('#dpkFrom').data("DateTimePicker").date('2016-12-01');
+
+            $('#dpkTo').datetimepicker({
+                format: 'YYYY-MM-DD',
+                defaultDate: '2016-12-31',
+                //minDate: '2015-07-31',
+                //maxDate: '2015-10-31'
+            });
+            $('#dpkTo').data("DateTimePicker").date('2016-12-31');
+
+            $('#dpkFrom, #dpkTo').on("dp.change", function () {
+                refreshOverviewCharts();
+                refreshIntensity();
+                refreshHistogram();
+            });
+        }
+
+        function refreshAlarms() {
+            toggleOverlay($("#outletAlarms"), true);
+            $.ajax({
+                url: '/data/alarms',
+                data: {
+                    region: $region.val(), city: $city.val(), center: $center.val(), code: currentCts,
+                    teleLevel0: sliderTeleLevel.slider('getValue')[0], teleLevel1: sliderTeleLevel.slider('getValue')[1], tipo: $("input[name=radTipo]:checked").val()
+                },
+                success: function (data) {
+                    var $overloadAlarms = $("#tblOverloadAlarms > tbody");
+                    $overloadAlarms.html("");
+
+                    data.overload.forEach(function (a) {
+                        $overloadAlarms.append('<tr><td>' + a.code + '</td><td>' + Math.round(a.ratio * 10) / 10 +
+                            '</td><td>' + (a.data != null && a.data.length > 0 ? a.data[0] : "") +
+                            //'</td><td>' + (a.data != null && a.data.length > 1 ? a.data[1] : "") +
+                            '</td><td><a class="btn btn-sm btn-danger" data-code="' + a.cts.othercode + '" data-lat="' + a.cts.lat + '" data-lng="' + a.cts.lng +
+                            '"><span class="glyphicon glyphicon-map-marker"></span></a></td></tr>');
+                    });
+
+                    var $unbalanceAlarms = $("#tblUnbalanceAlarms > tbody");
+                    $unbalanceAlarms.html("");
+
+                    data.unbalance.forEach(function (a) {
+                        $unbalanceAlarms.append('<tr><td>' + a.code + '</td><td>' + Math.round(a.ratio * 10) / 10 +
+                            '</td><td><a class="btn btn-sm btn-warning" data-code="' + a.cts.othercode + '" data-lat="' + a.cts.lat + '" data-lng="' + a.cts.lng +
+                            '"><span class="glyphicon glyphicon-map-marker"></span></a></td></tr>');
+                    });
+                },
+                complete: function () {
+                    toggleOverlay($("#outletAlarms"), false);
+                }
+            });
+        }
+
+        var faseColors = ['#f00', '#0f0', '#88f'];
+
+        function toogleChart(legend, line) {
+            if (legend.classed("inactive")) {
+                legend.classed("inactive", false).attr("opacity", 1);
+                line.attr("opacity", 1);
+            } else {
+                legend.classed("inactive", true).attr("opacity", 0.5);
+                line.attr("opacity", 0);
+            }
+        }
+
+        function refreshOverviewCharts() {
+            if (currentCts == null) return;
+
+            toggleOverlay($("#allIntensityContainer"), true);
+            toggleOverlay($("#allTensionContainer"), true);
+
+            $.ajax({
+                url: '/data/overviewbalance',
+                data: { code: currentCts, from: $('#dpkFrom input').val(), to: $('#dpkTo input').val() },
+                success: function (data) {
+
+                    data.items.forEach(function (d) {
+                        d.time = moment(d.date).toDate();
+                    });
+
+                    renderAllIntensityChart(data.items);
+                    renderAllTensionChart(data.items);
+                },
+                complete: function () {
+                    toggleOverlay($("#allIntensityContainer"), false);
+                    toggleOverlay($("#allTensionContainer"), false);
+                }
+            });
+        }
+
+        function renderAllIntensityChart(items) {
+            var container = d3.select("#allIntensityChart");
+            container.html("");
+
+            if (items.length == 0) {
+                container.html("<span>No hay datos disponibles</span>");
                 return;
             }
 
-            var zoom = map.getZoom();
-            var bounds = map.getBounds().toJSON();
-            //console.log(zoom);
+            var containerSize = container.node().getBoundingClientRect(),
+                svg = container.append("svg").attr("width", containerSize.width).attr("height", containerSize.height),
+                margin = { top: 20, right: 20, bottom: 70, left: 50 },
+                width = containerSize.width - margin.left - margin.right,
+                height = containerSize.height - margin.top - margin.bottom,
+                g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-            if (zoom < mapOrigin.zoom[1]) {
-                if (mapMarkers.cities.length > 0 && mapMarkers.cities[0].getVisible() == true) {
-                    mapMarkers.cities.forEach(function (m) {
-                        m.setVisible(false);
-                    });
-                }
+            var clip = g.append("defs").append("clipPath").attr("id", "clipAllIntensity").append("rect").attr("width", 0).attr("height", height);
 
-                if (mapMarkers.cts.length > 0 && mapMarkers.cts[0].getVisible() == true) {
-                    mapMarkers.cts.forEach(function (m) {
-                        m.setVisible(false);
-                    });
-                }
+            var x = d3.scaleTime().rangeRound([0, width]);
+            var y = d3.scaleLinear().rangeRound([height, 0]);
 
-                if (mapMarkers.regions.length == 0) {
-                    mapData.regions.forEach(function (r) {
-                        var m = new google.maps.Marker({
-                            map: map,
-                            position: { lat: r.lat, lng: r.lng },
-                            label: {
-                                text: r.count.toString(),
-                                fontSize: '11px'
-                            },
-                            icon: {
-                                url: '/images/m-red.png',
-                                labelOrigin: new google.maps.Point(33, 34)
-                            }
-                        });
+            var lineR = d3.line().x(function (d) { return x(d.time); }).y(function (d) { return y(d.i[0]); });
+            var lineS = d3.line().x(function (d) { return x(d.time); }).y(function (d) { return y(d.i[1]); });
+            var lineT = d3.line().x(function (d) { return x(d.time); }).y(function (d) { return y(d.i[2]); });
 
-                        m.addListener('click', function () {
-                            map.setZoom(mapOrigin.zoom[1]);
-                            map.setCenter(m.getPosition());
-                        });
+            x.domain(d3.extent(items, function (d) { return d.time; }));
 
-                        mapMarkers.regions.push(m);
-                    });
+            var domainR = d3.extent(items, function (d) { return d.i[0]; });
+            var domainS = d3.extent(items, function (d) { return d.i[1]; });
+            var domainT = d3.extent(items, function (d) { return d.i[2]; });
+            y.domain([d3.min([domainR[0], domainS[0], domainT[0]]), d3.max([domainR[1], domainS[1], domainT[1]])]);
 
-                } else if (mapMarkers.regions[0].getVisible() == false) {
-                    mapMarkers.regions.forEach(function (m) {
-                        m.setVisible(true);
-                    });
-                }
+            g.append("g").attr("class", "axis axis--x").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x).ticks(5));
 
-            } else if (zoom < mapOrigin.zoom[2]) {
-                if (mapMarkers.regions.length > 0 && mapMarkers.regions[0].getVisible() == true) {
-                    mapMarkers.regions.forEach(function (m) {
-                        m.setVisible(false);
-                    });
-                }
+            g.append("g").attr("class", "axis axis--y").call(d3.axisLeft(y))
+                .append("text").attr("fill", "#000").attr("transform", "rotate(-90)")
+                .attr("y", -42).attr("dy", "0.71em").style("text-anchor", "end").text("Amperios");
 
-                if (mapMarkers.cts.length > 0 && mapMarkers.cts[0].getVisible() == true) {
-                    mapMarkers.cts.forEach(function (m) {
-                        m.setVisible(false);
-                    });
-                }
+            var clipG = g.append("g").attr("clip-path", "url(#clipAllIntensity)");
 
-                if (mapMarkers.cities.length > 0 && mapMarkers.cities[0].getVisible() == false) {
-                    mapMarkers.cities.forEach(function (m) {
-                        m.setVisible(true);
-                    });
-                }
+            var pathR = clipG.append("path").datum(items).attr("class", "line").attr("d", lineR).style("stroke", faseColors[0]);
+            var pathS = clipG.append("path").datum(items).attr("class", "line").attr("d", lineS).style("stroke", faseColors[1]);
+            var pathT = clipG.append("path").datum(items).attr("class", "line").attr("d", lineT).style("stroke", faseColors[2]);
 
-                mapData.cities.forEach(function (c) {
-                    if (c.lng > bounds.west && c.lng < bounds.east && c.lat > bounds.south && c.lat < bounds.north && mapMarkers.cityDict[c.name] == null) {
-                        var m = new google.maps.Marker({
-                            map: map,
-                            position: { lat: c.lat, lng: c.lng },
-                            label: {
-                                text: c.count.toString(),
-                                fontSize: '11px'
-                            },
-                            icon: {
-                                url: '/images/m-yellow.png',
-                                labelOrigin: new google.maps.Point(28, 28)
-                            }
-                        });
+            var legends = g.append("g").attr("class", "legend").attr("transform", "translate(0," + (height + 50) + ")");
 
-                        m.addListener('click', function () {
-                            map.setZoom(mapOrigin.zoom[2]);
-                            map.setCenter(m.getPosition());
-                        });
+            var legendR = legends.append("g").attr("transform", "translate(0,0)");
+            legendR.append("line").attr("x1", 0).attr("y1", 0).attr("x2", 20).attr("y2", 0).attr("stroke", faseColors[0]).attr("stroke-width", 2);
+            legendR.append("text").attr("x", 25).attr("y", 4).text("Fase R");
+            legendR.on("click", function () { toogleChart(legendR, pathR); });
 
-                        mapMarkers.cities.push(m);
-                        mapMarkers.cityDict[c.name] = m;
-                    }
-                });
+            var legendS = legends.append("g").attr("transform", "translate(80,0)");
+            legendS.append("line").attr("x1", 0).attr("y1", 0).attr("x2", 20).attr("y2", 0).attr("stroke", faseColors[1]).attr("stroke-width", 2);
+            legendS.append("text").attr("x", 25).attr("y", 4).text("Fase S");
+            legendS.on("click", function () { toogleChart(legendS, pathS); });
 
-            } else {
-                if (mapMarkers.regions.length > 0 && mapMarkers.regions[0].getVisible() == true) {
-                    mapMarkers.regions.forEach(function (m) {
-                        m.setVisible(false);
-                    });
-                }
+            var legendT = legends.append("g").attr("transform", "translate(160,0)");
+            legendT.append("line").attr("x1", 0).attr("y1", 0).attr("x2", 20).attr("y2", 0).attr("stroke", faseColors[2]).attr("stroke-width", 2);
+            legendT.append("text").attr("x", 25).attr("y", 4).text("Fase T");
+            legendT.on("click", function () { toogleChart(legendT, pathT); });
 
-                if (mapMarkers.cities.length > 0 && mapMarkers.cities[0].getVisible() == true) {
-                    mapMarkers.cities.forEach(function (m) {
-                        m.setVisible(false);
-                    });
-                }
-
-                if (mapMarkers.cts.length > 0 && mapMarkers.cts[0].getVisible() == false) {
-                    mapMarkers.cts.forEach(function (m) {
-                        m.setVisible(true);
-                    });
-                }
-
-                toggleOverlay($("#map"), true);
-                $.ajax({
-                    url: '/data/cts',
-                    data: {
-                        x1: bounds.west, x2: bounds.east, y1: bounds.south, y2: bounds.north,
-                        teleLevel0: sliderTeleLevel.slider('getValue')[0], teleLevel1: sliderTeleLevel.slider('getValue')[1], tipo: $("input[type=radio][name=radTipo]").val()
-                    },
-                    success: function (data) {
-                        data.forEach(function (c) {
-                            if (mapMarkers.ctsDict[c.othercode] == null) {
-                                var m = new google.maps.Marker({
-                                    map: map,
-                                    position: { lat: c.lat, lng: c.lng },
-                                    icon: {
-                                        url: '/images/' + (c.alarm == "" ? 'b-green.png' : c.alarm == "b" ? 'b-yellow.png' : c.alarm == "o" ? 'b-red.png' : 'b-redyellow.png')
-                                    }
-                                });
-
-                                m.addListener('mouseover', function () {
-                                    if (mapInfoHover) {
-                                        mapInfoHover.close();
-                                    }
-                                    mapInfoHover.setContent("<p>" + c.othercode + "</p>");
-                                    mapInfoHover.open(map, m);
-                                });
-
-                                m.addListener('click', function () {
-                                    mapMarkers.meterGroups.forEach(function (gm) {
-                                        gm.setMap(null);
-                                    });
-                                    mapMarkers.meterGroups = [];
-
-                                    if (mapMarkers.ctsCenter != null) {
-                                        var ctsCenterIcon = mapMarkers.ctsCenter.getIcon().url;
-                                        if (ctsCenterIcon.indexOf('-2.png') > 0) {
-                                            ctsCenterIcon = ctsCenterIcon.replace('-2.png', '.png');
-                                            mapMarkers.ctsCenter.setIcon({ url: ctsCenterIcon });
-                                        }
-                                    }
-
-                                    var iconUrl = this.getIcon().url;
-                                    if (iconUrl.indexOf('-2.png') < 0) {
-                                        iconUrl = iconUrl.replace('.png', '-2.png');
-                                        this.setIcon({ url: iconUrl });
-                                    }
-                                    mapMarkers.ctsCenter = this;
-
-                                    toggleOverlay($("#map"), true);
-                                    $.ajax({
-                                        url: '/data/metergroups',
-                                        data: { otherCode: c.othercode, exitCalc: true },
-                                        success: function (meterGroupData) {
-
-                                            if (mapInfoHover) {
-                                                mapInfoHover.close();
-                                            }
-                                            if (mapInfoClick) {
-                                                mapInfoClick.close();
-                                            }
-
-                                            var ctClickHtml = "<p>" + c.othercode + "</p>";
-                                            if (meterGroupData.tipo != null) {
-                                                ctClickHtml += "<p> &bull; " + meterGroupData.tipo.T5 + " % T5</p>";
-                                                ctClickHtml += "<p> &bull; " + meterGroupData.tipo.T4 + " % T4</p>";
-                                                ctClickHtml += "<p> &bull; " + meterGroupData.tipo.Other + " % Other</p>";
-                                            }
-
-                                            mapInfoClick.setContent(ctClickHtml);
-                                            mapInfoClick.open(map, m);
-
-                                            meterGroupData.groups.forEach(function (groupItem) {
-                                                var gm = new google.maps.Marker({
-                                                    map: map,
-                                                    position: { lat: groupItem.Lat, lng: groupItem.Lng },
-                                                    icon: {
-                                                        url: '/images/b-mgroup.png'
-                                                    },
-                                                    infoExit: groupItem.Exit
-                                                });
-
-                                                gm.addListener('click', function () {
-                                                    toggleOverlay($("#map"), true);
-                                                    $.ajax({
-                                                        url: '/data/meters',
-                                                        data: { groupCode: groupItem.Code },
-                                                        success: function (meterData) {
-                                                            if (mapInfoHover) {
-                                                                mapInfoHover.close();
-                                                            }
-                                                            if (mapInfoClick) {
-                                                                mapInfoClick.close();
-                                                            }
-
-                                                            var html = "<p>" + groupItem.Code + "</p>";
-                                                            html += "<p>Salida: " + groupItem.Exit + "</p>";
-
-                                                            html += "<p>" + meterData.length + " smart meter(s):</p>";
-                                                            meterData.forEach(function (meterItem) {
-                                                                html += "<p> - " + meterItem.Code + " (type " + meterItem.Type + ")</p>";
-                                                            });
-
-                                                            mapInfoClick.setContent(html);
-                                                            mapInfoClick.open(map, gm);
-                                                        },
-                                                        complete: function () {
-                                                            toggleOverlay($("#map"), false);
-                                                        }
-                                                    });
-                                                });
-
-                                                mapMarkers.meterGroups.push(gm);
-                                            });
-
-                                            $exit.find("option").not(':first').remove();
-
-                                            meterGroupData.exits.forEach(function (exitCode) {
-                                                if (exitCode < 10) {
-                                                    $exit.append('<option value="Salida_' + exitCode + '">Salida_0' + exitCode + '</option>');
-                                                } else {
-                                                    $exit.append('<option value="Salida_' + exitCode + '">Salida_' + exitCode + '</option>');
-                                                }
-                                            });
-
-                                            $("#btnExitMax").text("Salida Máxima (" + meterGroupData.exitMax + ")");
-                                        },
-                                        complete: function () {
-                                            toggleOverlay($("#map"), false);
-                                        }
-                                    });
-
-                                    currentCts = c.othercode;
-                                });
-
-                                mapMarkers.cts.push(m);
-                                mapMarkers.ctsDict[c.othercode] = m;
-                            }
-                        });
-
-                        if (animateCts != null) {
-                            var animatedCts = mapMarkers.ctsDict[animateCts];
-                            if (animatedCts != null) {
-                                google.maps.event.trigger(animatedCts, 'click');
-                            }
-                            animateCts = null;
-                        }
-                    },
-                    complete: function () {
-                        toggleOverlay($("#map"), false);
-                    }
-                });
-            }
-        });
-    }
-
-    function initFilters() {
-        toggleOverlay($("#filterContainer"), true);
-        $.ajax({
-            url: '/data/common',
-            success: function (data) {
-                mapData.regions = data.regions;
-                mapData.cities = data.cities;
-                mapData.centers = data.centers;
-
-                data.regions.forEach(function (r) {
-                    $region.append('<option data-lat="' + r.lat + '" data-lng="' + r.lng + '" value="' + r.name + '">' + r.name + '</option>');
-                });
-
-                data.centers.forEach(function (c) {
-                    $center.append('<option data-lat="' + c.lat + '" data-lng="' + c.lng + '" value="' + c.name + '">' + c.name + '</option>');
-                });
-            },
-            complete: function () {
-                toggleOverlay($("#filterContainer"), false);
-            }
-        });
-
-        $region.change(function () {
-            var option = $region.find(":selected");
-
-            $city.find("option[data-lat]").remove();
-
-            if (option.attr("data-lat") != null) {
-                map.setZoom(mapOrigin.zoom[1]);
-                map.setCenter({ lat: parseFloat(option.attr("data-lat")), lng: parseFloat(option.attr("data-lng")) });
-
-                mapData.cities.forEach(function (c) {
-                    if (c.region == option.attr("value")) {
-                        $city.append('<option data-lat="' + c.lat + '" data-lng="' + c.lng + '" value="' + c.name + '">' + c.name + ' (' + c.region + ')' + '</option>');
-                    }
-                });
-                $city.prop("disabled", false);
-
-            } else {
-                map.setZoom(mapOrigin.zoom[0]);
-                map.setCenter(mapOrigin.center);
-
-                $city.attr("disabled", "disabled");
-            }
-
-            $center.val("");
-            $("#txtCTSearch").val("");
-            $("#txtMeterSearch").val("");
-            currentCts = null;
-            refreshAlarms();
-        });
-
-        $city.change(function () {
-            var option = $city.find(":selected");
-
-            if (option.attr("data-lat") != null) {
-                map.setZoom(mapOrigin.zoom[2]);
-                map.setCenter({ lat: parseFloat(option.attr("data-lat")), lng: parseFloat(option.attr("data-lng")) });
-
-                $("#txtCTSearch").val("");
-                $("#txtMeterSearch").val("");
-                refreshAlarms();
-            } else {
-                $region.trigger("change");
-            }
-        });
-
-        $center.change(function () {
-            var option = $center.find(":selected");
-
-            if (option.attr("data-lat") != null) {
-                map.setZoom(mapOrigin.zoom[2]);
-                map.setCenter({ lat: parseFloat(option.attr("data-lat")), lng: parseFloat(option.attr("data-lng")) });
-
-            } else {
-                map.setZoom(mapOrigin.zoom[0]);
-                map.setCenter(mapOrigin.center);
-            }
-
-            $region.val("");
-            $city.find("option[data-lat]").remove();
-            $city.attr("disabled", "disabled");
-            $("#txtCTSearch").val("");
-            $("#txtMeterSearch").val("");
-            currentCts = null;
-            refreshAlarms();
-        });
-
-        $("#btnCTSearch").click(function () {
-            $("#ctSearchMessage").hide();
-            var code = $("#txtCTSearch").val().trim();
-
-            if (code == '') {
-                //$("#ctSearchMessage").html("<p>Please input CT code</p>").show();
-                $("#ctSearchMessage").html("<p>Código del CT no encontrado</p>").show();
-
-            } else {
-                toggleOverlay($("#map"), true);
-                $.ajax({
-                    url: '/data/ctssearch?code=' + code,
-                    success: function (data) {
-                        if (data.length > 0) {
-                            $region.val("");
-                            $city.find("option[data-lat]").remove();
-                            $city.attr("disabled", "disabled");
-                            $center.val("");
-
-                            map.setZoom(mapOrigin.zoom[3]);
-                            map.setCenter({ lat: data[0].lat, lng: data[0].lng });
-                            animateCts = data[0].othercode;
-
-                            currentCts = data[0].othercode;
-                            refreshAlarms();
-                        } else {
-                            //$("#ctSearchMessage").html("<p>CT code not found</p>").show();
-                            $("#ctSearchMessage").html("<p>Código del CT no encontrado</p>").show();
-                        }
-                    },
-                    complete: function () {
-                        toggleOverlay($("#map"), false);
-                    }
-                });
-            }
-        });
-
-        $("#btnMeterSearch").click(function () {
-            $("#meterSearchMessage").hide();
-            var code = $("#txtMeterSearch").val().trim();
-
-            if (code.length < 9) {
-                //$("#meterSearchMessage").html("<p>Please input at least 9 meaningful chars</p>").show();
-                $("#meterSearchMessage").html("<p>El código debe contener al menos 9 caracteres</p>").show();
-
-            } else {
-                toggleOverlay($("#map"), true);
-                $.ajax({
-                    url: '/data/metersearch?code=' + code,
-                    success: function (data) {
-                        if (data.length > 0) {
-                            $region.val("");
-                            $city.find("option[data-lat]").remove();
-                            $city.attr("disabled", "disabled");
-                            $center.val("");
-
-                            map.setZoom(mapOrigin.zoom[3]);
-                            map.setCenter({ lat: data[0].lat, lng: data[0].lng });
-                            animateCts = data[0].othercode;
-
-                            currentCts = data[0].othercode;
-                            refreshAlarms();
-                        } else {
-                            //$("#meterSearchMessage").html("<p>Smart Meter code not found</p>").show();
-                            $("#meterSearchMessage").html("<p>Código del Smart Meter no encontrado</p>").show();
-                        }
-                    },
-                    complete: function () {
-                        toggleOverlay($("#map"), false);
-                    }
-                });
-            }
-        });
-
-        sliderTeleLevel = $("#sliderTeleLevel").slider({
-            min: 0,
-            max: 100,
-            step: 5,
-            range: true,
-            value: [0, 100]
-        });
-
-        $("#btnTeleLevel").click(function () {
-            google.maps.event.trigger(map, 'idle');
-            refreshAlarms();
-        });
-
-        $("input[type=radio][name=radTipo]").change(function () {
-            google.maps.event.trigger(map, 'idle');
-            refreshAlarms();
-        });
-
-        $('#dpkFrom').datetimepicker({
-            format: 'YYYY-MM-DD',
-            defaultDate: '2016-12-01',
-            //minDate: '2015-07-31',
-            //maxDate: '2015-10-31'
-        });
-        $('#dpkFrom').data("DateTimePicker").date('2016-12-01');
-
-        $('#dpkTo').datetimepicker({
-            format: 'YYYY-MM-DD',
-            defaultDate: '2016-12-31',
-            //minDate: '2015-07-31',
-            //maxDate: '2015-10-31'
-        });
-        $('#dpkTo').data("DateTimePicker").date('2016-12-31');
-
-        $('#dpkFrom, #dpkTo').on("dp.change", function () {
-            refreshIntensity();
-            refreshHistogram();
-        });
-    }
-
-    function refreshAlarms() {
-        toggleOverlay($("#outletAlarms"), true);
-        $.ajax({
-            url: '/data/alarms',
-            data: {
-                region: $region.val(), city: $city.val(), center: $center.val(), code: currentCts,
-                teleLevel0: sliderTeleLevel.slider('getValue')[0], teleLevel1: sliderTeleLevel.slider('getValue')[1], tipo: $("input[name=radTipo]:checked").val()
-            },
-            success: function (data) {
-                var $overloadAlarms = $("#tblOverloadAlarms > tbody");
-                $overloadAlarms.html("");
-
-                data.overload.forEach(function (a) {
-                    $overloadAlarms.append('<tr><td>' + a.code + '</td><td>' + Math.round(a.ratio * 10) / 10 +
-                        '</td><td>' + (a.data != null && a.data.length > 0 ? a.data[0] : "") +
-                        //'</td><td>' + (a.data != null && a.data.length > 1 ? a.data[1] : "") +
-                        '</td><td><a class="btn btn-sm btn-danger" data-code="' + a.cts.othercode + '" data-lat="' + a.cts.lat + '" data-lng="' + a.cts.lng +
-                        '"><span class="glyphicon glyphicon-map-marker"></span></a></td></tr>');
-                });
-
-                var $unbalanceAlarms = $("#tblUnbalanceAlarms > tbody");
-                $unbalanceAlarms.html("");
-
-                data.unbalance.forEach(function (a) {
-                    $unbalanceAlarms.append('<tr><td>' + a.code + '</td><td>' + Math.round(a.ratio * 10) / 10 +
-                        '</td><td><a class="btn btn-sm btn-warning" data-code="' + a.cts.othercode + '" data-lat="' + a.cts.lat + '" data-lng="' + a.cts.lng +
-                        '"><span class="glyphicon glyphicon-map-marker"></span></a></td></tr>');
-                });
-            },
-            complete: function () {
-                toggleOverlay($("#outletAlarms"), false);
-            }
-        });
-    }
-
-    var faseColors = ['#f00', '#0f0', '#88f'];
-
-    function toogleChart(legend, line) {
-        if (legend.classed("inactive")) {
-            legend.classed("inactive", false).attr("opacity", 1);
-            line.attr("opacity", 1);
-        } else {
-            legend.classed("inactive", true).attr("opacity", 0.5);
-            line.attr("opacity", 0);
+            clip.transition().duration(1500).attr("width", width);
         }
-    }
 
-    function refreshIntensity(specialCase) {
-        if (currentCts == null || ($exit.val() == "" && specialCase == null)) return;
+        function renderAllTensionChart(items) {
+            var container = d3.select("#allTensionChart");
+            container.html("");
 
-        var exitQuery = $exit.val();
-        if (exitQuery == "") exitQuery = specialCase;
-
-        toggleOverlay($("#intensityContainer"), true);
-        $.ajax({
-            url: '/data/intensity2',
-            data: { code: currentCts, mode: 0, from: $('#dpkFrom input').val(), to: $('#dpkTo input').val(), exit: exitQuery },
-            success: function (data) {
-
-                data.items.forEach(function (d) {
-                    d.time = new Date(d.date);
-                });
-
-                var container = d3.select("#intensityChart");
-                container.html("");
-
-                if (data.items.length == 0) {
-                    container.html("<span>No hay datos disponibles</span>");
-                    return;
-                }
-
-                var containerSize = container.node().getBoundingClientRect(),
-                    svg = container.append("svg").attr("width", containerSize.width).attr("height", containerSize.height),
-                    margin = { top: 20, right: 20, bottom: 70, left: 50 },
-                    width = containerSize.width - margin.left - margin.right,
-                    height = containerSize.height - margin.top - margin.bottom,
-                    g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-                var clip = g.append("defs").append("clipPath").attr("id", "clipIntensity").append("rect").attr("width", 0).attr("height", height);
-
-                var x = d3.scaleTime().rangeRound([0, width]);
-                var y = d3.scaleLinear().rangeRound([height, 0]);
-
-                var lineR = d3.line().x(function (d) { return x(d.time); }).y(function (d) { return y(d.r); });
-                var lineS = d3.line().x(function (d) { return x(d.time); }).y(function (d) { return y(d.s); });
-                var lineT = d3.line().x(function (d) { return x(d.time); }).y(function (d) { return y(d.t); });
-
-                x.domain(d3.extent(data.items, function (d) { return d.time; }));
-
-                var domainR = d3.extent(data.items, function (d) { return d.r; });
-                var domainS = d3.extent(data.items, function (d) { return d.s; });
-                var domainT = d3.extent(data.items, function (d) { return d.t; });
-                y.domain([d3.min([domainR[0], domainS[0], domainT[0], 80]), d3.max([domainR[1], domainS[1], domainT[1], 120])]);
-
-                g.append("g").attr("class", "axis axis--x").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x).ticks(5));
-
-                g.append("g").attr("class", "axis axis--y").call(d3.axisLeft(y))
-                    .append("text").attr("fill", "#000").attr("transform", "rotate(-90)")
-                    .attr("y", -42).attr("dy", "0.71em").style("text-anchor", "end").text("Ratio Intensidad (%)");
-
-                g.append("line").attr("x1", 0).attr("y1", y(100) + 0.5).attr("x2", width).attr("y2", y(100) + 0.5).attr("stroke", "#55c").attr("stroke-width", 1);
-                g.append("line").attr("x1", 0).attr("y1", y(80) + 0.5).attr("x2", width).attr("y2", y(80) + 0.5).attr("stroke", "#0c0").attr("stroke-width", 1).attr("stroke-dasharray", "5, 5");
-                g.append("line").attr("x1", 0).attr("y1", y(120) + 0.5).attr("x2", width).attr("y2", y(120) + 0.5).attr("stroke", "#d00").attr("stroke-width", 1).attr("stroke-dasharray", "5, 5");
-
-                var clipG = g.append("g").attr("clip-path", "url(#clipIntensity)");
-
-                var pathR = clipG.append("path").datum(data.items).attr("class", "line").attr("d", lineR).style("stroke", faseColors[0]);
-                var pathS = clipG.append("path").datum(data.items).attr("class", "line").attr("d", lineS).style("stroke", faseColors[1]);
-                var pathT = clipG.append("path").datum(data.items).attr("class", "line").attr("d", lineT).style("stroke", faseColors[2]);
-
-                var legends = g.append("g").attr("class", "legend").attr("transform", "translate(0," + (height + 50) + ")");
-
-                var legendR = legends.append("g").attr("transform", "translate(0,0)");
-                legendR.append("line").attr("x1", 0).attr("y1", 0).attr("x2", 20).attr("y2", 0).attr("stroke", faseColors[0]).attr("stroke-width", 2);
-                legendR.append("text").attr("x", 25).attr("y", 4).text("Fase R");
-                legendR.on("click", function () { toogleChart(legendR, pathR); });
-
-                var legendS = legends.append("g").attr("transform", "translate(80,0)");
-                legendS.append("line").attr("x1", 0).attr("y1", 0).attr("x2", 20).attr("y2", 0).attr("stroke", faseColors[1]).attr("stroke-width", 2);
-                legendS.append("text").attr("x", 25).attr("y", 4).text("Fase S");
-                legendS.on("click", function () { toogleChart(legendS, pathS); });
-
-                var legendT = legends.append("g").attr("transform", "translate(160,0)");
-                legendT.append("line").attr("x1", 0).attr("y1", 0).attr("x2", 20).attr("y2", 0).attr("stroke", faseColors[2]).attr("stroke-width", 2);
-                legendT.append("text").attr("x", 25).attr("y", 4).text("Fase T");
-                legendT.on("click", function () { toogleChart(legendT, pathT); });
-
-                clip.transition().duration(1500).attr("width", width);
-            },
-            complete: function () {
-                toggleOverlay($("#intensityContainer"), false);
+            if (items.length == 0) {
+                container.html("<span>No hay datos disponibles</span>");
+                return;
             }
-        });
-    }
 
-    function refreshHistogram(specialCase) {
-        if (currentCts == null || ($exit.val() == "" && specialCase == null)) return;
+            var containerSize = container.node().getBoundingClientRect(),
+                svg = container.append("svg").attr("width", containerSize.width).attr("height", containerSize.height),
+                margin = { top: 20, right: 20, bottom: 70, left: 50 },
+                width = containerSize.width - margin.left - margin.right,
+                height = containerSize.height - margin.top - margin.bottom,
+                g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        var exitQuery = $exit.val();
-        if (exitQuery == "") exitQuery = specialCase;
+            var clip = g.append("defs").append("clipPath").attr("id", "clipAllTension").append("rect").attr("width", 0).attr("height", height);
 
-        toggleOverlay($("#histogramContainer"), true);
-        $.ajax({
-            url: '/data/histogram',
-            data: { code: currentCts, from: $('#dpkFrom input').val(), to: $('#dpkTo input').val(), exit: exitQuery },
-            success: function (data) {
+            var x = d3.scaleTime().rangeRound([0, width]);
+            var y = d3.scaleLinear().rangeRound([height, 0]);
 
-                var container = d3.select("#histogramChart");
-                container.html("");
+            var lineR = d3.line().x(function (d) { return x(d.time); }).y(function (d) { return y(d.t[0]); });
+            var lineS = d3.line().x(function (d) { return x(d.time); }).y(function (d) { return y(d.t[1]); });
+            var lineT = d3.line().x(function (d) { return x(d.time); }).y(function (d) { return y(d.t[2]); });
 
-                if (data.items.length == 0) {
-                    container.html("<span>No hay datos disponibles</span>");
-                    return;
-                }
+            x.domain(d3.extent(items, function (d) { return d.time; }));
 
-                var containerSize = container.node().getBoundingClientRect(),
-                    svg = container.append("svg").attr("width", containerSize.width).attr("height", containerSize.height),
-                    margin = { top: 20, right: 20, bottom: 70, left: 50 },
-                    width = containerSize.width - margin.left - margin.right,
-                    height = containerSize.height - margin.top - margin.bottom,
-                    g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            var domainR = d3.extent(items, function (d) { return d.t[0]; });
+            var domainS = d3.extent(items, function (d) { return d.t[1]; });
+            var domainT = d3.extent(items, function (d) { return d.t[2]; });
+            y.domain([d3.min([domainR[0], domainS[0], domainT[0]]), d3.max([domainR[1], domainS[1], domainT[1]])]);
 
-                var clip = g.append("defs").append("clipPath").attr("id", "clipHistogram").append("rect").attr("width", 0).attr("height", height);
+            g.append("g").attr("class", "axis axis--x").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x).ticks(5));
 
-                var x = d3.scaleLinear().rangeRound([0, width]);
-                var y = d3.scaleLinear().rangeRound([height, 0]);
+            g.append("g").attr("class", "axis axis--y").call(d3.axisLeft(y))
+                .append("text").attr("fill", "#000").attr("transform", "rotate(-90)")
+                .attr("y", -42).attr("dy", "0.71em").style("text-anchor", "end").text("Voltios");
 
-                var lineR = d3.line().curve(d3.curveBasis).x(function (d) { return x(d.threshold); }).y(function (d) { return y(d.r); });
-                var lineS = d3.line().curve(d3.curveBasis).x(function (d) { return x(d.threshold); }).y(function (d) { return y(d.s); });
-                var lineT = d3.line().curve(d3.curveBasis).x(function (d) { return x(d.threshold); }).y(function (d) { return y(d.t); });
+            var clipG = g.append("g").attr("clip-path", "url(#clipAllTension)");
 
-                x.domain(d3.extent(data.items, function (d) { return d.threshold; }));
+            var pathR = clipG.append("path").datum(items).attr("class", "line").attr("d", lineR).style("stroke", faseColors[0]);
+            var pathS = clipG.append("path").datum(items).attr("class", "line").attr("d", lineS).style("stroke", faseColors[1]);
+            var pathT = clipG.append("path").datum(items).attr("class", "line").attr("d", lineT).style("stroke", faseColors[2]);
 
-                var domainR = d3.extent(data.items, function (d) { return d.r; });
-                var domainS = d3.extent(data.items, function (d) { return d.s; });
-                var domainT = d3.extent(data.items, function (d) { return d.t; });
-                y.domain([0, d3.max([domainR[1], domainS[1], domainT[1]])]);
+            var legends = g.append("g").attr("class", "legend").attr("transform", "translate(0," + (height + 50) + ")");
 
-                g.append("g").attr("class", "axis axis--x").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x))
-                    .append("text").attr("fill", "#000")
-                    .attr("x", width).attr("y", 35).style("text-anchor", "end").text("Ratio Intensidad (%)");
+            var legendR = legends.append("g").attr("transform", "translate(0,0)");
+            legendR.append("line").attr("x1", 0).attr("y1", 0).attr("x2", 20).attr("y2", 0).attr("stroke", faseColors[0]).attr("stroke-width", 2);
+            legendR.append("text").attr("x", 25).attr("y", 4).text("Fase R");
+            legendR.on("click", function () { toogleChart(legendR, pathR); });
 
-                g.append("g").attr("class", "axis axis--y").call(d3.axisLeft(y))
-                    .append("text").attr("fill", "#000").attr("transform", "rotate(-90)")
-                    .attr("y", -42).attr("dy", "0.71em").style("text-anchor", "end").text("Número de horas");
+            var legendS = legends.append("g").attr("transform", "translate(80,0)");
+            legendS.append("line").attr("x1", 0).attr("y1", 0).attr("x2", 20).attr("y2", 0).attr("stroke", faseColors[1]).attr("stroke-width", 2);
+            legendS.append("text").attr("x", 25).attr("y", 4).text("Fase S");
+            legendS.on("click", function () { toogleChart(legendS, pathS); });
 
-                var clipG = g.append("g").attr("clip-path", "url(#clipHistogram)");
+            var legendT = legends.append("g").attr("transform", "translate(160,0)");
+            legendT.append("line").attr("x1", 0).attr("y1", 0).attr("x2", 20).attr("y2", 0).attr("stroke", faseColors[2]).attr("stroke-width", 2);
+            legendT.append("text").attr("x", 25).attr("y", 4).text("Fase T");
+            legendT.on("click", function () { toogleChart(legendT, pathT); });
 
-                var pathR = clipG.append("path").datum(data.items).attr("class", "line").attr("d", lineR).style("stroke", faseColors[0]);
-                var pathS = clipG.append("path").datum(data.items).attr("class", "line").attr("d", lineS).style("stroke", faseColors[1]);
-                var pathT = clipG.append("path").datum(data.items).attr("class", "line").attr("d", lineT).style("stroke", faseColors[2]);
+            clip.transition().duration(1500).attr("width", width);
+        }
 
-                var legends = g.append("g").attr("class", "legend").attr("transform", "translate(0," + (height + 50) + ")");
+        function refreshIntensity(specialCase) {
+            if (currentCts == null || ($exit.val() == "" && specialCase == null)) return;
 
-                var legendR = legends.append("g").attr("transform", "translate(0,0)");
-                legendR.append("line").attr("x1", 0).attr("y1", 0).attr("x2", 20).attr("y2", 0).attr("stroke", faseColors[0]).attr("stroke-width", 2);
-                legendR.append("text").attr("x", 25).attr("y", 4).text("Fase R");
-                legendR.on("click", function () { toogleChart(legendR, pathR); });
+            var exitQuery = $exit.val();
+            if (exitQuery == "") exitQuery = specialCase;
 
-                var legendS = legends.append("g").attr("transform", "translate(80,0)");
-                legendS.append("line").attr("x1", 0).attr("y1", 0).attr("x2", 20).attr("y2", 0).attr("stroke", faseColors[1]).attr("stroke-width", 2);
-                legendS.append("text").attr("x", 25).attr("y", 4).text("Fase S");
-                legendS.on("click", function () { toogleChart(legendS, pathS); });
+            toggleOverlay($("#intensityContainer"), true);
+            $.ajax({
+                url: '/data/intensity2',
+                data: { code: currentCts, mode: 0, from: $('#dpkFrom input').val(), to: $('#dpkTo input').val(), exit: exitQuery },
+                success: function (data) {
 
-                var legendT = legends.append("g").attr("transform", "translate(160,0)");
-                legendT.append("line").attr("x1", 0).attr("y1", 0).attr("x2", 20).attr("y2", 0).attr("stroke", faseColors[2]).attr("stroke-width", 2);
-                legendT.append("text").attr("x", 25).attr("y", 4).text("Fase T");
-                legendT.on("click", function () { toogleChart(legendT, pathT); });
+                    data.items.forEach(function (d) {
+                        d.time = new Date(d.date);
+                    });
 
-                clip.transition().duration(1500).attr("width", width);
-            },
-            complete: function () {
-                toggleOverlay($("#histogramContainer"), false);
-            }
-        });
-    }
+                    var container = d3.select("#intensityChart");
+                    container.html("");
 
-    $(document).ready(function () {
-        initFilters();
-        refreshAlarms();
-
-        $("#outletAlarms").on("click", "a.btn", function () {
-            map.setZoom(mapOrigin.zoom[3]);
-            map.setCenter({ lat: parseFloat($(this).attr("data-lat")), lng: parseFloat($(this).attr("data-lng")) });
-            animateCts = $(this).attr("data-code");
-        });
-
-        $exit.change(function () {
-            if (map.getZoom() >= mapOrigin.zoom[2]) {
-                var exitCode = $exit.val().replace("Salida_0", "").replace("Salida_", "");
-
-                mapMarkers.meterGroups.forEach(function (m) {
-                    if (exitCode == "" || m.infoExit == exitCode) {
-                        m.setVisible(true);
-                    } else {
-                        m.setVisible(false);
+                    if (data.items.length == 0) {
+                        container.html("<span>No hay datos disponibles</span>");
+                        return;
                     }
-                });
-            }
 
-            refreshIntensity();
-            refreshHistogram();
+                    var containerSize = container.node().getBoundingClientRect(),
+                        svg = container.append("svg").attr("width", containerSize.width).attr("height", containerSize.height),
+                        margin = { top: 20, right: 20, bottom: 70, left: 50 },
+                        width = containerSize.width - margin.left - margin.right,
+                        height = containerSize.height - margin.top - margin.bottom,
+                        g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+                    var clip = g.append("defs").append("clipPath").attr("id", "clipIntensity").append("rect").attr("width", 0).attr("height", height);
+
+                    var x = d3.scaleTime().rangeRound([0, width]);
+                    var y = d3.scaleLinear().rangeRound([height, 0]);
+
+                    var lineR = d3.line().x(function (d) { return x(d.time); }).y(function (d) { return y(d.r); });
+                    var lineS = d3.line().x(function (d) { return x(d.time); }).y(function (d) { return y(d.s); });
+                    var lineT = d3.line().x(function (d) { return x(d.time); }).y(function (d) { return y(d.t); });
+
+                    x.domain(d3.extent(data.items, function (d) { return d.time; }));
+
+                    var domainR = d3.extent(data.items, function (d) { return d.r; });
+                    var domainS = d3.extent(data.items, function (d) { return d.s; });
+                    var domainT = d3.extent(data.items, function (d) { return d.t; });
+                    y.domain([d3.min([domainR[0], domainS[0], domainT[0], 80]), d3.max([domainR[1], domainS[1], domainT[1], 120])]);
+
+                    g.append("g").attr("class", "axis axis--x").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x).ticks(5));
+
+                    g.append("g").attr("class", "axis axis--y").call(d3.axisLeft(y))
+                        .append("text").attr("fill", "#000").attr("transform", "rotate(-90)")
+                        .attr("y", -42).attr("dy", "0.71em").style("text-anchor", "end").text("Ratio Intensidad (%)");
+
+                    g.append("line").attr("x1", 0).attr("y1", y(100) + 0.5).attr("x2", width).attr("y2", y(100) + 0.5).attr("stroke", "#55c").attr("stroke-width", 1);
+                    g.append("line").attr("x1", 0).attr("y1", y(80) + 0.5).attr("x2", width).attr("y2", y(80) + 0.5).attr("stroke", "#0c0").attr("stroke-width", 1).attr("stroke-dasharray", "5, 5");
+                    g.append("line").attr("x1", 0).attr("y1", y(120) + 0.5).attr("x2", width).attr("y2", y(120) + 0.5).attr("stroke", "#d00").attr("stroke-width", 1).attr("stroke-dasharray", "5, 5");
+
+                    var clipG = g.append("g").attr("clip-path", "url(#clipIntensity)");
+
+                    var pathR = clipG.append("path").datum(data.items).attr("class", "line").attr("d", lineR).style("stroke", faseColors[0]);
+                    var pathS = clipG.append("path").datum(data.items).attr("class", "line").attr("d", lineS).style("stroke", faseColors[1]);
+                    var pathT = clipG.append("path").datum(data.items).attr("class", "line").attr("d", lineT).style("stroke", faseColors[2]);
+
+                    var legends = g.append("g").attr("class", "legend").attr("transform", "translate(0," + (height + 50) + ")");
+
+                    var legendR = legends.append("g").attr("transform", "translate(0,0)");
+                    legendR.append("line").attr("x1", 0).attr("y1", 0).attr("x2", 20).attr("y2", 0).attr("stroke", faseColors[0]).attr("stroke-width", 2);
+                    legendR.append("text").attr("x", 25).attr("y", 4).text("Fase R");
+                    legendR.on("click", function () { toogleChart(legendR, pathR); });
+
+                    var legendS = legends.append("g").attr("transform", "translate(80,0)");
+                    legendS.append("line").attr("x1", 0).attr("y1", 0).attr("x2", 20).attr("y2", 0).attr("stroke", faseColors[1]).attr("stroke-width", 2);
+                    legendS.append("text").attr("x", 25).attr("y", 4).text("Fase S");
+                    legendS.on("click", function () { toogleChart(legendS, pathS); });
+
+                    var legendT = legends.append("g").attr("transform", "translate(160,0)");
+                    legendT.append("line").attr("x1", 0).attr("y1", 0).attr("x2", 20).attr("y2", 0).attr("stroke", faseColors[2]).attr("stroke-width", 2);
+                    legendT.append("text").attr("x", 25).attr("y", 4).text("Fase T");
+                    legendT.on("click", function () { toogleChart(legendT, pathT); });
+
+                    clip.transition().duration(1500).attr("width", width);
+                },
+                complete: function () {
+                    toggleOverlay($("#intensityContainer"), false);
+                }
+            });
+        }
+
+        function refreshHistogram(specialCase) {
+            if (currentCts == null || ($exit.val() == "" && specialCase == null)) return;
+
+            var exitQuery = $exit.val();
+            if (exitQuery == "") exitQuery = specialCase;
+
+            toggleOverlay($("#histogramContainer"), true);
+            $.ajax({
+                url: '/data/histogram',
+                data: { code: currentCts, from: $('#dpkFrom input').val(), to: $('#dpkTo input').val(), exit: exitQuery },
+                success: function (data) {
+
+                    var container = d3.select("#histogramChart");
+                    container.html("");
+
+                    if (data.items.length == 0) {
+                        container.html("<span>No hay datos disponibles</span>");
+                        return;
+                    }
+
+                    var containerSize = container.node().getBoundingClientRect(),
+                        svg = container.append("svg").attr("width", containerSize.width).attr("height", containerSize.height),
+                        margin = { top: 20, right: 20, bottom: 70, left: 50 },
+                        width = containerSize.width - margin.left - margin.right,
+                        height = containerSize.height - margin.top - margin.bottom,
+                        g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+                    var clip = g.append("defs").append("clipPath").attr("id", "clipHistogram").append("rect").attr("width", 0).attr("height", height);
+
+                    var x = d3.scaleLinear().rangeRound([0, width]);
+                    var y = d3.scaleLinear().rangeRound([height, 0]);
+
+                    var lineR = d3.line().curve(d3.curveBasis).x(function (d) { return x(d.threshold); }).y(function (d) { return y(d.r); });
+                    var lineS = d3.line().curve(d3.curveBasis).x(function (d) { return x(d.threshold); }).y(function (d) { return y(d.s); });
+                    var lineT = d3.line().curve(d3.curveBasis).x(function (d) { return x(d.threshold); }).y(function (d) { return y(d.t); });
+
+                    x.domain(d3.extent(data.items, function (d) { return d.threshold; }));
+
+                    var domainR = d3.extent(data.items, function (d) { return d.r; });
+                    var domainS = d3.extent(data.items, function (d) { return d.s; });
+                    var domainT = d3.extent(data.items, function (d) { return d.t; });
+                    y.domain([0, d3.max([domainR[1], domainS[1], domainT[1]])]);
+
+                    g.append("g").attr("class", "axis axis--x").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x))
+                        .append("text").attr("fill", "#000")
+                        .attr("x", width).attr("y", 35).style("text-anchor", "end").text("Ratio Intensidad (%)");
+
+                    g.append("g").attr("class", "axis axis--y").call(d3.axisLeft(y))
+                        .append("text").attr("fill", "#000").attr("transform", "rotate(-90)")
+                        .attr("y", -42).attr("dy", "0.71em").style("text-anchor", "end").text("Número de horas");
+
+                    var clipG = g.append("g").attr("clip-path", "url(#clipHistogram)");
+
+                    var pathR = clipG.append("path").datum(data.items).attr("class", "line").attr("d", lineR).style("stroke", faseColors[0]);
+                    var pathS = clipG.append("path").datum(data.items).attr("class", "line").attr("d", lineS).style("stroke", faseColors[1]);
+                    var pathT = clipG.append("path").datum(data.items).attr("class", "line").attr("d", lineT).style("stroke", faseColors[2]);
+
+                    var legends = g.append("g").attr("class", "legend").attr("transform", "translate(0," + (height + 50) + ")");
+
+                    var legendR = legends.append("g").attr("transform", "translate(0,0)");
+                    legendR.append("line").attr("x1", 0).attr("y1", 0).attr("x2", 20).attr("y2", 0).attr("stroke", faseColors[0]).attr("stroke-width", 2);
+                    legendR.append("text").attr("x", 25).attr("y", 4).text("Fase R");
+                    legendR.on("click", function () { toogleChart(legendR, pathR); });
+
+                    var legendS = legends.append("g").attr("transform", "translate(80,0)");
+                    legendS.append("line").attr("x1", 0).attr("y1", 0).attr("x2", 20).attr("y2", 0).attr("stroke", faseColors[1]).attr("stroke-width", 2);
+                    legendS.append("text").attr("x", 25).attr("y", 4).text("Fase S");
+                    legendS.on("click", function () { toogleChart(legendS, pathS); });
+
+                    var legendT = legends.append("g").attr("transform", "translate(160,0)");
+                    legendT.append("line").attr("x1", 0).attr("y1", 0).attr("x2", 20).attr("y2", 0).attr("stroke", faseColors[2]).attr("stroke-width", 2);
+                    legendT.append("text").attr("x", 25).attr("y", 4).text("Fase T");
+                    legendT.on("click", function () { toogleChart(legendT, pathT); });
+
+                    clip.transition().duration(1500).attr("width", width);
+                },
+                complete: function () {
+                    toggleOverlay($("#histogramContainer"), false);
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            initFilters();
+            refreshAlarms();
+
+            $("#outletAlarms").on("click", "a.btn", function () {
+                map.setZoom(mapOrigin.zoom[3]);
+                map.setCenter({ lat: parseFloat($(this).attr("data-lat")), lng: parseFloat($(this).attr("data-lng")) });
+                animateCts = $(this).attr("data-code");
+            });
+
+            $exit.change(function () {
+                if (map.getZoom() >= mapOrigin.zoom[2]) {
+                    var exitCode = $exit.val().replace("Salida_0", "").replace("Salida_", "");
+
+                    mapMarkers.meterGroups.forEach(function (m) {
+                        if (exitCode == "" || m.infoExit == exitCode) {
+                            m.setVisible(true);
+                        } else {
+                            m.setVisible(false);
+                        }
+                    });
+                }
+
+                refreshIntensity();
+                refreshHistogram();
+            });
+
+            $("#btnExitMax").click(function () {
+                $exit.val("");
+
+                if (map.getZoom() >= mapOrigin.zoom[2]) {
+                    mapMarkers.meterGroups.forEach(function (m) {
+                        m.setVisible(true);
+                    });
+                }
+
+                refreshIntensity('max');
+                refreshHistogram('max');
+            });
+
+            $("#btnExportPdf").click(function () {
+                //var data = {};
+                //data.zoom = map.getZoom();
+                //data.center = map.getCenter();
+                //data.bounds = map.getBounds().toJSON();
+                //data.filters = { region: $region.val(), city: $city.val(), center: $center.val(), ctCode: $("#txtCTSearch").val().trim(), meterCode: $("#txtMeterSearch").val().trim() };
+
+                //var htmlCode = document.documentElement.outerHTML;
+                //toggleOverlay($("body"), true);
+
+                //$.ajax({
+                //    type: 'POST',
+                //    url: '/data/export',
+                //    data: htmlCode,
+                //    contentType: 'text/plain; charset=utf-8',
+                //    success: function (result) {
+                //    },
+                //    complete: function () {
+                //        toggleOverlay($("body"), false);
+                //    }
+                //});
+            });
         });
 
-        $("#btnExitMax").click(function () {
-            $exit.val("");
-
-            if (map.getZoom() >= mapOrigin.zoom[2]) {
-                mapMarkers.meterGroups.forEach(function (m) {
-                    m.setVisible(true);
-                });
-            }
-
-            refreshIntensity('max');
-            refreshHistogram('max');
-        });
-        $("#btnExportPdf").click(function () {
-            //var data = {};
-            //data.zoom = map.getZoom();
-            //data.center = map.getCenter();
-            //data.bounds = map.getBounds().toJSON();
-            //data.filters = { region: $region.val(), city: $city.val(), center: $center.val(), ctCode: $("#txtCTSearch").val().trim(), meterCode: $("#txtMeterSearch").val().trim() };
-
-            //var htmlCode = document.documentElement.outerHTML;
-            //toggleOverlay($("body"), true);
-
-            //$.ajax({
-            //    type: 'POST',
-            //    url: '/data/export',
-            //    data: htmlCode,
-            //    contentType: 'text/plain; charset=utf-8',
-            //    success: function (result) {
-            //    },
-            //    complete: function () {
-            //        toggleOverlay($("body"), false);
-            //    }
-            //});
-        });
-    });
-
-</script>
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8hJQ2tSEH8-t-KRk83qVegBwYGzGLJ8k&callback=initMap"></script>
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8hJQ2tSEH8-t-KRk83qVegBwYGzGLJ8k&callback=initMap"></script>
 }

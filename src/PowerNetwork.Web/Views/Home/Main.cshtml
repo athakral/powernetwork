@@ -1,10 +1,9 @@
-@using PowerNetwork.Core.Helpers
 @{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="container" id="homeView">
-    <img src="~/images/logo-@(ViewBag.SubDomain).png" class="logo-@(ViewBag.SubDomain)" />
+    <img src="~/images/logo.png" class="logo" />
     <h1>
         @if (User.Identity.IsAuthenticated) {
             <small>(@User.Identity.Name: <a href="/home/logout"><span class="glyphicon glyphicon-off"></span> @ViewBag.Texts["Home.Logout"]</a>)</small>

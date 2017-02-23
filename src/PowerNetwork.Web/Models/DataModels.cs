@@ -1,6 +1,12 @@
 ﻿using System;
 
 namespace PowerNetwork.Web.Models {
+    public class OverviewBalanceOutModel {
+        public string date;
+        public decimal[] i;
+        public long[] t;
+    }
+
     public class IntensityCsvModel {
         public DateTime Date { get; set; }
         public int Hour { get; set; }
@@ -40,6 +46,10 @@ namespace PowerNetwork.Web.Models {
         public string city { get; set; }
 
         public string alarm { get; set; }
+        public double? teleLevel;
+        public int? tp5;
+        public int? tp4;
+        public int? to;
     }
 
     public class CtsRegionModel {

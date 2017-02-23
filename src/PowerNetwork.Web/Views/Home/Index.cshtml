@@ -1,0 +1,181 @@
+﻿@model PowerNetwork.Web.Models.LoginModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<form>
+    <div class="container-fluid" id="loginView">
+        <img src="~/images/logo.png" class="logo" />
+        <h1>Centro de Gestión de Activos (CGA)</h1>
+        <h3>Centro de Supervisión<br />de la Baja Tensión</h3>
+        
+        <div class="login-container">
+            <div id="loginControls" class="overlay-container">
+                <div class="form-group">
+                    <label class="control-label">@ViewBag.Texts["Home.Login.Username"]</label>
+                    <input type="text" class="form-control" id="txtUsername" />
+                </div>
+                <div class="form-group">
+                    <label class="control-label">@ViewBag.Texts["Home.Login.Password"]</label>
+                    <input type="password" class="form-control" id="txtPassword" />
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" id="chkRemember" /> @ViewBag.Texts["Home.Login.Remember"]
+                    </label>
+                </div>
+                <div class="form-group">
+                    <button id="btnSubmit" type="submit" class="btn btn-default">@ViewBag.Texts["Home.Login.Submit"]</button>
+                </div>
+                <div class="clearfix"></div>
+                <div>
+                    <br />
+                    <a href="javascript:void(0)" id="lnkResetPassword">Reset your password</a>
+                </div>
+            </div>
+            <br />
+            <div class="error" id="divError" style="display: none;">@ViewBag.Texts["Home.Login.Error"]</div>
+        </div>
+    </div>
+</form>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="dlgResetPassword">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Reset your password</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Verification code (from your email)</label>
+                    <input class="form-control" type="text" id="txtResetPasswordCode" />
+                </div>
+                <div class="form-group">
+                    <label>New password</label>
+                    <input class="form-control" type="password" id="txtResetPasswordNew" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="btnResetPassword">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/lib/jsbn/jsbn.js"></script>
+    <script src="~/lib/jsbn/jsbn2.js"></script>
+    <script src="~/lib/sjcl/sjcl.js"></script>
+    <script src="~/lib/moment/min/moment.min.js"></script>
+    <script src="~/lib/amazon-cognito-identity-js/dist/aws-cognito-sdk.min.js"></script>
+    <script src="~/lib/amazon-cognito-identity-js/dist/amazon-cognito-identity.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var poolData = {
+                UserPoolId: '@ViewBag.AppConf.CognitoUserPoolId',
+                ClientId: '@ViewBag.AppConf.CognitoClientId'
+            };
+            var userPool = new AWSCognito.CognitoIdentityServiceProvider.CognitoUserPool(poolData);
+
+            $("#btnSubmit").click(function (e) {
+                e.preventDefault();
+                toggleOverlay($("#loginControls"), true);
+
+                var authenticationData = {
+                    Username: $("#txtUsername").val(),
+                    Password: $("#txtPassword").val(),
+                };
+                var authenticationDetails = new AWSCognito.CognitoIdentityServiceProvider.AuthenticationDetails(authenticationData);
+
+                var userData = {
+                    Username: $("#txtUsername").val(),
+                    Pool: userPool
+                };
+                var cognitoUser = new AWSCognito.CognitoIdentityServiceProvider.CognitoUser(userData);
+
+                cognitoUser.authenticateUser(authenticationDetails, {
+                    onSuccess: function (result) {
+                        $.ajax({
+                            type: 'POST',
+                            url: '/home/login',
+                            data: JSON.stringify({ code: result.getAccessToken().getJwtToken(), remember: $("#chkRemember").is(':checked') }),
+                            contentType: 'application/json; charset=utf-8',
+                            success: function (loginResult) {
+                                if (loginResult == $("#txtUsername").val()) {
+                                    window.location.href = "/main";
+                                } else {
+                                    $("#divError").show();
+                                }
+                            },
+                            complete: function () {
+                                toggleOverlay($("#loginControls"), false);
+                            }
+                        });
+                    },
+
+                    onFailure: function (err) {
+                        $("#divError").show();
+                        toggleOverlay($("#loginControls"), false);
+                    },
+
+                    newPasswordRequired: function (userAttributes, requiredAttributes) {
+                        cognitoUser.completeNewPasswordChallenge($("#txtPassword").val(), null, this);
+                    }
+                });
+            });
+
+            var resetPasswordUser;
+
+            $("#lnkResetPassword").click(function () {
+                bootbox.prompt("Please input username", function (result) {
+                    if (result == null) return;
+                    var username = result.trim();
+
+                    if (username != '') {
+                        var userData = {
+                            Username: result,
+                            Pool: userPool
+                        };
+                        resetPasswordUser = new AWSCognito.CognitoIdentityServiceProvider.CognitoUser(userData);
+
+                        toggleOverlay($("#loginControls"), true);
+
+                        resetPasswordUser.forgotPassword({
+                            onSuccess: function (forgotPasswordResult) {
+                                $('#dlgResetPassword').modal('show');
+                                toggleOverlay($("#loginControls"), false);
+                            },
+                            onFailure: function (err) {
+                                bootbox.alert(err);
+                                toggleOverlay($("#loginControls"), false);
+                            }
+                        });
+                    }
+                });
+            });
+
+            $("#btnResetPassword").click(function () {
+                var code = $("#txtResetPasswordCode").val().trim();
+                var newPassword = $("#txtResetPasswordNew").val().trim();
+
+                if (resetPasswordUser != null && code != '' && newPassword != '') {
+                    toggleOverlay($("#loginControls"), true);
+
+                    resetPasswordUser.confirmPassword(code, newPassword, {
+                        onSuccess: function () {
+                            $('#dlgResetPassword').modal('hide');
+                            bootbox.alert("Password has been updated successfully.");
+                            toggleOverlay($("#loginControls"), false);
+                        },
+                        onFailure: function (err) {
+                            bootbox.alert(err);
+                            toggleOverlay($("#loginControls"), false);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}
