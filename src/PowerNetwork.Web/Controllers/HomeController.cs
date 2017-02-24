@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -28,9 +29,38 @@ namespace PowerNetwork.Web.Controllers {
             return View();
         }
 
-        public IActionResult Index(string l) {
+        public IActionResult Index(string l, string code) {
             if (User.Identity.IsAuthenticated) {
                 return RedirectToAction("Main");
+            }
+
+            if (!string.IsNullOrEmpty(code)) {
+                _logger.LogInformation("Passed Code" + code);
+
+                var requestContent = new StringContent("{\"AccessToken\":\"" + code + "\"}", System.Text.Encoding.UTF8, "application/json");
+                requestContent.Headers.Clear();
+                requestContent.Headers.TryAddWithoutValidation("Content-Type", "application/x-amz-json-1.1");
+                requestContent.Headers.Add("X-Amz-Target", "AWSCognitoIdentityProviderService.GetUser");
+                requestContent.Headers.Add("X-Amz-User-Agent", "aws-sdk-js/2.6.4");
+
+                var client = new HttpClient();
+                var response = client.PostAsync("https://cognito-idp.eu-west-1.amazonaws.com/", requestContent).Result;
+
+                _logger.LogInformation("Server's Reponse", response);
+
+                if (response.IsSuccessStatusCode) {
+                    var awsUser = JsonConvert.DeserializeObject<JObject>(response.Content.ReadAsStringAsync().Result).GetValue("Username");
+
+                    if (!string.IsNullOrEmpty(awsUser?.ToString())) {
+                        var claims = new List<Claim> { new Claim(ClaimTypes.Name, awsUser.ToString()), new Claim("Read", "true") };
+
+                        var claimsIdentity = new ClaimsIdentity(claims, "password");
+                        var claimsPrinciple = new ClaimsPrincipal(claimsIdentity);
+
+                        HttpContext.Authentication.SignInAsync("Cookies", claimsPrinciple, new AuthenticationProperties { IsPersistent = true });
+                        return RedirectToAction("Main");
+                    }
+                }
             }
 
             ViewBag.AppConf = _appConf;

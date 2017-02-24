@@ -59,29 +59,20 @@ hr {
     height: 100%;
     top: 0;
     left: 0;
-    background: url('/images/bg-3.jpg') no-repeat center center fixed;
-    background-size: cover;
 }
 
     #loginView .logo {
         position: absolute;
         top: 10px;
         left: 30px;
-        height: 100px;
     }
 
     #loginView .login-container {
         background-color: #fff;
         position: absolute;
         top: 50%;
-        right: 0;
         padding: 20px;
         margin-top: -150px;
-        width: 420px;
-        -webkit-border-top-left-radius: 5px;
-        border-top-left-radius: 5px;
-        -webkit-border-bottom-left-radius: 5px;
-        border-bottom-left-radius: 5px;
     }
 
         #loginView .login-container .checkbox {
@@ -93,28 +84,6 @@ hr {
             margin-top: 5px;
         }
 
-    #loginView h1 {
-        color: #004165;
-        font-size: 22px;
-        font-weight: bold;
-        position: absolute;
-        top: 50%;
-        margin-top: -210px;
-        right: 30px;
-    }
-
-    #loginView h3 {
-        color: #004165;
-        font-size: 24px;
-        font-weight: bold;
-        position: absolute;
-        top: 50%;
-        margin-top: 180px;
-        right: 0;
-        width: 420px;
-        text-align: center;
-    }
-
 #homeView {
     position: relative;
 }
@@ -122,8 +91,6 @@ hr {
     #homeView .logo {
         position: absolute;
         right: 0;
-        top: 20px;
-        height: 120px;
     }
 
     #homeView h1 {
@@ -184,7 +151,6 @@ hr {
     #outletView .logo {
         position: absolute;
         left: 20px;
-        top: 10px;
         height: 60px;
     }
 

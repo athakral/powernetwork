@@ -6,6 +6,8 @@ namespace PowerNetwork.Core.DataModels
         public string CognitoClientId { get; set; }
 
         public string ConnectionString { get; set; }
+
+        public string DefaultLanguage { get; set; }
     }
 
 }

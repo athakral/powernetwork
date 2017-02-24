@@ -5,9 +5,15 @@
 
 <form>
     <div class="container-fluid" id="loginView">
-        <img src="~/images/logo.png" class="logo" />
-        <h1>Centro de Gestión de Activos (CGA)</h1>
-        <h3>Centro de Supervisión<br />de la Baja Tensión</h3>
+        <environment names="Development,Staging,Production">
+            <img src="~/images/logo.png" class="logo" />
+        </environment>
+        <environment names="Demo,DemoProduction">
+            <img src="~/images/logo-2.png" class="logo" />
+        </environment>
+
+        <h1>@ViewBag.Texts["Home.Header1"]</h1>
+        <h3>@Html.Raw(ViewBag.Texts["Home.Header2"])</h3>
         
         <div class="login-container">
             <div id="loginControls" class="overlay-container">

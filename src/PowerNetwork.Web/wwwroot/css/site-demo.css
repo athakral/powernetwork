@@ -1,0 +1,49 @@
+﻿#loginView {
+    background: url('/images/bg-2.jpg') no-repeat center center fixed;
+    background-size: cover;
+}
+
+    #loginView .logo {
+        height: auto;
+    }
+
+    #loginView .login-container {
+        left: 0;
+        width: 360px;
+        color: #177B57;
+        -webkit-border-top-right-radius: 5px;
+        border-top-right-radius: 5px;
+        -webkit-border-bottom-right-radius: 5px;
+        border-bottom-right-radius: 5px;
+    }
+
+        #loginView .login-container .btn {
+            color: #177B57;
+        }
+
+    #loginView h1 {
+        color: #fff;
+        font-size: 60px;
+        font-weight: bold;
+        position: absolute;
+        right: 40px;
+        bottom: 30px;
+    }
+
+    #loginView h3 {
+        color: #fff;
+        font-size: 28px;
+        font-weight: bold;
+        position: absolute;
+        top: 50%;
+        left: 40px;
+        margin-top: -200px;
+    }
+
+#homeView .logo {
+    top: 40px;
+}
+
+#outletView .logo {
+    top: 20px;
+}

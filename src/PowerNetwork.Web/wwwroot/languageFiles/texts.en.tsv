@@ -1,4 +1,6 @@
-﻿Home.Header					Power Network Use cases
+﻿Home.Header1				Asset Management 4.0
+Home.Header2				Asset Control Center
+
 Home.Login.Username			Username
 Home.Login.Password			Password
 Home.Login.Remember			Remember me
@@ -8,7 +10,7 @@ Home.Logout					log out
 
 
 
-Main.Header					Power Network Use cases
+Main.Header					Asset Control Center
 Main.Box1.Header			Loading<br />monitoring
 Main.Box1.Content			The power outlet measurement allows to identify meters overloading and unbalances among grids by sending alarms to the system, reducing on the ground visits
 Main.Box2.Header			Fraud<br/>detection
