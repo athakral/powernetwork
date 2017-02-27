@@ -1,0 +1,18 @@
+# put this sudo vim  /etc/systemd/system/kestrel-powernetwork-ui-demo.service 
+# sudo systemctl restart kestrel-powernetwork-ui-demo.service
+# sudo systemctl enable kestrel-powernetwork-ui-demo.service
+# sudo systemctl status kestrel-powernetwork-ui-demo.service
+[Unit]
+Description=BCG Powernetwork UI application service (Demo)
+
+[Service]
+WorkingDirectory=/home/ubuntu/powernetwork/src/PowerNetwork.Web/release-demo/
+ExecStart=/usr/bin/dotnet /home/ubuntu/powernetwork/src/PowerNetwork.Web/release-demo/PowerNetwork.Web.dll
+Restart=always
+RestartSec=10        # Restart service after 10 seconds if dotnet service crashes
+SyslogIdentifier=powernetwork-ui-demo
+User=www-data
+Environment=ASPNETCORE_ENVIRONMENT=DemoProduction
+
+[Install]
+WantedBy=multi-user.target

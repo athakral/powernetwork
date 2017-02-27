@@ -12,7 +12,7 @@ Restart=always
 RestartSec=10        # Restart service after 10 seconds if dotnet service crashes
 SyslogIdentifier=powernetwork-ui
 User=www-data
-Environment=ASPNETCORE_ENVIRONMENT=Development
+Environment=ASPNETCORE_ENVIRONMENT=Production
 
 [Install]
 WantedBy=multi-user.target
