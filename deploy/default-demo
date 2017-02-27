@@ -2,7 +2,7 @@
 
 server {
     listen 80;
-    server_name gnf.bcgam40.com;
+    server_name demo.bcgam40.com;
     location / {
         proxy_pass http://localhost:5000;
         proxy_http_version 1.1;
