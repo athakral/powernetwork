@@ -446,7 +446,7 @@ namespace PowerNetwork.Core.Helpers {
 
             using (var connection = new NpgsqlConnection(_connectionString)) {
                 var command = new NpgsqlCommand(
-                    @"select top 1 prc_tp_5, prc_tp_4, prc_t_otro
+                    @"select top 1 prc_tp_5, prc_tp_4, prc_tp_3, prc_tp_2, prc_tp_1, prc_t_otro, prc_activos
                     from cts_x_tipo 
                     where matricula_ct = @Code", connection);
 
@@ -457,9 +457,13 @@ namespace PowerNetwork.Core.Helpers {
                 var reader = command.ExecuteReader();
                 while (reader.Read()) {
                     result = new CtTipoModel {
-                        T5Percent = Math.Round((double) reader["prc_tp_5"], 2),
-                        T4Percent = Math.Round((double) reader["prc_tp_4"], 2),
-                        Other = Math.Round((double) reader["prc_t_otro"], 2)
+                        T5Percent = Math.Round((double)reader["prc_tp_5"], 2),
+                        T4Percent = Math.Round((double)reader["prc_tp_4"], 2),
+                        T3Percent = Math.Round((double)reader["prc_tp_3"], 2),
+                        T2Percent = Math.Round((double)reader["prc_tp_2"], 2),
+                        T1Percent = Math.Round((double)reader["prc_tp_1"], 2),
+                        Other = Math.Round((double)reader["prc_t_otro"], 2),
+                        Assets = Math.Round((double)reader["prc_activos"], 2)
                     };
                     break;
                 }

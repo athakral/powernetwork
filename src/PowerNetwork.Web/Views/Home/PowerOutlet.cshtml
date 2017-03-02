@@ -520,11 +520,19 @@
                                                     mapInfoClick.close();
                                                 }
 
-                                                var ctClickHtml = "<p>" + c.othercode + "</p>";
+                                                var ctClickHtml = "<p><b>" + c.othercode + "</b></p>";
                                                 if (meterGroupData.tipo != null) {
-                                                    ctClickHtml += "<p> &bull; " + meterGroupData.tipo.T5Percent + " % T5</p>";
+                                                    ctClickHtml += "<p>Tipo PS:</p>";
+                                                    ctClickHtml += "<p> &bull; " + meterGroupData.tipo.T1Percent + " % T1</p>";
+                                                    ctClickHtml += "<p> &bull; " + meterGroupData.tipo.T2Percent + " % T2</p>";
+                                                    ctClickHtml += "<p> &bull; " + meterGroupData.tipo.T3Percent + " % T3</p>";
                                                     ctClickHtml += "<p> &bull; " + meterGroupData.tipo.T4Percent + " % T4</p>";
+                                                    ctClickHtml += "<p> &bull; " + meterGroupData.tipo.T5Percent + " % T5</p>";
                                                     ctClickHtml += "<p> &bull; " + meterGroupData.tipo.Other + " % Other</p>";
+
+                                                    ctClickHtml += "<p>Estado PS:</p>";
+                                                    ctClickHtml += "<p> &bull; " + meterGroupData.tipo.Assets + " % Con contrato</p>";
+                                                    ctClickHtml += "<p> &bull; " + (100 - meterGroupData.tipo.Assets).toFixed(2) + " % Sin contrato</p>";
                                                 }
 
                                                 mapInfoClick.setContent(ctClickHtml);

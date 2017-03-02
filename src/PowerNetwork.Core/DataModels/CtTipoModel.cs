@@ -9,6 +9,11 @@ namespace PowerNetwork.Core.DataModels {
 
         public double T5Percent { get; set; }
         public double T4Percent { get; set; }
+        public double T3Percent { get; set; }
+        public double T2Percent { get; set; }
+        public double T1Percent { get; set; }
+
         public double Other { get; set; }
+        public double Assets { get; set; }
     }
 }
