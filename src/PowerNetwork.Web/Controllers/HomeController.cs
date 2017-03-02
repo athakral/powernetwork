@@ -17,10 +17,12 @@ using PowerNetwork.Web.Models;
 namespace PowerNetwork.Web.Controllers {
     public class HomeController : Controller {
 
+        private readonly IHostingEnvironment _hostingEnvironment;
         private readonly AppConfig _appConf;
         private readonly ILogger _logger;
 
-        public HomeController(IOptions<AppConfig> appConfig, ILogger<HomeController> logger) {
+        public HomeController(IHostingEnvironment hostingEnvironment, IOptions<AppConfig> appConfig, ILogger<HomeController> logger) {
+            _hostingEnvironment = hostingEnvironment;
             _appConf = appConfig.Value;
             _logger = logger;
         }
@@ -121,6 +123,10 @@ namespace PowerNetwork.Web.Controllers {
         [Authorize(Policy = "ReadPolicy")]
         [Route("main")]
         public IActionResult Main() {
+            if (_hostingEnvironment.EnvironmentName == "Demo" || _hostingEnvironment.EnvironmentName == "DemoProduction") {
+                return Redirect("/power-outlet");
+            }
+
             return View();
         }
 

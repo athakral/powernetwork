@@ -20,7 +20,7 @@ Main.Box3.Content			The probability to failure allows to identify which assets a
 
 
 
-Power.Header				Power Outlet Use Case
+Power.Header				Loading Monitoring
 Power.Menu.Home				Home
 Power.Menu.Power			Loading<br />monitoring
 Power.Menu.Fraud			Fraud<br/>detection
@@ -29,26 +29,34 @@ Power.Menu.Download			Download<br />report
 
 Power.Filter.Region			Region
 Power.Filter.City			City
-Power.Filter.Center			Responsible Maintenance Center
-Power.Filter.CTCode			CT Code
+Power.Filter.Center			Maintenance Responsible
+Power.Filter.CTCode			Transformer Code
 Power.Filter.MeterCode		Smart Meter Code
 Power.Filter.Date			Date
+Power.Filter.Exit			Exit
+Power.Filter.ExitMax		Maximum exit
 
-Power.Map.Legend.Overloading	Overloading transformer
-Power.Map.Legend.Unbalance		Unbalances among grids
-Power.Map.Legend.Both			Overloading & unbalanced transformer
-Power.Map.Legend.Normal			Transformers w/o alarm
-Power.Map.Legend.MeterGroup		Acometida
+Power.Map.Legend.Overloading	Overloaded Transformer
+Power.Map.Legend.Unbalance		Unbalanced Transformer
+Power.Map.Legend.Both			Overloaded & Unbalanced Transformer
+Power.Map.Legend.Normal			Transformer
+Power.Map.Legend.MeterGroup		CGP
 
 Power.Alarm.Overloading		Overloading alarm
-Power.Alarm.Unbalance		Unbalanced alarm
+Power.Alarm.Unbalance		Energy unbalances between exits alarm
 Power.Alarm.Code			Code
 Power.Alarm.Access			Access
-Power.Alarm.Ratio1			# hour<br/>over loading
-Power.Alarm.Ratio2			Differences<br/>among exits
+Power.Alarm.Ratio1			#overloading<br/>hour
+Power.Alarm.Ratio2			Differences<br/>between exits (%)
 
-Power.Graph.Intensity		Power outlet intensity curve
-Power.Graph.Histogram		Power outlet histogram
+Power.Graph.TransformerGraphs	Transformer indicators <ul> <li>Current</li> <li>Voltage</li> </ul>
+Power.Graph.TransformerCurrent	Transformer current
+Power.Graph.TransformerVoltage	Transformer voltage
+
+Power.Graph.ExitGraphs		Indicators per transformer exits and phases <ul> <li>Intensity Ratio</li> <li>Histogram</li> </ul>
+
+Power.Graph.Intensity		Current ratio per transformer exit and phase curve
+Power.Graph.Histogram		Current ratio per transformer exit and phase histogram
 Power.Graph.Daily			Daily
 Power.Graph.Monthly			Monthly
 Power.Graph.Yearly			Yearly

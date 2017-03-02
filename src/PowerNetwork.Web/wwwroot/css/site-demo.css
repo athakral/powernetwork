@@ -47,3 +47,39 @@
 #outletView .logo {
     top: 20px;
 }
+
+#outletView #topMenu {
+    display: none;
+}
+
+#outletView .chart-box-10 .chart-prefix:before, #outletView .chart-box-10 .chart-prefix:after {
+    background-color: #729E89;
+}
+
+#outletView .chart-box-11 .chart-prefix:before, #outletView .chart-box-11 .chart-prefix:after {
+    background-color: #729E89;
+}
+
+#outletView .chart-box-20 .chart-prefix:before, #outletView .chart-box-20 .chart-prefix:after {
+    background-color: #A6A6A6;
+}
+
+#outletView .chart-box-21 .chart-prefix:before, #outletView .chart-box-21 .chart-prefix:after {
+    background-color: #A6A6A6;
+}
+
+#outletView .chart-box-10 .chart-menu {
+    background-color: #03522D;
+}
+
+#outletView .chart-box-20 .chart-menu {
+    background-color: #6E6F73;
+}
+
+#outletView .chart-box-10 .chart-menu-postfix:before, #outletView .chart-box-10 .chart-menu-postfix:after {
+    background-color: #03522D;
+}
+
+#outletView .chart-box-20 .chart-menu-postfix:before, #outletView .chart-box-20 .chart-menu-postfix:after {
+    background-color: #6E6F73;
+}

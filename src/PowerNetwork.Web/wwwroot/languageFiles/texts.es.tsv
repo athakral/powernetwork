@@ -33,6 +33,8 @@ Power.Filter.Center			Bases de Operaciones
 Power.Filter.CTCode			Código del CT
 Power.Filter.MeterCode		Código del Smart Meter
 Power.Filter.Date			Fecha
+Power.Filter.Exit			Salida
+Power.Filter.ExitMax		Salida Máxima
 
 Power.Map.Legend.Overloading	Sobreintensidad CT
 Power.Map.Legend.Unbalance		Desbalanceo CT
@@ -46,6 +48,12 @@ Power.Alarm.Code			Código
 Power.Alarm.Access			Acceso
 Power.Alarm.Ratio1			# horas<br/>Sobreintensidad
 Power.Alarm.Ratio2			Diferencias<br/>entre salidas (%)
+
+Power.Graph.TransformerGraphs	Indicadores del CT <ul> <li>Intensidad</li> <li>Tensión</li> </ul>
+Power.Graph.TransformerCurrent	Intensidad del transformador
+Power.Graph.TransformerVoltage	Tensión del transformador
+
+Power.Graph.ExitGraphs		Indicadores por salida y fase del CT <ul> <li>Ratio intensidad</li> <li>Monótona</li> </ul>
 
 Power.Graph.Intensity		Curva de Intensidad de Sobrecarga de la Red
 Power.Graph.Histogram		Histograma de Intensidades

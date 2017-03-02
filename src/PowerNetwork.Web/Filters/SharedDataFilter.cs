@@ -37,6 +37,7 @@ namespace PowerNetwork.Web.Filters {
             }
             
             var controller = context.Controller as Controller;
+            controller.ViewBag.CurrentLanguage = currentLang;
             controller.ViewBag.Texts = ResourceService.Instance(_hostingEnvironment).GetMap(currentLang);
         }
     }

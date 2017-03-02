@@ -142,7 +142,7 @@
                                 <th>@ViewBag.Texts["Power.Alarm.Code"]</th>
                                 <th>@Html.Raw(ViewBag.Texts["Power.Alarm.Ratio1"])</th>
                                 <th>Pnominal</th>
-                                @*                                <th>I/Inominal</th>*@
+                                @*<th>I/Inominal</th>*@
                                 <th>@ViewBag.Texts["Power.Alarm.Access"]</th>
                             </tr>
                         </thead>
@@ -194,17 +194,11 @@
             <div class="col-md-6 chart-with-menu">
                 <div class="panel panel-default overlay-container chart-box chart-box-10" id="allIntensityContainer">
                     <div class="chart-menu">
-                        <div style="margin-top: -42px;">
-                            Indicadores del CT
-                            <ul>
-                                <li>Intensidad</li>
-                                <li>Tensión</li>
-                            </ul>
-                        </div>
+                        <div style="margin-top: -42px;">@Html.Raw(ViewBag.Texts["Power.Graph.TransformerGraphs"])</div>
                         <div class="chart-menu-postfix"></div>
                     </div>
                     <div class="chart-prefix"></div>
-                    <div class="panel-heading">Intensidad del transformador</div>
+                    <div class="panel-heading">@ViewBag.Texts["Power.Graph.TransformerCurrent"]</div>
                     <div class="panel-body">
                         <div id="allIntensityChart"></div>
                     </div>
@@ -215,7 +209,7 @@
             <div class="col-md-6">
                 <div class="panel panel-default overlay-container chart-box chart-box-11" id="allTensionContainer">
                     <div class="chart-prefix"></div>
-                    <div class="panel-heading">Tensión del transformador</div>
+                    <div class="panel-heading">@ViewBag.Texts["Power.Graph.TransformerVoltage"]</div>
                     <div class="panel-body">
                         <div id="allTensionChart"></div>
                     </div>
@@ -226,11 +220,11 @@
         <div class="form-inline">
             <div class="form-group">
                 <select id="ddlExit" class="form-control" style="width: 150px;">
-                    <option value="">-- Salida --</option>
+                    <option value="">-- @ViewBag.Texts["Power.Filter.Exit"] --</option>
                 </select>
             </div>
             &nbsp;
-            <button id="btnExitMax" class="btn btn-default">Salida Máxima</button>
+            <button id="btnExitMax" class="btn btn-default">@ViewBag.Texts["Power.Filter.ExitMax"]</button>
         </div>
         <br />
 
@@ -238,13 +232,7 @@
             <div class="col-md-6 chart-with-menu">
                 <div class="panel panel-default overlay-container chart-box chart-box-20" id="intensityContainer">
                     <div class="chart-menu">
-                        <div style="margin-top: -60px;">
-                            Indicadores por salida y fase del CT
-                            <ul>
-                                <li>Ratio intensidad</li>
-                                <li>Monótona</li>
-                            </ul>
-                        </div>
+                        <div style="margin-top: -60px;">@Html.Raw(ViewBag.Texts["Power.Graph.ExitGraphs"])</div>
                         <div class="chart-menu-postfix"></div>
                     </div>
                     <div class="chart-prefix"></div>
@@ -269,46 +257,91 @@
     </div>
 
     <div style="page-break-before: always">
-        <h3><b>Significado Indicadores Operativos</b></h3>
-        <p>
-            <b>Alarma de Sobreintensidad:</b> recoge los centros de transformación que han estado más del 25% de las horas del mes
-            (últimos 31 días) trabajando a una intensidad superior al 85% de la intensidad nominal
-        </p>
-        <ul>
-            <li>
-                <span style="text-decoration: underline">Número de horas de sobreintensidad:</span>
-                número de horas que ha estado un centro de transformación trabajando bajo la alarma de sobreintensidad
-            </li>
-            <li>
-                <span style="text-decoration: underline">Potencia nominal:</span> potencia instalada por centro de transformación
-            </li>
-            <li>
-                <span style="text-decoration: underline">Ratio Intensidad frente Intensidad nominal:</span>
-                rango formado por la el menor y el mayor ratio de Intensidad horario alcanzado en un centro de transformación en los últimos 31 días
-            </li>
-        </ul>
-        <p>
-            <b>Alarma de Desbalanceo entre Intensidades de Salidas:</b> recoge los centros de transformación cuya diferencia entre la salida con mayor
-            y menor ratio de intensidad sobre la nominal sea superior a 60 puntos porcentuales, durante más de 10 horas del último mes (últimos 31 días)
-        </p>
-        <ul>
-            <li>
-                <span style="text-decoration: underline">Diferencia entre salidas:</span>
-                diferencia de Intensidad entre la salida con más carga y la que menos
-            </li>
-        </ul>
-        <p>
-            <b>Curva de Intensidad de Sobrecarga de la Red:</b> recoge los valores del ratio de Intensidades (Intensidad/I nominal) de las distintas salidas
-            y fases de un CT durante un período de tiempo determinado
-        </p>
-        <p>
-            <b>Histograma de Intensidades:</b> recoge el número de horas que ha estado cada salida y cada fase de un CT en cada nivel de Intensidad
-            (ratio de Intensidad sobre la nominal) durante un período de tiempo determinado
-        </p>
-        <p>
-            <b>Salida máxima:</b> salida del CT que ha recogido el mayor ratio de Intensidad frente a la nominal durante el último mes (últimos 31 días).
-        </p>
-        <br /><br />
+        @if (ViewBag.CurrentLanguage == "en") {
+            <h3>
+                <b>Meaning of the Operating Indicators</b>
+            </h3>
+            <p>
+                <b>Overloading alarm:</b> it includes all the transformers that have been working at an intensity rate higher than 85% of nominal 
+                intensity during more than the 25% of the month hours (last 31 days)
+            </p>
+            <ul>
+                <li>
+                    <span style="text-decoration: underline">Number of overloading hours:</span>
+                    number of hours a transformer has been working under an overloading alarm
+                </li>
+                <li>
+                    <span style="text-decoration: underline">Nominal power:</span> installed power per transformer
+                </li>
+                <li>
+                    <span style="text-decoration: underline">Intensaty ratio over the nominal intensity:</span>
+                    range composed of the highest and lowest intensity ratio achieved by a transformer during last 31 days
+                </li>
+            </ul>
+            <p>
+                <b>Intensity unbalances between exits:</b> it includes all the transformers which its difference between the exit with the 
+                highest and lowest intensity ratio is higher than 60 pp. during more than 10% of the month hours (last 31 days)
+            </p>
+            <ul>
+                <li>
+                    <span style="text-decoration: underline">Differences between exits:</span>
+                    average difference between the exit with the highest intensity ratio and the lowest in percentage
+                </li>
+            </ul>
+            <p>
+                <b>Power Outlet Intensity Curve:</b> it includes the intensity ratio curve for the exit phases during a period of time
+            </p>
+            <p>
+                <b>Intensity histogram:</b> it includes the number of hours that the exit phases have been in each intensity level during a period of time
+            </p>
+            <p>
+                <b>Maximum exit:</b> transformer exit with the highest intensity ratio during the last month (last 31 days)
+            </p>
+
+        } else {
+            <h3>
+                <b>Significado Indicadores Operativos</b>
+            </h3>
+            <p>
+                <b>Alarma de Sobreintensidad:</b> recoge los centros de transformación que han estado más del 25% de las horas del mes
+                (últimos 31 días) trabajando a una intensidad superior al 85% de la intensidad nominal
+            </p>
+            <ul>
+                <li>
+                    <span style="text-decoration: underline">Número de horas de sobreintensidad:</span>
+                    número de horas que ha estado un centro de transformación trabajando bajo la alarma de sobreintensidad
+                </li>
+                <li>
+                    <span style="text-decoration: underline">Potencia nominal:</span> potencia instalada por centro de transformación
+                </li>
+                <li>
+                    <span style="text-decoration: underline">Ratio Intensidad frente Intensidad nominal:</span>
+                    rango formado por la el menor y el mayor ratio de Intensidad horario alcanzado en un centro de transformación en los últimos 31 días
+                </li>
+            </ul>
+            <p>
+                <b>Alarma de Desbalanceo entre Intensidades de Salidas:</b> recoge los centros de transformación cuya diferencia entre la salida con mayor
+                y menor ratio de intensidad sobre la nominal sea superior a 60 puntos porcentuales, durante más de 10 horas del último mes (últimos 31 días)
+            </p>
+            <ul>
+                <li>
+                    <span style="text-decoration: underline">Diferencia entre salidas:</span>
+                    diferencia de Intensidad entre la salida con más carga y la que menos
+                </li>
+            </ul>
+            <p>
+                <b>Curva de Intensidad de Sobrecarga de la Red:</b> recoge los valores del ratio de Intensidades (Intensidad/I nominal) de las distintas salidas
+                y fases de un CT durante un período de tiempo determinado
+            </p>
+            <p>
+                <b>Histograma de Intensidades:</b> recoge el número de horas que ha estado cada salida y cada fase de un CT en cada nivel de Intensidad
+                (ratio de Intensidad sobre la nominal) durante un período de tiempo determinado
+            </p>
+            <p>
+                <b>Salida máxima:</b> salida del CT que ha recogido el mayor ratio de Intensidad frente a la nominal durante el último mes (últimos 31 días).
+            </p>
+        }
+        <br/><br/>
     </div>
 </div>
 
@@ -591,7 +624,7 @@
                                                     }
                                                 });
 
-                                                $("#btnExitMax").text("Salida Máxima (" + meterGroupData.exitMax + ")");
+                                                $("#btnExitMax").text("@ViewBag.Texts["Power.Filter.ExitMax"] (" + meterGroupData.exitMax + ")");
                                             },
                                             complete: function () {
                                                 toggleOverlay($("#map"), false);
