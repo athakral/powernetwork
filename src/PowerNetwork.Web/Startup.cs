@@ -77,6 +77,8 @@ namespace PowerNetwork
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            app.UseStatusCodePagesWithReExecute("/StatusCode/{0}");
+
             app.UseStaticFiles();
 
             app.UseForwardedHeaders(new ForwardedHeadersOptions
@@ -98,9 +100,15 @@ namespace PowerNetwork
             // app.UseMiddleware<LogRequestMiddleware>();
             // IMPORTANT: This session call MUST go before UseMvc()
             app.UseSession();
-            
-            app.UseMvc(routes =>
-            {
+
+            app.Use((context, next) => {
+                context.Response.Headers.Add("X-Content-Type-Options", "nosniff");
+                context.Response.Headers.Add("X-Frame-Options", "SAMEORIGIN");
+                context.Response.Headers.Add("X-Xss-Protection", "1; mode=block");
+                return next.Invoke();
+            });
+
+            app.UseMvc(routes => {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
