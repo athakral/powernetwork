@@ -624,7 +624,7 @@
                                                     }
                                                 });
 
-                                                $("#btnExitMax").text("@ViewBag.Texts["Power.Filter.ExitMax"] (" + meterGroupData.exitMax + ")");
+                                                $("#btnExitMax").text("@Html.Raw(ViewBag.Texts["Power.Filter.ExitMax"]) (" + meterGroupData.exitMax + ")");
                                             },
                                             complete: function () {
                                                 toggleOverlay($("#map"), false);
