@@ -1,0 +1,53 @@
+﻿<div style="font-family: Arial; font-size: 12px;">
+    <p style="font-style: italic; font-weight: bold; color: #555555;">
+        Fecha de emisión: ${date}
+    </p>
+    <p>
+        Estimado Responsable del Centro de Mantenimiento de ${center},
+    </p>
+    <p>
+        En el período de tiempo transcurrido entre el ${day1} de ${month1} y el ${day2} de ${month2},
+        se han producido ${overloadCount} casos de Sobreintensidad y ${unbalanceCount} casos de Desbalances
+        entre salidas en los Centros de Transformación adscritos a su Centro de Mantenimiento.
+    </p>
+    <p>
+        La información detallada sobre las alarmas se puede encontrar en la tabla adjunta.
+    </p>
+    <table border="1" cellspacing="0" cellpadding="4" style="width: 100%;">
+        <thead style="font-size: 11px;">
+            <tr style="background: #6F8FA1; color: #ffffff;">
+                <th colspan="4" style="padding: 4px 8px;">Información General del Activo</th>
+                <th colspan="3" style="padding: 4px 8px;">Sobreintensidad</th>
+                <th colspan="2" style="padding: 4px 8px;">Desbalances entre salidas</th>
+            </tr>
+            <tr>
+                <th>Fecha inicio</th>
+                <th>Fecha fin</th>
+                <th>Código CT</th>
+                <th>Localización</th>
+                <th># horas sobreintensidad</th>
+                <th>Potencia máxima</th>
+                <th>Ratio Intensidad (%)</th>
+                <th>Diferencia</th>
+                <th>Salida máxima</th>
+            </tr>
+        </thead>
+        <tbody style="font-size: 10px;">${dataRows}</tbody>
+    </table>
+    <p>
+        Si desea obtener un acceso a más información, por favor pinche <a href="http://gnf.bcgam40.com">aquí</a>
+    </p>
+    <p>
+        Un cordial saludo,
+    </p>
+    <p>
+        Equipo de Gestión de Activos
+    </p>
+    <br/>
+    <p style="font-weight: bold; color: #880000;">
+        Antes de imprimir este mensaje, asegúrese de que es necesario hacerlo. Protejamos el medio ambiente
+    </p>
+    <p style="font-style: italic; color: #555555;">
+        Este correo es informativo, favor no responder a esta dirección de correo, ya que no se encuentra habilitada para recibir mensajes.
+    </p>
+</div>

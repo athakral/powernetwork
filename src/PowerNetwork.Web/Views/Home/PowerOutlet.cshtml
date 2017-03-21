@@ -668,6 +668,17 @@
                         }
                     });
                 }
+
+                var staticImg = $("#map img[src*='StaticMapService.GetMapImage']");
+                var dynamicImg = $("#map img[src*='maps/vt?pb=']");
+
+                if (staticImg.length > 0 && dynamicImg.length > 0) {
+                    $(dynamicImg[0])
+                        .parent()
+                        .parent()
+                        .css("width", staticImg.parent().css("width"))
+                        .css("height", staticImg.parent().css("height"));
+                }
             });
         }
 
@@ -1287,6 +1298,7 @@
             });
 
             $("#btnExportPdf").click(function () {
+                window.print();
                 //var data = {};
                 //data.zoom = map.getZoom();
                 //data.center = map.getCenter();

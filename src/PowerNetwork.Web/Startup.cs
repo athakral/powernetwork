@@ -70,7 +70,7 @@ namespace PowerNetwork
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseBrowserLink();
+                //app.UseBrowserLink();
             }
             else
             {
@@ -102,9 +102,15 @@ namespace PowerNetwork
             app.UseSession();
 
             app.Use((context, next) => {
-                context.Response.Headers.Add("X-Content-Type-Options", "nosniff");
-                context.Response.Headers.Add("X-Frame-Options", "SAMEORIGIN");
-                context.Response.Headers.Add("X-Xss-Protection", "1; mode=block");
+                if (!context.Response.Headers.ContainsKey("X-Content-Type-Options"))
+                    context.Response.Headers.Add("X-Content-Type-Options", "nosniff");
+
+                if (!context.Response.Headers.ContainsKey("X-Frame-Options"))
+                    context.Response.Headers.Add("X-Frame-Options", "SAMEORIGIN");
+
+                if (!context.Response.Headers.ContainsKey("X-Content-Type-Options"))
+                    context.Response.Headers.Add("X-Content-Type-Options", "1; mode=block");
+
                 return next.Invoke();
             });
 

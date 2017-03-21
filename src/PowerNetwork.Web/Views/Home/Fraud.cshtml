@@ -25,7 +25,7 @@
             </a>
         </li>
         <li style="padding-left: 40px;">
-            <a href="#" class="active">
+            <a href="javascript:void(0);" class="active" id="btnExportPdf">
                 <img src="~/images/download-pdf.png" />
                 <span>@Html.Raw(ViewBag.Texts["Power.Menu.Download"])</span>
             </a>
@@ -516,6 +516,17 @@
                         }
                     });
                 }
+
+                var staticImg = $("#map img[src*='StaticMapService.GetMapImage']");
+                var dynamicImg = $("#map img[src*='maps/vt?pb=']");
+
+                if (staticImg.length > 0 && dynamicImg.length > 0) {
+                    $(dynamicImg[0])
+                        .parent()
+                        .parent()
+                        .css("width", staticImg.parent().css("width"))
+                        .css("height", staticImg.parent().css("height"));
+                }
             });
         }
 
@@ -883,6 +894,10 @@
                 map.setZoom(mapOrigin.zoom[3]);
                 map.setCenter({ lat: parseFloat($(this).attr("data-lat")), lng: parseFloat($(this).attr("data-lng")) });
                 animateCts = $(this).attr("data-code");
+            });
+
+            $("#btnExportPdf").click(function () {
+                window.print();
             });
         });
 

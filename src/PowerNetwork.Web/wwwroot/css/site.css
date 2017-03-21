@@ -436,3 +436,52 @@ hr {
     #outletView .chart-box-20 .chart-menu-postfix:before, #outletView .chart-box-20 .chart-menu-postfix:after {
         background-color: #6F8FA1;
     }
+
+@media print {
+    @page {
+        size: A4 landscape;
+    }
+
+    body, div {
+        -webkit-print-color-adjust: exact;
+    }
+
+    body {
+        page-break-before: avoid;
+        width: 100%;
+        height: 100%;
+        zoom: 80%;
+    }
+
+    .col-md-3 {
+        width: 25%;
+    }
+
+    .col-md-4 {
+        width: 33.33333333%;
+    }
+
+    .col-md-6 {
+        width: 50%;
+    }
+
+    .col-md-8 {
+        width: 66.66666667%;
+    }
+
+    .col-md-3, .col-md-4, .col-md-6, .col-md-8 {
+        float: left;
+    }
+
+    #outletView .chart-menu {
+        border: 1px solid #ddd;
+    }
+
+    #outletView .chart-box {
+        border: 1px solid #ddd;
+    }
+
+    #outletView .chart-box .chart-prefix, #outletView .chart-box .chart-postfix {
+        display: none;
+    }
+}

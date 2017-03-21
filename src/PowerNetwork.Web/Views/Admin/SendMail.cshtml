@@ -1,0 +1,60 @@
+<div class="container-fluid">
+    <div class="page-header">
+        <h3>Send email</h3>
+    </div>
+    <div class="row">
+        <div class="col-md-6" id="divSend">
+            <div class="form-group">
+                <label>Email address</label>
+                <input type="text" class="form-control" id="txtEmail" />
+            </div>
+            <div class="form-group">
+                <label>Maintenance centre</label>
+                <select class="form-control" id="ddlCenter"></select>
+            </div>
+            <button class="btn btn-default" id="btnSubmit">Send test email</button>
+        </div>
+    </div>
+    <br/>
+    <div id="divError"></div>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            toggleOverlay($("#divSend"), true);
+            $.ajax({
+                url: '/data/common',
+                success: function (data) {
+                    data.centers.forEach(function (c) {
+                        $("#ddlCenter").append('<option value="' + c.name + '">' + c.name + '</option>');
+                    });
+                },
+                complete: function () {
+                    toggleOverlay($("#divSend"), false);
+                }
+            });
+
+            $("#btnSubmit").click(function() {
+                var email = $("#txtEmail").val().trim();
+                if (email != '') {
+                    toggleOverlay($("#divSend"), true);
+                    $("#divError").html("");
+
+                    $.ajax({
+                        url: '/admin/sendtestmail',
+                        data: {
+                            email: email, center: $("#ddlCenter").val()
+                        },
+                        success: function (sendResult) {
+                            $("#divError").html(sendResult.result);
+                        },
+                        complete: function () {
+                            toggleOverlay($("#divSend"), false);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}
