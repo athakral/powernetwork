@@ -79,7 +79,11 @@ namespace PowerNetwork
 
             app.UseStatusCodePagesWithReExecute("/StatusCode/{0}");
 
-            app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                ServeUnknownFileTypes = true,
+                DefaultContentType = "applications/octet-stream"
+            });
 
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
