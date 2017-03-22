@@ -1,9 +1,18 @@
 # copy and paste this file to sudo vim /etc/nginx/sites-available/default
+# You need to install letsencrypt and follow few steps from here https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-16-04
 
 server {
     listen 80;
     server_name gnf.bcgam40.com;
+    return  301 https://$server_name$request_uri;
+}
+server {
+    listen 443 ssl;
+    server_name gnf.bcgam40.com;
+    ssl_certificate /etc/letsencrypt/live/gnf.bcgam40.com/cert.pem;
+    ssl_certificate_key /etc/letsencrypt/live/gnf.bcgam40.com/privkey.pem;
     location / {
+        allow all;
         proxy_pass http://localhost:5000;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
