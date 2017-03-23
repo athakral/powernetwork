@@ -279,7 +279,7 @@ namespace PowerNetwork.Core.Helpers {
             using (var connection = new NpgsqlConnection(_connectionString)) {
                 var command = new NpgsqlCommand(
                     @"select fecha, hora, intensidad_fase1, intensidad_fase2, intensidad_fase3, tension_fase1, tension_fase2, tension_fase3 
-                    from balance_final_def 
+                    from balance_final_def1 
                     where matricula = @Code and fecha >= @From and fecha <= @To", connection);
 
                 command.Parameters.Add("Code", NpgsqlDbType.Varchar).Value = code;
