@@ -133,7 +133,7 @@ namespace PowerNetwork.Web.Controllers {
                 body = body.Replace("${dataRows}", rowsHtml.ToString());
 
                 // start sending
-                var emailMessage = new MimeMessage { Body = new BodyBuilder { HtmlBody = body }.ToMessageBody() };
+                var emailMessage = new MimeMessage { Subject = subject, Body = new BodyBuilder { HtmlBody = body }.ToMessageBody() };
 
                 //// sending via Gmail
                 //emailMessage.From.Add(new MailboxAddress("", "tmhdev.01@gmail.com"));
