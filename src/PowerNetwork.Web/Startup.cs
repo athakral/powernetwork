@@ -13,12 +13,15 @@ using PowerNetwork.Core.DataModels;
 using PowerNetwork.Core.Loggers;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
+using PowerNetwork.Core.Helpers;
 using PowerNetwork.Web.Filters;
 
 namespace PowerNetwork
 {
     public class Startup
     {
+        private IHostingEnvironment Environment { get; set; }
+
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -26,7 +29,9 @@ namespace PowerNetwork
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
+
             Configuration = builder.Build();
+            Environment = env;
         }
 
         public IConfigurationRoot Configuration { get; }
@@ -36,6 +41,7 @@ namespace PowerNetwork
         {
             services.AddDistributedMemoryCache(); // Adds a default in-memory implementation of IDistributedCache
             services.AddSession();
+
             // Add framework services.
             services.AddMvc().AddJsonOptions(jsonOptions =>
             {
@@ -59,6 +65,11 @@ namespace PowerNetwork
             services.AddOptions();
             services.Configure<AppConfig>(options => Configuration.GetSection("AppConfig").Bind(options));
 
+            if (Environment.EnvironmentName == "Demo" || Environment.EnvironmentName == "DemoProduction") {
+                services.AddSingleton<IDataService>(new DataService2(Configuration.GetSection("AppConfig")["ConnectionString"]));
+            } else {
+                services.AddSingleton<IDataService>(new DataService(Configuration.GetSection("AppConfig")["ConnectionString"]));
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

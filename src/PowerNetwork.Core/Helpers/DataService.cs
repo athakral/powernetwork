@@ -7,17 +7,11 @@ using Npgsql;
 using NpgsqlTypes;
 
 namespace PowerNetwork.Core.Helpers {
-    public class DataService {
+    public class DataService : IDataService {
 
         private readonly string _connectionString;
-        private static DataService _instance;
 
-        public static DataService Instance(string connectionString) {
-            _instance = _instance ?? (new DataService(connectionString));
-            return _instance;
-        }
-
-        private DataService(string connectionString) {
+        public DataService(string connectionString) {
             _connectionString = connectionString;
         }
 

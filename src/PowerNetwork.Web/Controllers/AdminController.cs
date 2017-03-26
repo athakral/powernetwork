@@ -23,13 +23,15 @@ namespace PowerNetwork.Web.Controllers {
         private readonly AppConfig _appConf;
         private readonly IHostingEnvironment _hostingEnvironment;
 
-        private readonly DataService _dataService;
+        private readonly IDataService _dataService;
+        private readonly string _rootDataFolder;
 
-        public AdminController(IOptions<AppConfig> appConfig, IHostingEnvironment hostingEnvironment) {
+        public AdminController(IOptions<AppConfig> appConfig, IHostingEnvironment hostingEnvironment, IDataService dataService) {
             _appConf = appConfig.Value;
             _hostingEnvironment = hostingEnvironment;
 
-            _dataService = DataService.Instance(appConfig.Value.ConnectionString);
+            _dataService = dataService;
+            _rootDataFolder = _hostingEnvironment.EnvironmentName == "Demo" || _hostingEnvironment.EnvironmentName == "DemoProduction" ? "data/sample/" : "data/";
         }
 
         // TODO (Hoa): still in working with AWS credentials
@@ -49,15 +51,6 @@ namespace PowerNetwork.Web.Controllers {
             var result = "";
 
             try {
-                var emailMessage = new MimeMessage();
-
-                emailMessage.From.Add(new MailboxAddress("", "tmhdev.01@gmail.com"));
-                //emailMessage.From.Add(new MailboxAddress("", "minhhoa.work@gmail.com"));
-                //emailMessage.From.Add(new MailboxAddress("", "tortosa.lucia@bcg.com"));
-
-                emailMessage.To.Add(new MailboxAddress("", email));
-                //emailMessage.To.Add(new MailboxAddress("", "tortosa.lucia@bcg.com"));
-
                 // prepare data
                 var date2 = DateTime.Now.Date;
                 var date1 = date2.AddDays(-30);
@@ -66,7 +59,7 @@ namespace PowerNetwork.Web.Controllers {
                 var unbalanceAlarms = _dataService.UnbalanceAlarms(0, 100, 0);
 
                 if (_ctsItems == null) {
-                    var csvReaderCts = new CsvReader(System.IO.File.OpenText(Path.Combine(_hostingEnvironment.WebRootPath, "data/cts_v1.2.csv")),
+                    var csvReaderCts = new CsvReader(System.IO.File.OpenText(Path.Combine(_hostingEnvironment.WebRootPath, _rootDataFolder + "cts_v1.2.csv")),
                         new CsvConfiguration { HasHeaderRecord = false, WillThrowOnMissingField = false });
 
                     _ctsItems = csvReaderCts.GetRecords<CtsModel>().ToArray();
@@ -123,7 +116,7 @@ namespace PowerNetwork.Web.Controllers {
                 }
 
                 // build email
-                emailMessage.Subject = "[TCE] Informe periódico de anomalías " + date2.ToString("dd-MM-yyyy");
+                var subject = "[TCE] Informe periódico de anomalías " + date2.ToString("dd-MM-yyyy");
 
                 var body = System.IO.File.ReadAllText(Path.Combine(_hostingEnvironment.WebRootPath, "emails/monthly-report.html"));
                 body = body.Replace("${date}", date2.ToString("dd-MM-yyyy"));
@@ -140,22 +133,34 @@ namespace PowerNetwork.Web.Controllers {
                 body = body.Replace("${dataRows}", rowsHtml.ToString());
 
                 // start sending
-                var bodyBuilder = new BodyBuilder { HtmlBody = body };
-                emailMessage.Body = bodyBuilder.ToMessageBody();
+                var emailMessage = new MimeMessage { Body = new BodyBuilder { HtmlBody = body }.ToMessageBody() };
 
+                //// sending via Gmail
+                //emailMessage.From.Add(new MailboxAddress("", "tmhdev.01@gmail.com"));
+                //emailMessage.To.Add(new MailboxAddress("", email));
+
+                //using (var client = new SmtpClient()) {
+                //    client.Connect("smtp.gmail.com", 587, false);
+                //    client.AuthenticationMechanisms.Remove("XOAUTH2");
+                //    client.Authenticate("tmhdev.01@gmail.com", "minhhoa123");
+
+                //    client.Send(emailMessage);
+                //    client.Disconnect(true);
+                //}
+
+                // sending via SES
+                emailMessage.From.Add(new MailboxAddress("", "minhhoa.work@gmail.com"));
+                emailMessage.To.Add(new MailboxAddress("", email));
+                
                 using (var client = new SmtpClient()) {
-                    client.Connect("smtp.gmail.com", 587, false);
-                    //client.Connect("email-smtp.eu-west-1.amazonaws.com", 587, SecureSocketOptions.StartTls);
-
-                    client.AuthenticationMechanisms.Remove("XOAUTH2");
-
-                    client.Authenticate("tmhdev.01@gmail.com", "minhhoa123");
-                    //client.Authenticate("AKIAI3OCKSODKATIYELA", "Ap+n1TbW2lW5Vvx237wYj8T7bSikUD/UB+Pod7RNXeNi");
+                    client.Connect("email-smtp.eu-west-1.amazonaws.com", 587, SecureSocketOptions.StartTls);
+                    client.Authenticate("AKIAI3OCKSODKATIYELA", "Ap+n1TbW2lW5Vvx237wYj8T7bSikUD/UB+Pod7RNXeNi");
 
                     client.Send(emailMessage);
                     client.Disconnect(true);
                 }
 
+                // return
                 result = "Email has been sent successfully";
 
             } catch (Exception ex) {

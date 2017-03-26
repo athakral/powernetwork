@@ -669,15 +669,9 @@
                     });
                 }
 
-                var staticImg = $("#map img[src*='StaticMapService.GetMapImage']");
                 var dynamicImg = $("#map img[src*='maps/vt?pb=']");
-
-                if (staticImg.length > 0 && dynamicImg.length > 0) {
-                    $(dynamicImg[0])
-                        .parent()
-                        .parent()
-                        .css("width", staticImg.parent().css("width"))
-                        .css("height", staticImg.parent().css("height"));
+                if (dynamicImg.length > 0) {
+                    $(dynamicImg[0]).parent().parent().css("width", "1000px").css("height", "1000px");
                 }
             });
         }
@@ -1095,7 +1089,7 @@
 
             toggleOverlay($("#intensityContainer"), true);
             $.ajax({
-                url: '/data/intensity2',
+                url: '/data/intensity',
                 data: { code: currentCts, mode: 0, from: $('#dpkFrom input').val(), to: $('#dpkTo input').val(), exit: exitQuery },
                 success: function (data) {
 
@@ -1298,7 +1292,12 @@
             });
 
             $("#btnExportPdf").click(function () {
+                var bodyWidth = $("body").width();
+                var printZoom = Math.round(104500.0 / bodyWidth);
+                $("head").append("<style type=\"text/css\">@@media print { body { width: " + bodyWidth + "px; zoom: " + printZoom + "%; } }");
+
                 window.print();
+
                 //var data = {};
                 //data.zoom = map.getZoom();
                 //data.center = map.getCenter();

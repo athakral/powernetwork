@@ -16,11 +16,15 @@ namespace PowerNetwork.Web.Controllers {
     public class DataController : Controller {
 
         private readonly IHostingEnvironment _hostingEnvironment;
-        private readonly DataService _dataService;
+        private readonly IDataService _dataService;
 
-        public DataController(IHostingEnvironment hostingEnvironment, IOptions<AppConfig> appConfig) {
+        private readonly string _rootDataFolder;
+
+        public DataController(IHostingEnvironment hostingEnvironment, IDataService dataService) {
             _hostingEnvironment = hostingEnvironment;
-            _dataService = DataService.Instance(appConfig.Value.ConnectionString);
+            _dataService = dataService;
+
+            _rootDataFolder = _hostingEnvironment.EnvironmentName == "Demo" || _hostingEnvironment.EnvironmentName == "DemoProduction" ? "data/sample/" : "data/";
         }
 
         private string MapPath(string path) {
@@ -35,17 +39,17 @@ namespace PowerNetwork.Web.Controllers {
             var config = new CsvConfiguration { HasHeaderRecord = false };
 
             if (_ctsRegions == null) {
-                var csvReaderRegion = new CsvReader(System.IO.File.OpenText(MapPath("data/region_v1.2.csv")), config);
+                var csvReaderRegion = new CsvReader(System.IO.File.OpenText(MapPath(_rootDataFolder + "region_v1.2.csv")), config);
                 _ctsRegions = csvReaderRegion.GetRecords<CtsRegionModel>().ToArray();
             }
 
             if (_ctsCities == null) {
-                var csvReaderCity = new CsvReader(System.IO.File.OpenText(MapPath("data/city_v1.2.csv")), config);
+                var csvReaderCity = new CsvReader(System.IO.File.OpenText(MapPath(_rootDataFolder + "city_v1.2.csv")), config);
                 _ctsCities = csvReaderCity.GetRecords<CtsCityModel>().ToArray();
             }
 
             if (_ctsCenters == null) {
-                var csvReaderCenter = new CsvReader(System.IO.File.OpenText(MapPath("data/center_v1.2.csv")), config);
+                var csvReaderCenter = new CsvReader(System.IO.File.OpenText(MapPath(_rootDataFolder + "center_v1.2.csv")), config);
                 _ctsCenters = csvReaderCenter.GetRecords<CtsCenterModel>().ToArray();
             }
 
@@ -56,7 +60,7 @@ namespace PowerNetwork.Web.Controllers {
 
         public IActionResult Cts(double x1, double x2, double y1, double y2) {
             if (_ctsItems == null) {
-                var csvReaderCts = new CsvReader(System.IO.File.OpenText(MapPath("data/cts_v1.2.csv")),
+                var csvReaderCts = new CsvReader(System.IO.File.OpenText(MapPath(_rootDataFolder + "cts_v1.2.csv")),
                     new CsvConfiguration() { HasHeaderRecord = false, WillThrowOnMissingField = false });
 
                 _ctsItems = csvReaderCts.GetRecords<CtsModel>().ToArray();
@@ -81,7 +85,7 @@ namespace PowerNetwork.Web.Controllers {
 
         public IActionResult CtsSearch(string code) {
             if (_ctsItems == null) {
-                var csvReaderCts = new CsvReader(System.IO.File.OpenText(MapPath("data/cts_v1.2.csv")),
+                var csvReaderCts = new CsvReader(System.IO.File.OpenText(MapPath(_rootDataFolder + "cts_v1.2.csv")),
                     new CsvConfiguration() { HasHeaderRecord = false, WillThrowOnMissingField = false });
 
                 _ctsItems = csvReaderCts.GetRecords<CtsModel>().ToArray();
@@ -92,7 +96,7 @@ namespace PowerNetwork.Web.Controllers {
 
         public IActionResult MeterSearch(string code) {
             if (_ctsItems == null) {
-                var csvReaderCts = new CsvReader(System.IO.File.OpenText(MapPath("data/cts_v1.2.csv")),
+                var csvReaderCts = new CsvReader(System.IO.File.OpenText(MapPath(_rootDataFolder + "cts_v1.2.csv")),
                     new CsvConfiguration() { HasHeaderRecord = false, WillThrowOnMissingField = false });
 
                 _ctsItems = csvReaderCts.GetRecords<CtsModel>().ToArray();
@@ -135,7 +139,7 @@ namespace PowerNetwork.Web.Controllers {
             var unbalanceAlarms = _dataService.UnbalanceAlarms(teleLevel0, teleLevel1, tipo);
 
             if (_ctsItems == null) {
-                var csvReaderCts = new CsvReader(System.IO.File.OpenText(MapPath("data/cts_v1.2.csv")),
+                var csvReaderCts = new CsvReader(System.IO.File.OpenText(MapPath(_rootDataFolder + "cts_v1.2.csv")),
                     new CsvConfiguration { HasHeaderRecord = false, WillThrowOnMissingField = false });
 
                 _ctsItems = csvReaderCts.GetRecords<CtsModel>().ToArray();
@@ -176,7 +180,7 @@ namespace PowerNetwork.Web.Controllers {
             var alarms = _dataService.FraudAlarms(teleLevel0, teleLevel1, tipo);
 
             if (_ctsItems == null) {
-                var csvReaderCts = new CsvReader(System.IO.File.OpenText(MapPath("data/cts_v1.2.csv")),
+                var csvReaderCts = new CsvReader(System.IO.File.OpenText(MapPath(_rootDataFolder + "cts_v1.2.csv")),
                     new CsvConfiguration { HasHeaderRecord = false, WillThrowOnMissingField = false });
 
                 _ctsItems = csvReaderCts.GetRecords<CtsModel>().ToArray();
@@ -213,31 +217,7 @@ namespace PowerNetwork.Web.Controllers {
             return Json(new { items = result });
         }
 
-        private static IntensityCsvModel[] _intensityCsvItems;
-
         public IActionResult Intensity(string code, int mode, DateTime from, DateTime to, string exit) {
-            if (_intensityCsvItems == null) {
-                var csvReaderIntensity = new CsvReader(System.IO.File.OpenText(MapPath("data/intensity.txt")), new CsvConfiguration { HasHeaderRecord = false });
-                _intensityCsvItems = csvReaderIntensity.GetRecords<IntensityCsvModel>().ToArray();
-            }
-
-            var items = _intensityCsvItems.Where(o => o.Exit == exit && o.Date >= from && o.Date <= to).ToList();
-
-            var result = new List<IntensityOutModel>();
-
-            foreach (var item in items) {
-                result.Add(new IntensityOutModel {
-                    date = item.Date.ToString("yyyy-MM-dd") + " " + item.Hour.ToString("D2") + ":00:00",
-                    r = item.R,
-                    s = item.S,
-                    t = item.T
-                });
-            }
-
-            return Json(new { items = result });
-        }
-
-        public IActionResult Intensity2(string code, int mode, DateTime from, DateTime to, string exit) {
             var items = _dataService.Intensity(code, from, to, exit).OrderBy(o => o.Date).ThenBy(o => o.Hour).ToList();
 
             var result = new List<IntensityOutModel>();

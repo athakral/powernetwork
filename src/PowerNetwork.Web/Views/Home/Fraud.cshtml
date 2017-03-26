@@ -517,15 +517,9 @@
                     });
                 }
 
-                var staticImg = $("#map img[src*='StaticMapService.GetMapImage']");
                 var dynamicImg = $("#map img[src*='maps/vt?pb=']");
-
-                if (staticImg.length > 0 && dynamicImg.length > 0) {
-                    $(dynamicImg[0])
-                        .parent()
-                        .parent()
-                        .css("width", staticImg.parent().css("width"))
-                        .css("height", staticImg.parent().css("height"));
+                if (dynamicImg.length > 0) {
+                    $(dynamicImg[0]).parent().parent().css("width", "1000px").css("height", "1000px");
                 }
             });
         }
@@ -897,6 +891,10 @@
             });
 
             $("#btnExportPdf").click(function () {
+                var bodyWidth = $("body").width();
+                var printZoom = Math.round(104500.0 / bodyWidth);
+                $("head").append("<style type=\"text/css\">@@media print { body { width: " + bodyWidth + "px; zoom: " + printZoom + "%; } }");
+
                 window.print();
             });
         });
