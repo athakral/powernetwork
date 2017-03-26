@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -116,7 +116,7 @@ namespace PowerNetwork.Web.Controllers {
                 }
 
                 // build email
-                var subject = "[TCE] Informe periódico de anomalías " + date2.ToString("dd-MM-yyyy");
+                var subject = "[TCE] Informe periÃ³dico de anomalÃ­as " + date2.ToString("dd-MM-yyyy");
 
                 var body = System.IO.File.ReadAllText(Path.Combine(_hostingEnvironment.WebRootPath, "emails/monthly-report.html"));
                 body = body.Replace("${date}", date2.ToString("dd-MM-yyyy"));
@@ -133,7 +133,7 @@ namespace PowerNetwork.Web.Controllers {
                 body = body.Replace("${dataRows}", rowsHtml.ToString());
 
                 // start sending
-                var emailMessage = new MimeMessage { Subject = subject, Body = new BodyBuilder { HtmlBody = body }.ToMessageBody() };
+                var emailMessage = new MimeMessage { Body = new BodyBuilder { HtmlBody = body }.ToMessageBody() };
 
                 //// sending via Gmail
                 //emailMessage.From.Add(new MailboxAddress("", "tmhdev.01@gmail.com"));
