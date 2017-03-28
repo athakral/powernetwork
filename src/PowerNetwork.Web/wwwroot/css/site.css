@@ -319,6 +319,14 @@ hr {
         background-color: #E5EBEF;
     }
 
+    #outletView .chart-box-30 .chart-prefix:before, #outletView .chart-box-30 .chart-prefix:after {
+        background-color: #B2B2B2;
+    }
+
+    #outletView .chart-box-31 .chart-prefix:before, #outletView .chart-box-31 .chart-prefix:after {
+        background-color: #E2E2E2;
+    }
+
     #outletView .chart-box .chart-postfix {
         width: 1px;
         height: 100%;
@@ -357,7 +365,7 @@ hr {
             transform: skew(-5deg, 0deg);
         }
 
-    #outletView .chart-box-11, #outletView .chart-box-21 {
+    #outletView .chart-box-11, #outletView .chart-box-21, #outletView .chart-box-31 {
         border-right: 1px solid #ddd;
     }
 
@@ -381,6 +389,11 @@ hr {
 
     #outletView .chart-box-20 .chart-menu {
         background-color: #6F8FA1;
+    }
+
+    #outletView .chart-box-30 .chart-menu {
+        background-color: #ddd;
+        color: #555;
     }
 
     #outletView .chart-menu ul {
@@ -435,6 +448,10 @@ hr {
 
     #outletView .chart-box-20 .chart-menu-postfix:before, #outletView .chart-box-20 .chart-menu-postfix:after {
         background-color: #6F8FA1;
+    }
+
+    #outletView .chart-box-30 .chart-menu-postfix:before, #outletView .chart-box-30 .chart-menu-postfix:after {
+        background-color: #ddd;
     }
 
 @media print {

@@ -254,6 +254,39 @@
                 </div>
             </div>
         </div>
+        
+        <div class="row">
+            <div class="col-md-8 chart-with-menu">
+                <div class="panel panel-default overlay-container chart-box chart-box-30" id="energyContainer">
+                    <div class="chart-menu">
+                        <div style="margin-top: -130px;">
+                            Desbalances de energía entre Salidas y CT
+                            <ul>
+                                <li>Evolución histórica de diferencias</li>
+                                <li>Diferencias agrupadas para un período de tiempo determinado</li>
+                            </ul>
+                        </div>
+                        <div class="chart-menu-postfix"></div>
+                    </div>
+                    <div class="chart-prefix"></div>
+                    <div class="panel-heading">@ViewBag.Texts["Fraud.Graph.Energy"]</div>
+                    <div class="panel-body">
+                        <div id="energyChart" style="height: 240px;"></div>
+                    </div>
+                    <div class="chart-postfix"></div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="panel panel-default overlay-container chart-box chart-box-31" id="sumContainer">
+                    <div class="chart-prefix"></div>
+                    <div class="panel-heading">Desbalances de energía entre Salidas y CT</div>
+                    <div class="panel-body">
+                        <div id="sumChart" style="height: 240px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div style="page-break-before: always">
@@ -633,6 +666,7 @@
 
                                         currentCts = c.othercode;
                                         refreshOverviewCharts();
+                                        refreshEnergyCharts();
                                     });
 
                                     mapMarkers.cts.push(m);
@@ -876,6 +910,8 @@
 
             $('#dpkFrom, #dpkTo').on("dp.change", function () {
                 refreshOverviewCharts();
+                refreshEnergyCharts();
+
                 refreshIntensity();
                 refreshHistogram();
             });
@@ -1249,6 +1285,135 @@
                     toggleOverlay($("#histogramContainer"), false);
                 }
             });
+        }
+
+        var energyColors = ['#004165', '#b8c7d0'];
+
+        function refreshEnergyCharts() {
+            if (currentCts == null) return;
+
+            toggleOverlay($("#energyContainer"), true);
+            toggleOverlay($("#sumContainer"), true);
+
+            $.ajax({
+                url: '/data/fraud',
+                data: { code: currentCts, from: $('#dpkFrom input').val(), to: $('#dpkTo input').val() },
+                success: function (data) {
+
+                    data.items.forEach(function (d) {
+                        d.time = moment(d.date).toDate();
+                    });
+
+                    renderEnergyChart(data);
+                    renderSumChart(data);
+                },
+                complete: function () {
+                    toggleOverlay($("#energyContainer"), false);
+                    toggleOverlay($("#sumContainer"), false);
+                }
+            });
+        }
+
+        function renderEnergyChart(data) {
+            var container = d3.select("#energyChart");
+            container.html("");
+
+            if (data.items.length == 0) {
+                container.html("<span>No hay datos disponibles</span>");
+                return;
+            }
+
+            var containerSize = container.node().getBoundingClientRect(),
+                svg = container.append("svg").attr("width", containerSize.width).attr("height", containerSize.height),
+                margin = { top: 20, right: 20, bottom: 50, left: 70 },
+                width = containerSize.width - margin.left - margin.right,
+                height = containerSize.height - margin.top - margin.bottom,
+                g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            var clip = g.append("defs").append("clipPath").attr("id", "clipEnergy").append("rect").attr("width", 0).attr("height", height);
+
+            var x = d3.scaleTime().rangeRound([0, width]);
+            var y = d3.scaleLinear().rangeRound([height, 0]);
+
+            var lineCt = d3.line().x(function (d) { return x(d.time); }).y(function (d) { return y(d.ct); });
+            var lineExit = d3.line().x(function (d) { return x(d.time); }).y(function (d) { return y(d.exit); });
+
+            x.domain(d3.extent(data.items, function (d) { return d.time; }));
+
+            var domainCt = d3.extent(data.items, function (d) { return d.ct; });
+            var domainExit = d3.extent(data.items, function (d) { return d.exit; });
+            y.domain([d3.min([domainCt[0], domainExit[0]]), d3.max([domainCt[1], domainExit[1]])]);
+
+            g.append("g").attr("class", "axis axis--x").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x).ticks(10));
+
+            g.append("g").attr("class", "axis axis--y").call(d3.axisLeft(y).tickFormat(d3.format(".2s")))
+                .append("text").attr("fill", "#000").attr("transform", "rotate(-90)")
+                .attr("y", -52).attr("dy", "0.71em").style("text-anchor", "end").text("Energy values (kWh)");
+
+            var clipG = g.append("g").attr("clip-path", "url(#clipEnergy)");
+
+            var pathCt = clipG.append("path").datum(data.items).attr("class", "line").attr("d", lineCt).style("stroke", energyColors[0]);
+            var pathExit = clipG.append("path").datum(data.items).attr("class", "line").attr("d", lineExit).style("stroke", energyColors[1]);
+
+            var legends = g.append("g").attr("class", "legend").attr("transform", "translate(0," + (height + 40) + ")");
+
+            var legendCt = legends.append("g").attr("transform", "translate(0,0)");
+            legendCt.append("line").attr("x1", 0).attr("y1", 0).attr("x2", 20).attr("y2", 0).attr("stroke", energyColors[0]).attr("stroke-width", 2);
+            legendCt.append("text").attr("x", 25).attr("y", 4).text("CT");
+
+            var legendExit = legends.append("g").attr("transform", "translate(80,0)");
+            legendExit.append("line").attr("x1", 0).attr("y1", 0).attr("x2", 20).attr("y2", 0).attr("stroke", energyColors[1]).attr("stroke-width", 2);
+            legendExit.append("text").attr("x", 25).attr("y", 4).text("∑Salidas");
+
+            clip.transition().duration(1500).attr("width", width);
+        }
+
+        function renderSumChart(data) {
+            var container = d3.select("#sumChart");
+            container.html("");
+
+            if (data.sum == null || (data.sum.ct == 0 && data.sum.exit == 0)) {
+                container.html("<span>No hay datos disponibles</span>");
+                return;
+            }
+
+            var containerSize = container.node().getBoundingClientRect(),
+                svg = container.append("svg").attr("width", containerSize.width).attr("height", containerSize.height),
+                margin = { top: 20, right: 20, bottom: 50, left: 70 },
+                width = containerSize.width - margin.left - margin.right,
+                height = containerSize.height - margin.top - margin.bottom,
+                g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            var y = d3.scaleLinear().rangeRound([height, 0]);
+            y.domain([0, d3.max([data.sum.ct, data.sum.exit])]);
+
+            g.append("g").attr("class", "axis axis--y").call(d3.axisLeft(y).tickFormat(d3.format(".2s")))
+                .append("text").attr("fill", "#000").attr("transform", "rotate(-90)")
+                .attr("y", -52).attr("dy", "0.71em").style("text-anchor", "end").text("Energy (kWh)");
+
+            g.append("line").attr("x1", 0).attr("y1", height + 1).attr("x2", width).attr("y2", height)
+                .style("stroke", "#000").style("stroke-width", 1).style("shape-rendering", "crispEdges");
+
+            var colWidth = (width - 200) / 2;
+
+            var y1 = y(data.sum.ct), y2 = y(data.sum.exit);
+            if (y1 > height - 1) y1 = height - 1;
+            if (y2 > height - 1) y2 = height - 1;
+
+            g.append("rect").attr("x", 50).attr("y", y1).attr("width", colWidth).attr("height", height - y1).style("fill", energyColors[0]);
+            g.append("rect").attr("x", 150 + colWidth).attr("y", y2).attr("width", colWidth).attr("height", height - y2).style("fill", energyColors[1]);
+
+            g.append("text").style("text-anchor", "middle").attr("x", 50 + colWidth / 2).attr("y", height + 25).text("CT");
+            g.append("text").style("text-anchor", "middle").attr("x", 150 + colWidth * 1.5).attr("y", height + 25).text("∑Salidas");
+
+            var diff = Math.round((data.sum.exit - data.sum.ct) * 10) / 10;
+            var diffPercent = data.sum.ct > 0 ? Math.round((data.sum.exit - data.sum.ct) * 1000 / data.sum.ct) / 10 : 0;
+
+            g.append("circle").attr("cx", width / 2).attr("cy", height / 2).attr("r", 70)
+                .style("stroke", "#333").style("stroke-width", 1).style("fill", "#888").style("opacity", 0.2);
+
+            g.append("text").style("text-anchor", "middle").attr("x", width / 2).attr("y", height / 2 - 5).text(diffPercent + "%");
+            g.append("text").style("text-anchor", "middle").attr("x", width / 2).attr("y", height / 2 + 20).text("(" + diff + ")");
         }
 
         $(document).ready(function () {
