@@ -93,6 +93,13 @@ namespace PowerNetwork.Web.Controllers {
 
                     rowsHtml.Append("<td>" + _dataService.MaxExit(cts.othercode) + "</td>");
 
+                    // energy
+                    var fraudItems = _dataService.Fraud(cts.othercode, date1, date2);
+                    var sumCt = fraudItems.Sum(o => o.Ct);
+                    var sumExit = fraudItems.Sum(o => o.Exit);
+                    var diff = sumCt > 0 ? Math.Round((sumExit - sumCt) * 100 / sumCt, 1) : 0;
+                    rowsHtml.Append("<td>" + diff + "</td>");
+
                     rowsHtml.Append("</tr>");
                 }
 
@@ -111,6 +118,13 @@ namespace PowerNetwork.Web.Controllers {
                     unbalanceCount++;
                     rowsHtml.Append("<td>" + unbalanceAlarm.Ratio + "</td>");
                     rowsHtml.Append("<td>" + _dataService.MaxExit(cts.othercode) + "</td>");
+
+                    // energy
+                    var fraudItems = _dataService.Fraud(cts.othercode, date1, date2);
+                    var sumCt = fraudItems.Sum(o => o.Ct);
+                    var sumExit = fraudItems.Sum(o => o.Exit);
+                    var diff = sumCt > 0 ? Math.Round((sumExit - sumCt) * 100 / sumCt, 1) : 0;
+                    rowsHtml.Append("<td>" + diff + "</td>");
 
                     rowsHtml.Append("</tr>");
                 }
@@ -151,7 +165,7 @@ namespace PowerNetwork.Web.Controllers {
                 // sending via SES
                 emailMessage.From.Add(new MailboxAddress("", "minhhoa.work@gmail.com"));
                 emailMessage.To.Add(new MailboxAddress("", email));
-                
+
                 using (var client = new SmtpClient()) {
                     client.Connect("email-smtp.eu-west-1.amazonaws.com", 587, SecureSocketOptions.StartTls);
                     client.Authenticate("AKIAI3OCKSODKATIYELA", "Ap+n1TbW2lW5Vvx237wYj8T7bSikUD/UB+Pod7RNXeNi");
