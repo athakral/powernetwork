@@ -34,7 +34,7 @@
     <h1>
         @if (User.Identity.IsAuthenticated) {
             <small>(@User.Identity.Name: <a href="/home/logout"><span class="glyphicon glyphicon-off"></span> @ViewBag.Texts["Home.Logout"]</a>)</small>
-        } 
+        }
         @ViewBag.Texts["Fraud.Header"]
     </h1>
     <div class="row">
@@ -75,7 +75,7 @@
             <div class="form-group">
                 <label>Nivel de Telegestión</label>
                 <div style="padding-left: 20px;">
-                    <input type="text" id="sliderTeleLevel" /> 
+                    <input type="text" id="sliderTeleLevel" />
                     &nbsp;&nbsp;
                     <button id="btnTeleLevel" class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
                 </div>
@@ -158,7 +158,7 @@
             </div>
         </div>
         <br/>
-            
+
         <div class="row">
             <div class="col-md-8 chart-with-menu">
                 <div class="panel panel-default overlay-container chart-box chart-box-20" id="energyContainer">
@@ -225,7 +225,7 @@
         var mapData = {};
         var mapMarkers = { regions: [], cities: [], cts: [], meterGroups: [], cityDict: {}, ctsDict: {}, ctsCenter: null };
 
-        var mapOrigin = { center: { lat: 40.431075, lng: -3.703578 }, zoom: [6, 10, 13, 18] };
+        var mapOrigin = { center: { lat: @ViewBag.AppConf.MapLat, lng: @ViewBag.AppConf.MapLon }, zoom: [6, 10, 13, 18] };
 
         function initMap() {
             map = new google.maps.Map(document.getElementById('map'), {

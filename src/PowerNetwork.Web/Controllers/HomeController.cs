@@ -78,7 +78,7 @@ namespace PowerNetwork.Web.Controllers {
             }
 
             _logger.LogInformation("Passed Code " + loginModel.Code);
-            
+
             var requestContent = new StringContent("{\"AccessToken\":\"" + loginModel.Code + "\"}", System.Text.Encoding.UTF8, "application/json");
             requestContent.Headers.Clear();
             requestContent.Headers.TryAddWithoutValidation("Content-Type", "application/x-amz-json-1.1");
@@ -133,12 +133,14 @@ namespace PowerNetwork.Web.Controllers {
         [Authorize(Policy = "ReadPolicy")]
         [Route("power-outlet")]
         public IActionResult PowerOutlet() {
+            ViewBag.AppConf = _appConf;
             return View();
         }
 
         [Authorize(Policy = "ReadPolicy")]
         [Route("fraud")]
         public IActionResult Fraud() {
+            ViewBag.AppConf = _appConf;
             return View();
         }
 

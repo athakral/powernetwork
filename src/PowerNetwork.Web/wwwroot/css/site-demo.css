@@ -83,3 +83,7 @@
 #outletView .chart-box-20 .chart-menu-postfix:before, #outletView .chart-box-20 .chart-menu-postfix:after {
     background-color: #6E6F73;
 }
+
+#outletView #energyContainer, #outletView #sumContainer {
+    display: none;
+}

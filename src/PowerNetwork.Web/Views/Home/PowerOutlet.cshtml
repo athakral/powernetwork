@@ -33,8 +33,8 @@
     </ul>
     <h1>
         @if (User.Identity.IsAuthenticated) {
-            <small>(@User.Identity.Name: <a href="/home/logout"><span class="glyphicon glyphicon-off"></span> @ViewBag.Texts["Home.Logout"]</a>)</small>        
-        } 
+            <small>(@User.Identity.Name: <a href="/home/logout"><span class="glyphicon glyphicon-off"></span> @ViewBag.Texts["Home.Logout"]</a>)</small>
+        }
         @ViewBag.Texts["Power.Header"]
     </h1>
     <div class="row">
@@ -75,7 +75,7 @@
             <div class="form-group">
                 <label>Nivel de Telegestión</label>
                 <div style="padding-left: 20px;">
-                    <input type="text" id="sliderTeleLevel" /> 
+                    <input type="text" id="sliderTeleLevel" />
                     &nbsp;&nbsp;
                     <button id="btnTeleLevel" class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
                 </div>
@@ -167,7 +167,7 @@
             </div>
         </div>
     </div>
-    
+
     <br />
 
     <div id="outletCharts" style="page-break-before: always">
@@ -254,7 +254,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="row">
             <div class="col-md-8 chart-with-menu">
                 <div class="panel panel-default overlay-container chart-box chart-box-30" id="energyContainer">
@@ -295,7 +295,7 @@
                 <b>Meaning of the Operating Indicators</b>
             </h3>
             <p>
-                <b>Overloading alarm:</b> it includes all the transformers that have been working at an intensity rate higher than 85% of nominal 
+                <b>Overloading alarm:</b> it includes all the transformers that have been working at an intensity rate higher than 85% of nominal
                 intensity during more than the 25% of the month hours (last 31 days)
             </p>
             <ul>
@@ -312,7 +312,7 @@
                 </li>
             </ul>
             <p>
-                <b>Intensity unbalances between exits:</b> it includes all the transformers which its difference between the exit with the 
+                <b>Intensity unbalances between exits:</b> it includes all the transformers which its difference between the exit with the
                 highest and lowest intensity ratio is higher than 60 pp. during more than 10% of the month hours (last 31 days)
             </p>
             <ul>
@@ -406,7 +406,7 @@
         var mapData = {};
         var mapMarkers = { regions: [], cities: [], cts: [], meterGroups: [], cityDict: {}, ctsDict: {}, ctsCenter: null };
 
-        var mapOrigin = { center: { lat: 40.431075, lng: -3.703578 }, zoom: [6, 10, 13, 18] };
+        var mapOrigin = { center: { lat: @ViewBag.AppConf.MapLat, lng: @ViewBag.AppConf.MapLon }, zoom: [6, 10, 13, 18] };
 
         function initMap() {
             map = new google.maps.Map(document.getElementById('map'), {
