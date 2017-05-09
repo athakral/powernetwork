@@ -135,7 +135,7 @@
         <div class="col-md-3 overlay-container" id="outletAlarms">
             <div class="panel panel-default">
                 <div class="panel-heading">@ViewBag.Texts["Power.Alarm.Overloading"]</div>
-                <div class="panel-body">
+                <div class="panel-body" style="height: 475px;">
                     <table id="tblOverloadAlarms" class="table table-condensed table-striped table-responsive">
                         <thead>
                             <tr>
@@ -150,7 +150,7 @@
                     </table>
                 </div>
             </div>
-            <div class="panel panel-default">
+            <div class="panel panel-default" style="display: none;">
                 <div class="panel-heading">@Html.Raw(ViewBag.Texts["Power.Alarm.Unbalance"])</div>
                 <div class="panel-body">
                     <table id="tblUnbalanceAlarms" class="table table-condensed table-striped table-responsive">
