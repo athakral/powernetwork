@@ -66,7 +66,7 @@ Power.Graph.Yearly			Yearly
 
 
 
-Fraud.Header				Loss Management Use Case
+Fraud.Header				Fraud Detection
 Fraud.Alarm.Unbalance		Unbalances intensity<br/>between CT and Exits
 Fraud.Alarm.Ratio1			Total losses between<br/>CT and Exits
 Fraud.Graph.Energy			Unbalances curve between CT and Exits

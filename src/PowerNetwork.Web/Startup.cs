@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -52,9 +53,9 @@ namespace PowerNetwork
             {
                 options.Filters.Add(new TypeFilterAttribute(typeof(SharedDataFilter)));
             });
-            
+
             services.AddAuthorization(options =>   {
-                    options.AddPolicy("ReadPolicy", policyBuilder => 
+                    options.AddPolicy("ReadPolicy", policyBuilder =>
                     {
                         policyBuilder.RequireAuthenticatedUser()
                             .RequireAssertion(context => context.User.HasClaim("Read", "true"))
@@ -66,7 +67,7 @@ namespace PowerNetwork
             services.Configure<AppConfig>(options => Configuration.GetSection("AppConfig").Bind(options));
 
             if (Environment.EnvironmentName == "Demo" || Environment.EnvironmentName == "DemoProduction") {
-                services.AddSingleton<IDataService>(new DataService2(Configuration.GetSection("AppConfig")["ConnectionString"]));
+                services.AddSingleton<IDataService>(new DataService2(Configuration.GetSection("AppConfig")["ConnectionString"], Path.Combine(Environment.WebRootPath, "data/sample/")));
             } else {
                 services.AddSingleton<IDataService>(new DataService(Configuration.GetSection("AppConfig")["ConnectionString"]));
             }
@@ -85,6 +86,7 @@ namespace PowerNetwork
             }
             else
             {
+                //app.UseDeveloperExceptionPage();
                 app.UseExceptionHandler("/Home/Error");
             }
 

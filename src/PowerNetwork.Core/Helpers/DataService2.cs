@@ -5,17 +5,21 @@ using System.Linq;
 using PowerNetwork.Core.DataModels;
 using Npgsql;
 using NpgsqlTypes;
+using CsvHelper;
+using CsvHelper.Configuration;
 
 namespace PowerNetwork.Core.Helpers {
     public class DataService2 : IDataService {
 
         private readonly string _connectionString;
+        private readonly string _rootDataFolder;
 
         private double deltaLon = 6;
         private double deltaLat = 8.45;
 
-        public DataService2(string connectionString) {
+        public DataService2(string connectionString, string rootDataFolder) {
             _connectionString = connectionString;
+            _rootDataFolder = rootDataFolder;
         }
 
         public List<CtTipoModel> Cts(double x1, double x2, double y1, double y2) {
@@ -228,48 +232,10 @@ namespace PowerNetwork.Core.Helpers {
         }
 
         public List<AlarmModel> FraudAlarms(int teleLevel0, int teleLevel1, int tipo) {
-            var result = new List<AlarmModel>();
+            var csvReader = new CsvReader(System.IO.File.OpenText(_rootDataFolder + "tabla_diferencias_fraude_bcg.csv"),
+                new CsvConfiguration { HasHeaderRecord = false, WillThrowOnMissingField = false });
 
-            //TODO: temporary return empty list
-            return result;
-
-            using (var connection = new NpgsqlConnection(_connectionString)) {
-                NpgsqlCommand command;
-
-                if (teleLevel0 == 0 && teleLevel1 == 100 && tipo == 0) {
-                    command = new NpgsqlCommand(
-                        @"select matricula, med_dif_energia_ct_sal
-                        from tabla_diferencias_fraude order by med_dif_energia_ct_sal desc", connection);
-
-                } else {
-                    var text =
-                        @"select a.matricula, a.med_dif_energia_ct_sal
-                        from tabla_diferencias_fraude a
-                        join cts_x_tipo tipo on tipo.matricula_ct = a.matricula
-                        where ";
-
-                    var whereItems = new List<string>();
-
-                    if (teleLevel0 > 0) whereItems.Add("tipo.prc_telegestionados >= " + teleLevel0);
-                    if (teleLevel1 < 100) whereItems.Add("tipo.prc_telegestionados <= " + teleLevel1);
-
-                    if (tipo == 5) whereItems.Add("tipo.tp4 = 0 and tipo.tp5 = 1 and tipo.t_otro = 0");
-                    if (tipo == 4) whereItems.Add("tipo.tp4 = 1");
-
-                    command = new NpgsqlCommand(text + string.Join(" and ", whereItems) + " order by a.med_dif_energia_ct_sal desc", connection);
-                }
-
-                connection.Open();
-
-                var reader = command.ExecuteReader();
-                while (reader.Read()) {
-                    var model = new AlarmModel { Code = reader["matricula"] as string, Ratio = (double) reader["med_dif_energia_ct_sal"] };
-                    result.Add(model);
-                }
-
-                reader.Close();
-            }
-
+            var result = csvReader.GetRecords<AlarmModel>().OrderByDescending(o => o.Ratio).ToList();
             return result;
         }
 
@@ -477,42 +443,20 @@ namespace PowerNetwork.Core.Helpers {
         }
 
         public List<FraudModel> Fraud(string code, DateTime from, DateTime to) {
-            var result = new List<FraudModel>();
+            var csvReader = new CsvReader(System.IO.File.OpenText(_rootDataFolder + "grafica_serie_fraude_bcg.csv"),
+                new CsvConfiguration { HasHeaderRecord = false, WillThrowOnMissingField = false });
 
-            //TODO: temporary return empty list
-            return result;
+            var items = csvReader.GetRecords<CsvFraud>()
+                .Where(o => o.Code == code && o.Date >= from && o.Date <= to).OrderBy(o => o.Date);
 
-            using (var connection = new NpgsqlConnection(_connectionString)) {
-                var command = new NpgsqlCommand(
-                    @"select fecha, energia_g03, sum_energia_imp_salidas
-                    from grafica_serie_fraude
-                    where matricula = @Code and fecha >= @From and fecha <= @To
-                    order by fecha", connection);
-
-                command.Parameters.Add("Code", NpgsqlDbType.Varchar).Value = code;
-                command.Parameters.Add("From", NpgsqlDbType.Timestamp).Value = from;
-                command.Parameters.Add("To", NpgsqlDbType.Timestamp).Value = to;
-
-                connection.Open();
-
-                var reader = command.ExecuteReader();
-
-                while (reader.Read()) {
-                    if (reader.IsDBNull(1) || reader.IsDBNull(2)) continue;
-
-                    var model = new FraudModel {
-                        Date = (DateTime) reader["fecha"],
-                        Ct = (long) reader["energia_g03"],
-                        Exit = (double) reader["sum_energia_imp_salidas"]
-                    };
-
-                    result.Add(model);
-                }
-
-                reader.Close();
-            }
-
-            return result;
+            return items.Select(o => new FraudModel { Date = o.Date, Ct = o.Ct, Exit = o.Exit }).ToList();
         }
+    }
+
+    internal class CsvFraud {
+        public string Code { get; set; }
+        public DateTime Date { get; set; }
+        public long Ct { get; set; }
+        public double Exit { get; set; }
     }
 }

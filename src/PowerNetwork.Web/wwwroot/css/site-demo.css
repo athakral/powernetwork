@@ -92,5 +92,5 @@
 }
 
 #outletView #energyContainer, #outletView #sumContainer {
-    display: none;
+    /*display: none;*/
 }
