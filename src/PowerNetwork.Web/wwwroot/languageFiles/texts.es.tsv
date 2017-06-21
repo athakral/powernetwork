@@ -17,6 +17,8 @@ Main.Box2.Header			Gestión de<br/>Pérdidas
 Main.Box2.Content			La Gestión de las Pérdidas permite ver los Desbalances de Intensidad que se producen entre la energía suministrada y la consumida, permitiendo identificar si son pérdidas gestionables o no gestionables
 Main.Box3.Header			Probabilidad<br/>de Fallo
 Main.Box3.Content			El cálculo de la Probabilidad de Fallo permite identificar qué activos están en riesgo para definir los mantenimientos críticos y extraordinarios
+Main.Box4.Header			Gestión del<br/>mantenimiento
+Main.Box4.Content			La Gestión del Mantenimiento permite determinar los Centros de Transformación sobre los que realizar mantenimientos preventivos en función de su probabilidad de fallo y su criticidad técnica y económica
 
 
 
@@ -26,6 +28,7 @@ Power.Menu.Power			Gestión de<br/>Sobrecargas
 Power.Menu.Fraud			Gestión de<br/>Pérdidas
 Power.Menu.Fail				Probabilidad<br/>de Fallo
 Power.Menu.Download			Descargar<br/>Informe
+Power.Menu.Strategy			Gestión del<br/>mantenimiento
 
 Power.Filter.Region			Región
 Power.Filter.City			Ciudad

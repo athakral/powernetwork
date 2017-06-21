@@ -1,5 +1,5 @@
 ﻿#loginView {
-    background: url('/images/bg-2.jpg') no-repeat center center fixed;
+    background: url('/images/bg-4.jpg') no-repeat center center fixed;
     background-size: cover;
 }
 
@@ -8,13 +8,13 @@
     }
 
     #loginView .login-container {
-        left: 0;
+        left: 50%;
         width: 360px;
+        margin-left: -180px;
         color: #177B57;
-        -webkit-border-top-right-radius: 5px;
-        border-top-right-radius: 5px;
-        -webkit-border-bottom-right-radius: 5px;
-        border-bottom-right-radius: 5px;
+        margin-top: -100px;
+        -webkit-border-radius: 5px;
+        border-radius: 5px;
     }
 
         #loginView .login-container .btn {
@@ -26,8 +26,10 @@
         font-size: 60px;
         font-weight: bold;
         position: absolute;
-        right: 40px;
-        bottom: 30px;
+        top: 50%;
+        margin-top: -230px;
+        width: 100%;
+        text-align: center;
     }
 
     #loginView h3 {
@@ -38,10 +40,11 @@
         top: 50%;
         left: 40px;
         margin-top: -200px;
+        display: none;
     }
 
 #homeView .logo {
-    top: 40px;
+    top: 60px;
 }
 
 #outletView .logo {
@@ -49,6 +52,10 @@
 }
 
 #outletView #topMenu {
+    /*display: none;*/
+}
+
+#outletView #topMenu li:last-child {
     display: none;
 }
 

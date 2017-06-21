@@ -1,4 +1,4 @@
-﻿Home.Header1				Asset Management 4.0
+﻿Home.Header1				BCG Asset Management 4.0
 Home.Header2				Asset Control Center
 
 Home.Login.Username			Username
@@ -10,13 +10,15 @@ Home.Logout					log out
 
 
 
-Main.Header					Asset Control Center
+Main.Header					Asset Management 4.0
 Main.Box1.Header			Loading<br />monitoring
 Main.Box1.Content			The power outlet measurement allows to identify meters overloading and unbalances among grids by sending alarms to the system, reducing on the ground visits
 Main.Box2.Header			Fraud<br/>detection
 Main.Box2.Content			The fraud detection identifies handled smart meters and out of normal power consumptions to tackle the problem
 Main.Box3.Header			Probability<br/>of failure
 Main.Box3.Content			The probability to failure allows to identify which assets are at risk to define critical and extraordinary maintenance
+Main.Box4.Header			Maintenance<br/>management
+Main.Box4.Content			The Maintenance Management allows to determine the Transformation Centers on which to carry out preventive maintenance in function of its probability of failure and its technical and economic criticality
 
 
 
@@ -26,6 +28,7 @@ Power.Menu.Power			Loading<br />monitoring
 Power.Menu.Fraud			Fraud<br/>detection
 Power.Menu.Fail				Probability<br/>of failure
 Power.Menu.Download			Download<br />report
+Power.Menu.Strategy			Maintenance<br/>management
 
 Power.Filter.Region			Region
 Power.Filter.City			City

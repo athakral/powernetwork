@@ -123,9 +123,9 @@ namespace PowerNetwork.Web.Controllers {
         [Authorize(Policy = "ReadPolicy")]
         [Route("main")]
         public IActionResult Main() {
-            if (_hostingEnvironment.EnvironmentName == "Demo" || _hostingEnvironment.EnvironmentName == "DemoProduction") {
-                return Redirect("/power-outlet");
-            }
+            //if (_hostingEnvironment.EnvironmentName == "Demo" || _hostingEnvironment.EnvironmentName == "DemoProduction") {
+            //    return Redirect("/power-outlet");
+            //}
 
             return View();
         }
@@ -140,6 +140,13 @@ namespace PowerNetwork.Web.Controllers {
         [Authorize(Policy = "ReadPolicy")]
         [Route("fraud")]
         public IActionResult Fraud() {
+            ViewBag.AppConf = _appConf;
+            return View();
+        }
+
+        [Authorize(Policy = "ReadPolicy")]
+        [Route("mpgs")]
+        public IActionResult Mpgs() {
             ViewBag.AppConf = _appConf;
             return View();
         }
