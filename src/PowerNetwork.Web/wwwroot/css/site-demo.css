@@ -92,5 +92,9 @@
 }
 
 #outletView #energyContainer, #outletView #sumContainer {
-    /*display: none;*/
+    display: none;
+}
+
+.fraud-view #energyContainer, .fraud-view #sumContainer {
+    display: block !important;
 }
