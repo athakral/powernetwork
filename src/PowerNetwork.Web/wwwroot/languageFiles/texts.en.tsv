@@ -1,4 +1,4 @@
-﻿Home.Header1				BCG Asset Management 4.0
+﻿Home.Header1			BCG Asset Control Center
 Home.Header2				Asset Control Center
 
 Home.Login.Username			Username
@@ -10,7 +10,7 @@ Home.Logout					log out
 
 
 
-Main.Header					Asset Management 4.0
+Main.Header					Asset Control Center
 Main.Box1.Header			Loading<br />monitoring
 Main.Box1.Content			The power outlet measurement allows to identify meters overloading and unbalances among grids by sending alarms to the system, reducing on the ground visits
 Main.Box2.Header			Fraud<br/>detection
