@@ -17,6 +17,10 @@ namespace PowerNetwork.Core.Helpers {
         private double deltaLon = 6;
         private double deltaLat = 8.45;
 
+        private static readonly object Lock = new object();
+        private List<AlarmModel> _fraudAlarms = null;
+        private List<CsvFraud> _fraud = null;
+
         public DataService2(string connectionString, string rootDataFolder) {
             _connectionString = connectionString;
             _rootDataFolder = rootDataFolder;
@@ -232,11 +236,15 @@ namespace PowerNetwork.Core.Helpers {
         }
 
         public List<AlarmModel> FraudAlarms(int teleLevel0, int teleLevel1, int tipo) {
-            var csvReader = new CsvReader(System.IO.File.OpenText(_rootDataFolder + "tabla_diferencias_fraude_bcg.csv"),
-                new CsvConfiguration { HasHeaderRecord = false, WillThrowOnMissingField = false });
+            if (_fraudAlarms == null) {
+                lock (Lock) {
+                    var csvReader = new CsvReader(System.IO.File.OpenText(_rootDataFolder + "tabla_diferencias_fraude_bcg.csv"),
+                        new CsvConfiguration { HasHeaderRecord = false, WillThrowOnMissingField = false });
+                    _fraudAlarms = csvReader.GetRecords<AlarmModel>().OrderByDescending(o => o.Ratio).ToList();
+                }
+            }
 
-            var result = csvReader.GetRecords<AlarmModel>().OrderByDescending(o => o.Ratio).ToList();
-            return result;
+            return _fraudAlarms;
         }
 
         public List<OverviewBalanceModel> OverviewBalance(string code, DateTime from, DateTime to) {
@@ -443,12 +451,13 @@ namespace PowerNetwork.Core.Helpers {
         }
 
         public List<FraudModel> Fraud(string code, DateTime from, DateTime to) {
-            var csvReader = new CsvReader(System.IO.File.OpenText(_rootDataFolder + "grafica_serie_fraude_bcg.csv"),
-                new CsvConfiguration { HasHeaderRecord = false, WillThrowOnMissingField = false });
+            if (_fraud == null) {
+                var csvReader = new CsvReader(System.IO.File.OpenText(_rootDataFolder + "grafica_serie_fraude_bcg.csv"),
+                    new CsvConfiguration { HasHeaderRecord = false, WillThrowOnMissingField = false });
+                _fraud = csvReader.GetRecords<CsvFraud>().ToList();
+            }
 
-            var items = csvReader.GetRecords<CsvFraud>()
-                .Where(o => o.Code == code && o.Date >= from && o.Date <= to).OrderBy(o => o.Date);
-
+            var items = _fraud.Where(o => o.Code == code && o.Date >= from && o.Date <= to).OrderBy(o => o.Date);
             return items.Select(o => new FraudModel { Date = o.Date, Ct = o.Ct, Exit = o.Exit }).ToList();
         }
     }
