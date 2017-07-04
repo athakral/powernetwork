@@ -18,14 +18,12 @@
                 <span>@Html.Raw(ViewBag.Texts["Power.Menu.Power"])</span>
             </a>
         </li>
-        <environment names="Demo,DemoProduction">
-            <li>
-                <a href="/mpgs">
-                    <img src="~/images/strategy1.png" />
-                    <span>@Html.Raw(ViewBag.Texts["Power.Menu.Strategy"])</span>
-                </a>
-            </li>
-        </environment>
+        <li>
+            <a href="/mpgs">
+                <img src="~/images/strategy1.png" />
+                <span>@Html.Raw(ViewBag.Texts["Power.Menu.Strategy"])</span>
+            </a>
+        </li>
         <li>
             <a href="/fraud" class="active">
                 <img src="~/images/fraud0-sm.png" />

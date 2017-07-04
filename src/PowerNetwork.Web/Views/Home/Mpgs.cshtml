@@ -2,23 +2,1333 @@
     Layout = null;
 }
 
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
+
 <html>
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Maintenance Strategy - Power Network visualization</title>
-</head>
-<body style="overflow: hidden; margin: 0; padding: 0;">
-    <environment names="Demo,DemoProduction">
-        <iframe id="iFrame1" style="border: none; position: absolute; top: 0; left: 0;"></iframe>
-        <script>
-            var i = document.getElementById("iFrame1");
-            i.width = window.innerWidth;
-            i.height = window.innerHeight;
-            i.src = "http://bcg.hoatranvn.com/home/mpgs";
-        </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Asset Control Center</title>
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/lib/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+    <link href="~/lib/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/mpgs.min.css" asp-append-version="true" />
+    <environment names="Development,Staging,Production">
+        <link rel="stylesheet" href="~/css/mpgs-gnf.css" asp-append-version="true" />
     </environment>
+</head>
+<body>
+    <div id="mpgsView">
+        <div class="left">
+            <environment names="Development,Staging,Production">
+                <img src="~/images/logo.png" />
+            </environment>
+            <environment names="Demo,DemoProduction">
+                <img src="~/images/logo-2.png" />
+            </environment>
+            <h3>Filters</h3>
+            <div class="overlay-container" id="filterContainer">
+                <div class="form-group">
+                    <select id="ddlRegion" class="form-control">
+                        <option value="">-- Region --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select id="ddlCity" class="form-control" disabled="disabled">
+                        <option value="">-- City --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select id="ddlCenter" class="form-control">
+                        <option value="">-- Maintenance Center --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <input id="txtCTSearch" type="text" class="form-control" placeholder="Asset Code">
+                        <span class="input-group-btn">
+                            <button id="btnCTSearch" class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group error" id="ctSearchMessage" style="display: none;"></div>
+                <div class="form-group">
+                    <select id="ddlAction" class="form-control">
+                        <option value="">-- Action Required --</option>
+                        <option value="1">Regulatory Check</option>
+                        <option value="2">Maintenance Required</option>
+                        <option value="3">No Action Required</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Failure probability</label>
+                    <div style="padding-left: 10px;">
+                        <input type="text" id="sliderFailRate" style="width: 120px;" />
+                        &nbsp;&nbsp;
+                    <button id="btnFailRate" class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label># clients</label>
+                    <div style="padding-left: 10px;">
+                        <input type="text" id="sliderClientCount" style="width: 120px;" />
+                        &nbsp;&nbsp;
+                    <button id="btnClientCount" class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="left2">
+            <div style="height: 630px; margin-top: 15px;">
+                <div class="text-menu" style="width: 122px;">
+                    <div class="text-menu-postfix" style="left: 106px;"></div>
+                    <div class="text-menu-text" style="padding-left: 12px; margin-top: -30px;">
+                        Asset<br />
+                        exploration
+                    </div>
+                </div>
+            </div>
+            <div style="height: 448px;">
+                <div class="text-menu" style="width: 118px;">
+                    <div class="text-menu-postfix" style="left: 104px;"></div>
+                    <div class="text-menu-text" style="padding-left: 5px; margin-top: -30px;">
+                        Model<br />
+                        interpretation
+                    </div>
+                </div>
+            </div>
+            <div style="height: 1108px;">
+                <div class="text-menu" style="width: 126px;">
+                    <div class="text-menu-postfix" style="left: 109px;"></div>
+                    <div class="text-menu-text" style="padding-left: 22px; margin-top: -45px;">
+                        Optimal<br />
+                        strategy<br />
+                        definition
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="center">
+            <h1>Asset Control Center</h1>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <h3>Asset geo-positioning</h3>
+                    <div id="map" style="height: 520px;"></div>
+                    <p style="font-size: 11px; margin-top: 10px;">
+                        <img src="~/images/b-blue.png" />
+                        Regulatory Check &nbsp;&nbsp;&nbsp;
+                        <img src="~/images/b-red.png" />
+                        Critical assets &nbsp;&nbsp;&nbsp;
+                        <img src="~/images/b-lgreen.png" />
+                        No action required
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    <div class="block overlay-container" style="height: 580px; overflow: auto;" id="divSummaryTable">
+                        <h3>Asset summary table <a href="javascript:void(0);" id="btnDownloadSummaryTable" title="Download"><span class="glyphicon glyphicon-download-alt"></span></a></h3>
+                        <div style="display: inline-block;">
+                            <table class="table table-condensed table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Map</th>
+                                        <th>Code</th>
+                                        <th># clients</th>
+                                        <th>Type Constr</th>
+                                        <th># transf</th>
+                                        <th># exits</th>
+                                        <th>Box Age</th>
+                                        <th>Tp function</th>
+                                        <th>Max. I</th>
+                                        <th>Min. I</th>
+                                        <th>Transf. Age</th>
+                                        <th>Transf. F. Rate</th>
+                                        <th>Exits F. Rate</th>
+                                        <th>Box F. Rate</th>
+                                        <th>Constr F. Rate</th>
+                                        <th>Last 36m failure</th>
+                                        <th>Last 48m failure</th>
+                                        <th>Failure Prob</th>
+                                        <th>Action required</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                            <p class="error"></p>
+                            <p class="paging"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="block">
+                        <h3>Key Predictive Model Variables</h3>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <p>Select variable:</p>
+                                <div class="overlay-container" id="predictiveFilter">
+                                    <div class="form-group">
+                                        <select id="ddlPredictiveX" class="form-control">
+                                            <option value="">-- X Variable --</option>
+                                            <option value="0">Transf. F. Rate</option>
+                                            <option value="1">Type Constr</option>
+                                            <option value="2"># clients</option>
+                                            <option value="3">Tp function</option>
+                                            <option value="4">Exits F. Rate</option>
+                                            <option value="5">Constr F. Rate</option>
+                                            <option value="6">Max. I</option>
+                                            <option value="7"># exits</option>
+                                            <option value="8">Box Age</option>
+                                            <option value="9">Min. I</option>
+                                            <option value="10">Last 48m failure</option>
+                                            <option value="11">Transf. Age</option>
+                                            <option value="12">Last 36m failure</option>
+                                            <option value="13">Box F. Rate</option>
+                                            <option value="14"># transf</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <br />
+                                <div id="divRelevances"></div>
+                            </div>
+                            <div class="col-md-8">
+                                <div id="predictiveChart" class="scatter-chart" style="height: 401px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="block overlay-container" id="divPerformance">
+                        <h3>Model Performance - Key statistical variables</h3>
+                        <div id="performanceChart" class="scatter-chart" style="height: 250px;"></div>
+                        <div style="position: absolute; top: 40px; right: 20px;">
+                            <a id="btnPerformanceSensitivity" class="btn btn-default" style="width: 100px; margin-bottom: 10px;">Sensitivity</a>
+                            <a id="btnPerformanceSensitivityInfo" href="javascript:void(0)" style="margin-left: 5px;">
+                                <img src="~/images/btn-info.png" style="height: 24px; vertical-align: top; margin-top: 8px;" /></a>
+                            <br />
+                            <a id="btnPerformancePrecision" class="btn btn-default" style="width: 100px;">Precision</a>
+                            <a id="btnPerformancePrecisionInfo" href="javascript:void(0)" style="margin-left: 5px;">
+                                <img src="~/images/btn-info.png" style="height: 24px; vertical-align: top; margin-top: 8px;" /></a>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>Customer targeted threshold</label>
+                                <div style="padding: 10px; position: relative;">
+                                    <input type="text" id="sliderCustTarget" style="width: 100%;" />
+                                    <input type="number" class="form-control" id="txtCustTarget" style="width: 80px; position: absolute; left: 50%; margin-left: -40px; margin-top: 10px; text-align: center;" />
+                                </div>
+                            </div>
+                            <div class="col-md-8" id="perfTable" style="padding-left: 30px;">
+                                <div>Predicted</div>
+                                <table class="table table-condensed table-bordered table-responsive" id="tblPerformance">
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="2"><b>Real</b></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="g1" style="width: 50%;">True Positive</td>
+                                            <td class="g2" style="width: 50%;">False Positive</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="calculated g1">&nbsp;</td>
+                                            <td class="calculated g2"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="g3">False Negative</td>
+                                            <td class="g4">True Negative</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="calculated g3">&nbsp;</td>
+                                            <td class="calculated g4"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h1>Maintenance Strategy definition</h1>
+
+            <div class="block" style="min-height: 300px;">
+                <h3>Technical decision</h3>
+                <div class="row overlay-container" id="divTechnicalDecision">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <h4>Minimal number of assets to include</h4>
+                            <div style="padding-left: 10px; padding-right: 50px;">
+                                <input type="text" id="sliderTechnicalCount" style="width: 100%;" />
+                                &nbsp;&nbsp;
+                                <button id="btnTechnicalCount" class="btn btn-default" type="button" style="display: none;"><span class="glyphicon glyphicon-search"></span></button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label style="font-weight: normal;">Selected assets: <b><span id="technicalCount"></span></b></label>
+                        </div>
+                        <div class="form-group">
+                            <label style="font-weight: normal;">Minimal preventive cost: <b><span id="technicalCost"></span></b></label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div id="divTechnicalChart" class="scatter-chart" style="height: 250px;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="block" style="min-height: 300px;">
+                <h3>Economic decision</h3>
+                <div class="row overlay-container" id="divEconomicDecision">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <h4>Preventive maintenance expense</h4>
+                            <div style="padding-left: 10px; padding-right: 50px;">
+                                <input type="text" id="sliderPreventiveCost" style="width: 100%;" />
+                                &nbsp;&nbsp;
+                                <button id="btnPreventiveCost" class="btn btn-default" type="button" style="display: none;"><span class="glyphicon glyphicon-search"></span></button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <h4>Corrective maintenance expense</h4>
+                            <div style="padding-left: 10px; padding-right: 50px;">
+                                <input type="text" id="sliderCorrectiveCost" style="width: 100%;" />
+                                &nbsp;&nbsp;
+                                <button id="btnCorrectiveCost" class="btn btn-default" type="button" style="display: none;"><span class="glyphicon glyphicon-search"></span></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div id="divEconomicChart" class="scatter-chart" style="height: 250px;"></div>
+                        <div class="graph-legends">
+                            <div>
+                                <div style="background: #0f0"></div>
+                                Preventive
+                            </div>
+                            <div>
+                                <div style="background: #f00"></div>
+                                Corrective
+                            </div>
+                            <div>
+                                <div style="background: #00f"></div>
+                                Total
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="block" style="min-height: 300px;">
+                <h3>Strategy summary</h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div id="divBusinessCase" class="overlay-container">
+                            <div class="content"></div>
+                            <div class="scatter-chart" style="height: 200px;"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div id="divMaintenanceDotChart" class="scatter-chart" style="height: 300px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="~/lib/bootbox.js/bootbox.js"></script>
+    <script src="~/lib/moment/min/moment.min.js"></script>
+    <script src="~/lib/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="~/lib/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js"></script>
+    <script src="~/lib/d3/d3.min.js"></script>
+    <script>
+        function toggleOverlay(container, show) {
+            if (show) {
+                container.append('<div class="overlay""><span class="fa fa-spinner fa-spin"></span></div>');
+            } else {
+                container.find(".overlay").remove();
+            }
+        }
+    </script>
+    <script>
+        var $region = $("#ddlRegion");
+        var $city = $("#ddlCity");
+        var $center = $("#ddlCenter");
+        var sliderFailRate;
+        var sliderClientCount;
+
+        var sliderTechnicalCount, sliderPreventiveCost, sliderCorrectiveCost, strategyData;
+
+        var currentCts;
+        var animateCts;
+
+        var map;
+        var mapInfoHover, mapInfoClick;
+        var mapData = {};
+        var mapMarkers = { regions: [], cities: [], cts: [], meterGroups: [], cityDict: {}, ctsDict: {}, ctsCenter: null };
+
+        //var mapOrigin = { center: { lat: 40.431075, lng: -3.703578 }, zoom: [6, 10, 13, 18] };
+        //var mapOrigin = { center: { lat: 48.8566, lng: 2.3522 }, zoom: [6, 10, 13, 18] };
+        var mapOrigin = { center: { lat: @ViewBag.AppConf.MapLat, lng: @ViewBag.AppConf.MapLon }, zoom: [6, 10, 13, 18] };
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: mapOrigin.zoom[0],
+                center: mapOrigin.center,
+                minZoom: mapOrigin.zoom[0],
+                maxZoom: mapOrigin.zoom[3]
+            });
+
+            mapInfoHover = new google.maps.InfoWindow({ content: '' });
+            mapInfoClick = new google.maps.InfoWindow({ content: '' });
+
+            map.addListener('idle', function () {
+                if (mapData.regions == null) {
+                    setTimeout(function () {
+                        google.maps.event.trigger(map, 'idle');
+                    }, 2000);
+                    return;
+                }
+
+                var zoom = map.getZoom();
+                var bounds = map.getBounds().toJSON();
+                //console.log(zoom);
+
+                if (zoom < mapOrigin.zoom[1]) {
+                    if (mapMarkers.cities.length > 0 && mapMarkers.cities[0].getVisible() == true) {
+                        mapMarkers.cities.forEach(function (m) {
+                            m.setVisible(false);
+                        });
+                    }
+
+                    if (mapMarkers.cts.length > 0 && mapMarkers.cts[0].getVisible() == true) {
+                        mapMarkers.cts.forEach(function (m) {
+                            m.setVisible(false);
+                        });
+                    }
+
+                    if (mapMarkers.regions.length == 0) {
+                        mapData.regions.forEach(function (r) {
+                            var m = new google.maps.Marker({
+                                map: map,
+                                position: { lat: r.Lat, lng: r.Lng },
+                                label: {
+                                    text: r.Count.toString(),
+                                    fontSize: '11px'
+                                },
+                                icon: {
+                                    url: '/images/m-red.png',
+                                    labelOrigin: new google.maps.Point(33, 34)
+                                }
+                            });
+
+                            m.addListener('click', function () {
+                                map.setZoom(mapOrigin.zoom[1]);
+                                map.setCenter(m.getPosition());
+                            });
+
+                            mapMarkers.regions.push(m);
+                        });
+
+                    } else if (mapMarkers.regions[0].getVisible() == false) {
+                        mapMarkers.regions.forEach(function (m) {
+                            m.setVisible(true);
+                        });
+                    }
+
+                } else if (zoom < mapOrigin.zoom[2]) {
+                    if (mapMarkers.regions.length > 0 && mapMarkers.regions[0].getVisible() == true) {
+                        mapMarkers.regions.forEach(function (m) {
+                            m.setVisible(false);
+                        });
+                    }
+
+                    if (mapMarkers.cts.length > 0 && mapMarkers.cts[0].getVisible() == true) {
+                        mapMarkers.cts.forEach(function (m) {
+                            m.setVisible(false);
+                        });
+                    }
+
+                    if (mapMarkers.cities.length > 0 && mapMarkers.cities[0].getVisible() == false) {
+                        mapMarkers.cities.forEach(function (m) {
+                            m.setVisible(true);
+                        });
+                    }
+
+                    mapData.cities.forEach(function (c) {
+                        if (c.Lng > bounds.west && c.Lng < bounds.east && c.Lat > bounds.south && c.Lat < bounds.north && mapMarkers.cityDict[c.Name] == null) {
+                            var m = new google.maps.Marker({
+                                map: map,
+                                position: { lat: c.Lat, lng: c.Lng },
+                                label: {
+                                    text: c.Count.toString(),
+                                    fontSize: '11px'
+                                },
+                                icon: {
+                                    url: '/images/m-yellow.png',
+                                    labelOrigin: new google.maps.Point(28, 28)
+                                }
+                            });
+
+                            m.addListener('click', function () {
+                                map.setZoom(mapOrigin.zoom[2]);
+                                map.setCenter(m.getPosition());
+                            });
+
+                            mapMarkers.cities.push(m);
+                            mapMarkers.cityDict[c.Name] = m;
+                        }
+                    });
+
+                } else {
+                    if (mapMarkers.regions.length > 0 && mapMarkers.regions[0].getVisible() == true) {
+                        mapMarkers.regions.forEach(function (m) {
+                            m.setVisible(false);
+                        });
+                    }
+
+                    if (mapMarkers.cities.length > 0 && mapMarkers.cities[0].getVisible() == true) {
+                        mapMarkers.cities.forEach(function (m) {
+                            m.setVisible(false);
+                        });
+                    }
+
+                    var rateFilter = {
+                        clientCount0: sliderClientCount.slider('getValue')[0],
+                        clientCount1: sliderClientCount.slider('getValue')[1],
+                        failRate0: sliderFailRate.slider('getValue')[0],
+                        failRate1: sliderFailRate.slider('getValue')[1],
+                        action: $("#ddlAction").val()
+                    };
+
+                    toggleOverlay($("#map"), true);
+                    $.ajax({
+                        url: '/mpgsdata/cts',
+                        data: { x1: bounds.west, x2: bounds.east, y1: bounds.south, y2: bounds.north },
+                        success: function (data) {
+                            data.forEach(function (c) {
+                                if (mapMarkers.ctsDict[c.Code] == null) {
+                                    var m = new google.maps.Marker({
+                                        map: map,
+                                        position: { lat: c.Lat, lng: c.Lng },
+                                        icon: {
+                                            url: '/images/' + (c.ActionType == 1 ? 'b-blue.png' : c.ActionType == 2 ? 'b-red.png' : 'b-lgreen.png')
+                                        },
+                                        tipo: { clientCount: c.ClientCount, failRate: c.FailRate, action: c.ActionType }
+                                    });
+
+                                    m.addListener('mouseover', function () {
+                                        if (mapInfoHover) {
+                                            mapInfoHover.close();
+                                        }
+                                        mapInfoHover.setContent("<p>" + c.Code + "</p>");
+                                        mapInfoHover.open(map, m);
+                                    });
+
+                                    m.addListener('click', function () {
+                                        currentCts = c.Code;
+
+                                        $("#txtCTSearch").val(c.Code);
+                                        $("#btnCTSearch").trigger("click");
+                                    });
+
+                                    mapMarkers.cts.push(m);
+                                    mapMarkers.ctsDict[c.Code] = m;
+                                }
+
+                                // rate filter
+                                var rateMarker = mapMarkers.ctsDict[c.Code];
+                                if (rateMarker.tipo && (rateMarker.tipo.clientCount < rateFilter.clientCount0 || rateMarker.tipo.clientCount > rateFilter.clientCount1)) {
+                                    rateMarker.setVisible(false);
+                                } else if (rateMarker.tipo && (rateMarker.tipo.failRate < rateFilter.failRate0 || rateMarker.tipo.failRate > rateFilter.failRate1)) {
+                                    rateMarker.setVisible(false);
+                                } else if (rateFilter.action != '' && rateMarker.tipo && rateMarker.tipo.action != rateFilter.action) {
+                                    rateMarker.setVisible(false);
+                                } else {
+                                    rateMarker.setVisible(true);
+                                }
+                            });
+
+                            if (animateCts != null) {
+                                var animatedCts = mapMarkers.ctsDict[animateCts];
+                                if (animatedCts != null) {
+                                    google.maps.event.trigger(animatedCts, 'click');
+                                }
+                                animateCts = null;
+                            }
+                        },
+                        complete: function () {
+                            toggleOverlay($("#map"), false);
+                        }
+                    });
+                }
+            });
+        }
+
+        function initFilters() {
+            toggleOverlay($("#filterContainer"), true);
+            toggleOverlay($("#map"), true);
+
+            $region.change(function () {
+                var option = $region.find(":selected");
+
+                $city.find("option[data-lat]").remove();
+
+                if (option.attr("data-lat") != null) {
+                    map.setZoom(mapOrigin.zoom[1]);
+                    map.setCenter({ lat: parseFloat(option.attr("data-lat")), lng: parseFloat(option.attr("data-lng")) });
+
+                    mapData.cities.forEach(function (c) {
+                        if (c.Region == option.attr("value")) {
+                            $city.append('<option data-lat="' + c.Lat + '" data-lng="' + c.Lng + '" value="' + c.Name + '">' + c.Name + ' (' + c.Region + ')' + '</option>');
+                        }
+                    });
+                    $city.prop("disabled", false);
+
+                } else {
+                    map.setZoom(mapOrigin.zoom[0]);
+                    map.setCenter(mapOrigin.center);
+
+                    $city.attr("disabled", "disabled");
+                }
+
+                $center.val("");
+                $("#txtCTSearch").val("");
+                currentCts = null;
+
+                refreshSummaryTable();
+            });
+
+            $city.change(function () {
+                var option = $city.find(":selected");
+
+                if (option.attr("data-lat") != null) {
+                    map.setZoom(mapOrigin.zoom[2]);
+                    map.setCenter({ lat: parseFloat(option.attr("data-lat")), lng: parseFloat(option.attr("data-lng")) });
+
+                    $("#txtCTSearch").val("");
+
+                    refreshSummaryTable();
+                } else {
+                    $region.trigger("change");
+                }
+            });
+
+            $center.change(function () {
+                var option = $center.find(":selected");
+
+                if (option.attr("data-lat") != null) {
+                    map.setZoom(mapOrigin.zoom[2]);
+                    map.setCenter({ lat: parseFloat(option.attr("data-lat")), lng: parseFloat(option.attr("data-lng")) });
+
+                } else {
+                    map.setZoom(mapOrigin.zoom[0]);
+                    map.setCenter(mapOrigin.center);
+                }
+
+                $region.val("");
+                $city.find("option[data-lat]").remove();
+                $city.attr("disabled", "disabled");
+                $("#txtCTSearch").val("");
+                currentCts = null;
+
+                refreshSummaryTable();
+            });
+
+            $("#btnCTSearch").click(function () {
+                $("#ctSearchMessage").hide();
+                var code = $("#txtCTSearch").val().trim();
+
+                if (code == '') {
+                    $("#ctSearchMessage").html("<p>Please input Asset code</p>").show();
+
+                } else {
+                    toggleOverlay($("#map"), true);
+                    $.ajax({
+                        url: '/mpgsdata/ctssearch?code=' + code,
+                        success: function (data) {
+                            if (data.length > 0) {
+                                $region.val("");
+                                $city.find("option[data-lat]").remove();
+                                $city.attr("disabled", "disabled");
+                                $center.val("");
+
+                                map.setZoom(mapOrigin.zoom[3]);
+                                map.setCenter({ lat: data[0].Lat, lng: data[0].Lng });
+                                //animateCts = data[0].Code;
+
+                                currentCts = data[0].Code;
+
+                                refreshSummaryTable();
+                            } else {
+                                $("#ctSearchMessage").html("<p>Asset code not found</p>").show();
+                            }
+                        },
+                        complete: function () {
+                            toggleOverlay($("#map"), false);
+                        }
+                    });
+                }
+            });
+
+            $("#ddlAction").change(function () {
+                $("#txtCTSearch").val("");
+                currentCts = null;
+                google.maps.event.trigger(map, 'idle');
+                refreshSummaryTable();
+            });
+
+            sliderFailRate = $("#sliderFailRate").slider({
+                min: 0,
+                max: 100,
+                step: 5,
+                range: true,
+                value: [0, 100]
+            });
+
+            $("#btnFailRate").click(function () {
+                currentCts = null;
+                google.maps.event.trigger(map, 'idle');
+                refreshSummaryTable();
+            });
+
+            $("#btnClientCount").click(function () {
+                currentCts = null;
+                google.maps.event.trigger(map, 'idle');
+                refreshSummaryTable();
+            });
+
+            $.ajax({
+                url: '/mpgsdata/common',
+                success: function (data) {
+                    mapData.regions = data.regions;
+                    mapData.cities = data.cities;
+                    mapData.centers = data.centers;
+
+                    data.regions.forEach(function (r) {
+                        $region.append('<option data-lat="' + r.Lat + '" data-lng="' + r.Lng + '" value="' + r.Name + '">' + r.Name + '</option>');
+                    });
+
+                    data.centers.forEach(function (c) {
+                        $center.append('<option data-lat="' + c.Lat + '" data-lng="' + c.Lng + '" value="' + c.Name + '">' + c.Name + '</option>');
+                    });
+
+                    sliderClientCount = $("#sliderClientCount").slider({
+                        min: data.minClientCount,
+                        max: data.maxClientCount,
+                        step: 5,
+                        range: true,
+                        value: [data.minClientCount, data.maxClientCount]
+                    });
+
+                    refreshSummaryTable();
+
+                    // maintenance strategy
+
+                    sliderTechnicalCount = $("#sliderTechnicalCount").slider({
+                        min: 0,
+                        max: data.strategy.assetCount,
+                        step: 1,
+                        value: 0
+                    }).on("slideStop", function () { refreshStrategyDecision(0); });
+
+                    sliderPreventiveCost = $("#sliderPreventiveCost").slider({
+                        min: 0,
+                        max: data.strategy.preventive,
+                        step: 1,
+                        value: 0
+                    }).on("slideStop", function () { refreshStrategyDecision(1); });
+
+                    sliderCorrectiveCost = $("#sliderCorrectiveCost").slider({
+                        min: 0,
+                        max: data.strategy.corrective,
+                        step: 1,
+                        value: 0
+                    }).on("slideStop", function () { refreshStrategyDecision(2); });
+
+                    strategyData = data.strategy;
+
+                    sliderTechnicalCount.slider("setValue", 5).trigger("slideStop");
+                },
+                complete: function () {
+                    toggleOverlay($("#filterContainer"), false);
+                    toggleOverlay($("#map"), false);
+                }
+            });
+        }
+
+        function refreshSummaryTable(page) {
+            if (!page) page = 0;
+
+            toggleOverlay($("#divSummaryTable"), true);
+
+            $.ajax({
+                url: '/mpgsdata/summarytable',
+                data: {
+                    region: $region.val(), city: $city.val(), center: $center.val(), code: currentCts, actionType: $("#ddlAction").val(),
+                    failRate0: sliderFailRate.slider('getValue')[0], failRate1: sliderFailRate.slider('getValue')[1],
+                    clientCount0: sliderClientCount.slider('getValue')[0], clientCount1: sliderClientCount.slider('getValue')[1], page: page
+                },
+                success: function (data) {
+                    var $summaryTable = $("#divSummaryTable table > tbody");
+                    $summaryTable.html("");
+
+                    data.items.forEach(function (a) {
+                        $summaryTable.append('<tr><td><a class="btn btn-sm btn-default" data-code="' + a.ct.Code + '" data-lat="' + a.ct.Lat + '" data-lng="' + a.ct.Lng +
+                            '"><span class="glyphicon glyphicon-map-marker ct' + a.sum.ActionType + '"></span></a></td>' +
+                            '<td>' + a.ct.Code + '</td><td>' + a.ct.ClientCount + '</td>' +
+                            '<td>' + a.sum.ConstructType + '</td><td>' + a.sum.TransfCount + '</td><td>' + a.sum.ExitCount + '</td><td>' + a.sum.BoxAge + '</td><td>' + a.sum.CellFunctional + '</td>' +
+                            '<td>' + a.sum.MaxIma + '</td><td>' + a.sum.MinIma + '</td><td>' + a.sum.TransfAge + '</td>' +
+                            '<td>' + a.sum.TransfFailRate + '</td><td>' + a.sum.ExitFailRate + '</td><td>' + a.sum.BoxFailRate + '</td><td>' + a.sum.ConstrFailRate + '</td>' +
+                            '<td>' + a.sum.FailRate36 + '</td><td>' + a.sum.FailRate48 + '</td>' +
+                            '<td class="red-cell">' + a.sum.FailRate + '</td>' +
+                            '<td class="ct' + a.sum.ActionType + '">' + a.sum.Action + '</td></tr>');
+                    });
+
+                    $("#divSummaryTable p.error").html("Total: " + data.count + " record(s).");
+
+                    var pagingHtml = "";
+                    if (data.pageCount > 1) {
+                        pagingHtml += (page == 0) ? "<span>1</span>" : "<a>1</a>";
+
+                        if (page >= 3) pagingHtml += "<span>...</span>";
+                        if (page >= 2) pagingHtml += "<a>" + (page) + "</a>";
+                        if (page >= 1 && page + 1 < data.pageCount) pagingHtml += "<span>" + (page + 1) + "</span>";
+                        if (page + 2 < data.pageCount) pagingHtml += "<a>" + (page + 2) + "</a>";
+                        if (page + 3 < data.pageCount) pagingHtml += "<span>...</span>";
+
+                        pagingHtml += (page + 1 == data.pageCount) ? ("<span>" + (data.pageCount) + "</span>") : ("<a>" + (data.pageCount) + "</a>");
+                    }
+
+                    $("#divSummaryTable p.paging").html(pagingHtml);
+                },
+                complete: function () {
+                    toggleOverlay($("#divSummaryTable"), false);
+                }
+            });
+        }
+
+        function downloadSummaryTable() {
+
+            var dlParams = {
+                region: $region.val(), city: $city.val(), center: $center.val(), code: currentCts, actionType: $("#ddlAction").val(),
+                failRate0: sliderFailRate.slider('getValue')[0], failRate1: sliderFailRate.slider('getValue')[1],
+                clientCount0: sliderClientCount.slider('getValue')[0], clientCount1: sliderClientCount.slider('getValue')[1]
+            };
+
+            var dlUrl = '/mpgsdata/summarytablecsv?' + $.param(dlParams);
+
+            window.open(dlUrl, '_blank');
+        }
+
+        function refreshRelevances() {
+            toggleOverlay($("#divRelevances"), true);
+
+            $.ajax({
+                url: '/mpgsdata/relevance',
+                success: function (data) {
+                    var varList = [
+                        'Transf. F. Rate', 'Type Constr', '# clients', 'Tp function', 'Exits F. Rate', 'Constr F. Rate',
+                        'Max. I', '# exits', 'Box Age', 'Min. I', 'Last 48m failure', 'Transf. Age', 'Last 36m failure',
+                        'Box F. Rate', '# transf'
+                    ];
+
+                    var maxRel = d3.max(data, function (d) { return d.Relevance; });
+                    var html = "";
+
+                    for (var i = 0; i < varList.length; i++) {
+                        var varRel = 0;
+                        if (data.length > i) varRel = data[i].Relevance;
+
+                        html += "<div><label>" + varList[i] + "</label><div style='width: " + (varRel * 100 / maxRel) + "%'></div><span>" + varRel.toLocaleString(undefined, { minimumFractionDigits: 1 }) + "</span></div>";
+                    }
+
+                    $("#divRelevances").html(html);
+                },
+                complete: function () {
+                    toggleOverlay($("#divRelevances"), false);
+                }
+            });
+        }
+
+        function refreshBusinessCaseChart(data) {
+            var graphData = [
+                { x: 'Preventive', y: data.preventive, z: 0 },
+                { x: 'Corrective', y: data.corrective, z: data.preventive },
+                { x: 'Total', y: data.preventive + data.corrective, z: 0 }
+            ];
+
+            var container = $("#divBusinessCase > .scatter-chart");
+            container.html("");
+
+            var margin = { top: 20, right: 20, bottom: 40, left: 80 },
+                width = container.width() - margin.left - margin.right,
+                height = container.height() - margin.top - margin.bottom;
+
+            var svg = d3.select("#divBusinessCase > .scatter-chart")
+                .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            var x = d3.scaleBand().rangeRound([0, width]).paddingOuter(0.5).paddingInner(0.3);
+            var y = d3.scaleLinear().rangeRound([height, 0]);
+
+            x.domain(graphData.map(function (d) { return d.x; }));
+            y.domain([0, d3.max(graphData, function (d) { return d.y; })]);
+
+            svg.selectAll(".bar")
+                .data(graphData)
+                .enter()
+                .append("rect")
+                .attr("class", "bar")
+                .attr("x", function (d) { return x(d.x); })
+                .attr("y", function (d) { return y(d.y + d.z); })
+                .attr("width", x.bandwidth())
+                .attr("height", function (d) { return height - y(d.y); });
+
+            svg.append("line")
+                .attr("stroke", "#2FC77E")
+                .attr("stroke-width", 0.5)
+                .attr("stroke-dasharray", "4 4")
+                .attr("x1", x(graphData[0].x) + x.bandwidth())
+                .attr("y1", y(data.preventive) + 0.5)
+                .attr("x2", x(graphData[2].x))
+                .attr("y2", y(data.preventive) + 0.5);
+
+            svg.append("line")
+                .attr("stroke", "#2FC77E")
+                .attr("stroke-width", 0.5)
+                .attr("stroke-dasharray", "4 4")
+                .attr("x1", x(graphData[1].x) + x.bandwidth())
+                .attr("y1", y(data.preventive + data.corrective) + 0.5)
+                .attr("x2", x(graphData[2].x))
+                .attr("y2", y(data.preventive + data.corrective) + 0.5);
+
+            svg.append("g").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x));
+            svg.append("g").call(d3.axisLeft(y).ticks(4));
+        }
+
+        function refreshMaintenanceDotChart(data) {
+            var container = $("#divMaintenanceDotChart");
+            container.html("");
+
+            var margin = { top: 20, right: 20, bottom: 40, left: 80 },
+                width = container.width() - margin.left - margin.right,
+                height = container.height() - margin.top - margin.bottom;
+
+            var svg = d3.select("#divMaintenanceDotChart")
+                .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            var x = d3.scaleLinear().range([0, width]).domain([0, d3.max(data.graphData, function (d) { return d.f; })]);
+            var y = d3.scaleLinear().range([height, 0]).domain([0, d3.max(data.graphData, function (d) { return d.c; })]);
+
+            svg.selectAll(".dot")
+                .data(data.graphData)
+                .enter()
+                .append("circle")
+                .attr("class", "dot")
+                .attr("r", 5)
+                .style("fill", function (d) { return d.selected ? "#f00" : "#0f0"; })
+                .attr("cx", function (d) { return x(d.f); })
+                .attr("cy", function (d) { return y(d.c); });
+
+            svg.append("g").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x));
+            svg.append("g").call(d3.axisLeft(y));
+
+            svg.append("text").attr("class", "label").attr("x", width).attr("y", height + 35).style("text-anchor", "end").text("Probability");
+            svg.append("text").attr("class", "label").attr("transform", "rotate(-90)").attr("y", 6).attr("dy", 10).style("text-anchor", "end").text("Impact");
+        }
+
+        function refreshTechnicalChart(data) {
+            var container = $("#divTechnicalChart");
+            container.html("");
+
+            var margin = { top: 20, right: 20, bottom: 50, left: 80 },
+                width = container.width() - margin.left - margin.right,
+                height = container.height() - margin.top - margin.bottom;
+
+            var x = d3.scaleLinear().range([0, width]).domain([0, strategyData.assetCount]);
+            var y = d3.scaleLinear().range([height, 0]).domain([0, d3.max(strategyData.technicalGraph, function (d) { return d.sum; })]);
+
+            var svg = d3.select("#divTechnicalChart")
+                .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            var line = d3.line().x(function (d) { return x(d.i); }).y(function (d) { return y(d.sum); });
+            var area = d3.area().x(function (d) { return x(d.i); }).y0(height).y1(function (d) { return y(d.sum); });
+
+            svg.append("path").data([strategyData.technicalGraph]).attr("class", "line").attr("stroke", "#0f0").attr("d", line);
+            svg.append("path").data([strategyData.technicalGraph.slice(0, data.technical + 1)]).attr("class", "area").attr("stroke", "#0f0").style("fill", "#0f0").attr("d", area);
+
+            svg.append("circle").attr("class", "cursor").attr("cx", x(data.technical)).attr("cy", y(strategyData.technicalGraph[data.technical].sum)).attr("r", 5);
+
+            svg.append("g").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x));
+            svg.append("g").call(d3.axisLeft(y));
+
+            svg.append("text").attr("class", "label").attr("x", width).attr("y", height + 35).style("text-anchor", "end").text("# of assets");
+            svg.append("text").attr("class", "label").attr("transform", "rotate(-90)").attr("y", 6).attr("dy", 10).style("text-anchor", "end").text("Accumulated severity");
+        }
+
+        function refreshEconomicChart(data) {
+            var container = $("#divEconomicChart");
+            container.html("");
+
+            var margin = { top: 20, right: 20, bottom: 50, left: 80 },
+                width = container.width() - margin.left - margin.right,
+                height = container.height() - margin.top - margin.bottom;
+
+            var x = d3.scaleLinear().range([0, width]).domain([0, data.graphData.length - 1]);
+            var y = d3.scaleLinear().range([height, 0]).domain([0, d3.max(data.graphData, function (d) { return d.total; })]);
+
+            var svg = d3.select("#divEconomicChart")
+                .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            var line1 = d3.line().x(function (d) { return x(d.index); }).y(function (d) { return y(d.preventive); });
+            var line2 = d3.line().x(function (d) { return x(d.index); }).y(function (d) { return y(d.corrective); });
+            var line3 = d3.line().x(function (d) { return x(d.index); }).y(function (d) { return y(d.total); });
+
+            svg.append("path").data([data.graphData]).attr("class", "line").style("stroke", "#0f0").attr("d", line1);
+            svg.append("path").data([data.graphData]).attr("class", "line").style("stroke", "#f00").attr("d", line2);
+            svg.append("path").data([data.graphData]).attr("class", "line").style("stroke", "#00f").attr("d", line3);
+
+            svg.append("g").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x));
+            svg.append("g").call(d3.axisLeft(y));
+
+            svg.append("text").attr("class", "label").attr("x", width).attr("y", height + 35).style("text-anchor", "end").text("# of assets (descending savings)");
+        }
+
+        var performanceData;
+        var sliderCustTarget;
+        var performanceTableCells = $("#tblPerformance > tbody td.calculated");
+
+        var perfChartX, perfChartY, perfChartSvg, perfChartBisect;
+
+        var strategyTechnicalCount;
+
+        function refreshStrategyDecision(filter) {
+            toggleOverlay($("#divTechnicalDecision"), true);
+            toggleOverlay($("#divEconomicDecision"), true);
+            toggleOverlay($("#divBusinessCase"), true);
+
+            if (filter == 0) {
+                strategyTechnicalCount = sliderTechnicalCount.slider("getValue");
+
+                $.ajax({
+                    url: '/mpgsdata/strategy2',
+                    data: { technical: strategyTechnicalCount },
+                    success: function (data) {
+
+                        $("#technicalCount").html(data.technical.toLocaleString(undefined));
+                        $("#technicalCost").html(data.technicalPreventive.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 }));
+
+                        refreshTechnicalChart(data);
+                        refreshEconomicChart(data);
+
+                        sliderPreventiveCost.slider("setValue", data.preventive).trigger("slideStop");
+
+                    },
+                    complete: function () {
+                        toggleOverlay($("#divTechnicalDecision"), false);
+                        toggleOverlay($("#divEconomicDecision"), false);
+                        toggleOverlay($("#divBusinessCase"), false);
+                    }
+                });
+
+                return;
+            }
+
+            var value = 0;
+            if (filter == 1) {
+                value = sliderPreventiveCost.slider("getValue");
+            } else if (filter == 2) {
+                value = sliderCorrectiveCost.slider("getValue");
+            }
+
+            $.ajax({
+                url: '/mpgsdata/strategy3',
+                data: { technical: strategyTechnicalCount, filter: filter, value: value },
+                success: function (data) {
+
+                    sliderPreventiveCost.slider("setValue", data.preventive);
+                    sliderCorrectiveCost.slider("setValue", data.corrective);
+
+                    $("#divBusinessCase > .content").html(
+                        "<br/><p><label>Preventive cost: " + data.preventive.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + "</label></p>" +
+                        "<p><label>Corrective cost: " + data.corrective.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + "</label></p>" +
+                        "<p><label>Total cost: " + (data.preventive + data.corrective).toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + "</label></p>"
+                    );
+
+                    refreshBusinessCaseChart(data);
+                    refreshMaintenanceDotChart(data);
+
+                },
+                complete: function () {
+                    toggleOverlay($("#divTechnicalDecision"), false);
+                    toggleOverlay($("#divEconomicDecision"), false);
+                    toggleOverlay($("#divBusinessCase"), false);
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            initFilters();
+
+            refreshRelevances();
+
+            $("#divSummaryTable").on("click", "a.btn", function () {
+                map.setZoom(mapOrigin.zoom[3]);
+                map.setCenter({ lat: parseFloat($(this).attr("data-lat")), lng: parseFloat($(this).attr("data-lng")) });
+                animateCts = $(this).attr("data-code");
+            });
+
+            $("#divSummaryTable p.paging").on("click", "a", function () {
+                var pageIndex = parseInt($(this).html()) - 1;
+                refreshSummaryTable(pageIndex);
+            });
+
+            $("#btnDownloadSummaryTable").click(function () {
+                downloadSummaryTable();
+            });
+
+            $("#predictiveFilter").on("change", "select", function () {
+                var xIndex = parseInt($("#ddlPredictiveX").val());
+
+                if (!isNaN(xIndex)) {
+                    toggleOverlay($("#predictiveFilter"), true);
+
+                    $.ajax({
+                        url: '/mpgsdata/variables',
+                        data: { x: xIndex },
+                        success: function (data) {
+                            var container = $("#predictiveChart");
+                            container.html("");
+
+                            var margin = { top: 20, right: 20, bottom: 40, left: 50 },
+                                width = container.width() - margin.left - margin.right,
+                                height = container.height() - margin.top - margin.bottom;
+
+                            var svg = d3.select("#predictiveChart")
+                                .append("svg")
+                                .attr("width", width + margin.left + margin.right)
+                                .attr("height", height + margin.top + margin.bottom)
+                                .append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+                            var x, y;
+
+                            if (xIndex == 1) {
+                                x = d3.scaleBand().rangeRound([0, width]).paddingOuter(0.5).paddingInner(0.3);
+                                y = d3.scaleLinear().rangeRound([height, 0]);
+
+                                x.domain(data.map(function (d) { return d.x; }));
+                                y.domain([0, d3.max(data, function (d) { return d.y; })]);
+
+                                svg.selectAll(".bar")
+                                    .data(data)
+                                    .enter()
+                                    .append("rect")
+                                    .attr("class", "bar")
+                                    .attr("x", function (d) { return x(d.x); })
+                                    .attr("y", function (d) { return y(d.y); })
+                                    .attr("width", x.bandwidth())
+                                    .attr("height", function (d) { return height - y(d.y); });
+
+                            } else {
+                                x = d3.scaleLinear().range([0, width]);
+                                y = d3.scaleLinear().range([height, 0]);
+
+                                x.domain([0, d3.max(data, function (d) { return d.x; })]);
+                                y.domain([0, d3.max(data, function (d) { return d.y; })]);
+
+                                svg.selectAll(".dot")
+                                    .data(data)
+                                    .enter()
+                                    .append("circle")
+                                    .attr("class", "dot")
+                                    .attr("r", 5)
+                                    .attr("cx", function (d) { return x(d.x); })
+                                    .attr("cy", function (d) { return y(d.y); });
+                            }
+
+                            svg.append("g").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x));
+                            svg.append("g").call(d3.axisLeft(y));
+
+                            svg.append("text").attr("class", "label").attr("x", width).attr("y", height + 35).style("text-anchor", "end").text($("#ddlPredictiveX option:selected").text());
+                            svg.append("text").attr("class", "label").attr("transform", "rotate(-90)").attr("y", 6).attr("dy", 10).style("text-anchor", "end").text("Failure probability");
+
+                        },
+                        complete: function () {
+                            toggleOverlay($("#predictiveFilter"), false);
+                        }
+                    });
+                }
+            });
+
+            $("#ddlPredictiveX").val("0").trigger("change");
+
+            sliderCustTarget = $("#sliderCustTarget").slider({
+                min: 0,
+                max: 100,
+                step: 1,
+                range: false,
+                value: 50
+            }).on("slide", function () {
+
+                if (performanceData == null || performanceData.length == 0) return;
+                var custTarget = sliderCustTarget.slider("getValue");
+
+                $.each(performanceData, function (i, item) {
+                    if (item.CustTarget == custTarget) {
+
+                        performanceTableCells[0].innerHTML = item.TruePos.toLocaleString() + " assets (" + item.TruePosPercent + "%)";
+                        performanceTableCells[1].innerHTML = item.FalsePos.toLocaleString() + " assets (" + item.FalsePosPercent + "%)";
+                        performanceTableCells[2].innerHTML = item.FalseNeg.toLocaleString() + " assets (" + item.FalseNegPercent + "%)";
+                        performanceTableCells[3].innerHTML = item.TrueNeg.toLocaleString() + " assets (" + item.TrueNegPercent + "%)";
+
+                        return false;
+                    }
+                });
+
+                var bisectorIndex = perfChartBisect(performanceData, custTarget, 1);
+                perfChartSvg.select(".cursor").attr("cx", perfChartX(bisectorIndex)).attr("cy", perfChartY(bisectorIndex));
+
+                $("#txtCustTarget").val(custTarget);
+            });
+
+            $("#txtCustTarget").change(function () {
+                var custTarget = parseInt($("#txtCustTarget").val());
+                if (custTarget >= 0 && custTarget <= 100) {
+                    sliderCustTarget.slider("setValue", custTarget);
+                    sliderCustTarget.trigger("slide");
+                }
+            });
+
+            $("#btnPerformanceSensitivity").click(function () {
+                toggleOverlay($("#divPerformance"), true);
+
+                $.ajax({
+                    url: '/mpgsdata/roc',
+                    success: function (data) {
+                        performanceData = data;
+
+                        var container = $("#performanceChart");
+                        container.html("");
+
+                        var margin = { top: 20, right: 180, bottom: 40, left: 50 },
+                            width = container.width() - margin.left - margin.right,
+                            height = container.height() - margin.top - margin.bottom;
+
+                        var x = d3.scaleLinear().range([0, width]).domain([0, 100]);
+                        var y = d3.scaleLinear().range([height, 0]).domain([0, 100]);
+                        var bisector = d3.bisector(function (d) { return d.CustTarget; }).left;
+
+                        var line = d3.line().curve(d3.curveBasis).x(function (d) { return x(d.CustTarget); }).y(function (d) { return y(d.Sensitivity); });
+
+                        var svg = d3.select("#performanceChart")
+                            .append("svg")
+                            .attr("width", width + margin.left + margin.right)
+                            .attr("height", height + margin.top + margin.bottom)
+                            .append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+                        svg.append("path").data([data]).attr("class", "line").attr("d", line);
+
+                        perfChartX = function (i) { return x(data[i - 1].CustTarget); };
+                        perfChartY = function (i) { return y(data[i - 1].Sensitivity); };
+                        perfChartSvg = svg;
+                        perfChartBisect = bisector;
+                        svg.append("circle").attr("class", "cursor").attr("r", 5);
+
+                        svg.append("g").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x));
+                        svg.append("g").call(d3.axisLeft(y));
+
+                        $("#sliderCustTarget").trigger("slide");
+
+                    },
+                    complete: function () {
+                        toggleOverlay($("#divPerformance"), false);
+                    }
+                });
+            });
+
+            $("#btnPerformancePrecision").click(function () {
+                toggleOverlay($("#divPerformance"), true);
+
+                $.ajax({
+                    url: '/mpgsdata/lift',
+                    success: function (data) {
+                        performanceData = data;
+
+                        var container = $("#performanceChart");
+                        container.html("");
+
+                        var margin = { top: 20, right: 150, bottom: 40, left: 50 },
+                            width = container.width() - margin.left - margin.right,
+                            height = container.height() - margin.top - margin.bottom;
+
+                        var x = d3.scaleLinear().range([0, width]).domain([0, 100]);
+                        var y = d3.scaleLinear().range([height, 0]).domain([d3.min(data, function (d) { return d.Precision; }), d3.max(data, function (d) { return d.Precision; })]);
+                        var bisector = d3.bisector(function (d) { return d.CustTarget; }).left;
+
+                        var line = d3.line().curve(d3.curveBasis).x(function (d) { return x(d.CustTarget); }).y(function (d) { return y(d.Precision); });
+
+                        var svg = d3.select("#performanceChart")
+                            .append("svg")
+                            .attr("width", width + margin.left + margin.right)
+                            .attr("height", height + margin.top + margin.bottom)
+                            .append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+                        svg.append("path").data([data]).attr("class", "line").attr("d", line);
+
+                        perfChartX = function (i) { return x(data[i - 1].CustTarget); };
+                        perfChartY = function (i) { return y(data[i - 1].Precision); };
+                        perfChartSvg = svg;
+                        perfChartBisect = bisector;
+                        svg.append("circle").attr("class", "cursor").attr("r", 5);
+
+                        svg.append("g").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x));
+                        svg.append("g").call(d3.axisLeft(y));
+
+                        $("#sliderCustTarget").trigger("slide");
+
+                    },
+                    complete: function () {
+                        toggleOverlay($("#divPerformance"), false);
+                    }
+                });
+            });
+
+            $("#btnPerformanceSensitivity").click();
+
+            $("#btnPerformanceSensitivityInfo").popover({
+                html: true,
+                placement: 'top',
+                trigger: 'focus',
+                content: '<div><b>Sensitivity Concept Explanation:</b><br/>The sensitivity or ROC curve illustrates the performance of a binary classifier system when its discrimination threshold varies. The curve reflects the relationship between the well predicted failures (true positives) and all the failures (true positive and false negatives). High Sensitivity means that an algorithm returned most of the relevant results. The Sensitivity analysis provides tools to choose optimal models in a direct and natural way that considers both cost and benefits in the decision making process</div>'
+            });
+
+            $("#btnPerformancePrecisionInfo").popover({
+                html: true,
+                placement: 'bottom',
+                trigger: 'focus',
+                content: '<div><b>Precision Concept Explanation:</b><br/>The precision curve illustrates also the performance of a binary classifier. The curve represents the number of well predicted failures (true positives) divided by the total number of failures predicted (true positive and false positives). High Precision means that an algorithm returned substantially more relevant results than irrelevant one</div>'
+            });
+        });
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8hJQ2tSEH8-t-KRk83qVegBwYGzGLJ8k&callback=initMap"></script>
 </body>
 </html>

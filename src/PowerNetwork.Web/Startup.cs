@@ -68,8 +68,10 @@ namespace PowerNetwork
 
             if (Environment.EnvironmentName == "Demo" || Environment.EnvironmentName == "DemoProduction") {
                 services.AddSingleton<IDataService>(new DataService2(Configuration.GetSection("AppConfig")["ConnectionString"], Path.Combine(Environment.WebRootPath, "data/sample/")));
+                services.AddSingleton<IMpgsDataService>(new MpgsDataService2(Path.Combine(Environment.WebRootPath, "data/mpgs/")));
             } else {
                 services.AddSingleton<IDataService>(new DataService(Configuration.GetSection("AppConfig")["ConnectionString"]));
+                services.AddSingleton<IMpgsDataService>(new MpgsDataService(Path.Combine(Environment.WebRootPath, "data/mpgs/"), Configuration.GetSection("AppConfig")["ConnectionString"]));
             }
         }
 

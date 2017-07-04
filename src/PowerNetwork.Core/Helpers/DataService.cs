@@ -133,15 +133,16 @@ namespace PowerNetwork.Core.Helpers {
             using (var connection = new NpgsqlConnection(_connectionString)) {
                 NpgsqlCommand command;
 
+                // old table: a1_balance_alarma_final_prueba1
                 if (teleLevel0 == 0 && teleLevel1 == 100 && tipo == 0) {
                     command = new NpgsqlCommand(
                         @"select matricula, ratio, potencia_instaladatotal, intervalo
-                        from a1_balance_alarma_final_prueba1 order by ratio desc", connection);
+                        from b1_balance_alarma_final_prueba1 order by ratio desc", connection);
 
                 } else {
                     var text =
                         @"select a.matricula, a.ratio, a.potencia_instaladatotal, a.intervalo
-                        from a1_balance_alarma_final_prueba1 a
+                        from b1_balance_alarma_final_prueba1 a
                         join cts_x_tipo tipo on tipo.matricula_ct = a.matricula
                         where ";
 
@@ -186,15 +187,16 @@ namespace PowerNetwork.Core.Helpers {
             using (var connection = new NpgsqlConnection(_connectionString)) {
                 NpgsqlCommand command;
 
+                // old table: a1_balance_alarma_desbalanceo_final
                 if (teleLevel0 == 0 && teleLevel1 == 100 && tipo == 0) {
                     command = new NpgsqlCommand(@"select matricula, dif_prc_hora_desbalaceo_sobre_nominal
-                        from a1_balance_alarma_desbalanceo_final
+                        from balance_alarma_desbalanceo_final
                         order by dif_prc_hora_desbalaceo_sobre_nominal desc", connection);
 
                 } else {
                     var text =
                         @"select a.matricula, a.dif_prc_hora_desbalaceo_sobre_nominal
-                        from a1_balance_alarma_desbalanceo_final a
+                        from balance_alarma_desbalanceo_final a
                         join cts_x_tipo tipo on tipo.matricula_ct = a.matricula
                         where ";
 
@@ -227,18 +229,19 @@ namespace PowerNetwork.Core.Helpers {
         public List<AlarmModel> FraudAlarms(int teleLevel0, int teleLevel1, int tipo) {
             var result = new List<AlarmModel>();
 
+            // old table: tabla_diferencias_fraude
             using (var connection = new NpgsqlConnection(_connectionString)) {
                 NpgsqlCommand command;
 
                 if (teleLevel0 == 0 && teleLevel1 == 100 && tipo == 0) {
                     command = new NpgsqlCommand(
                         @"select matricula, med_dif_energia_ct_sal
-                        from tabla_diferencias_fraude order by med_dif_energia_ct_sal desc", connection);
+                        from tabla_diferencias_fraude_bcg order by med_dif_energia_ct_sal desc", connection);
 
                 } else {
                     var text =
                         @"select a.matricula, a.med_dif_energia_ct_sal
-                        from tabla_diferencias_fraude a
+                        from tabla_diferencias_fraude_bcg a
                         join cts_x_tipo tipo on tipo.matricula_ct = a.matricula
                         where ";
 
@@ -273,7 +276,7 @@ namespace PowerNetwork.Core.Helpers {
             using (var connection = new NpgsqlConnection(_connectionString)) {
                 var command = new NpgsqlCommand(
                     @"select fecha, hora, intensidad_fase1, intensidad_fase2, intensidad_fase3, tension_fase1, tension_fase2, tension_fase3
-                    from balance_final_def 
+                    from balance_final_def
                     where matricula = @Code and fecha >= @From and fecha <= @To", connection);
 
                 command.Parameters.Add("Code", NpgsqlDbType.Varchar).Value = code;
@@ -310,13 +313,14 @@ namespace PowerNetwork.Core.Helpers {
         public List<IntensityModel> Intensity(string code, DateTime from, DateTime to, string exit) {
             var result = new List<IntensityModel>();
 
+            // old table: a1_curva_intesidad_sobrecarga
             using (var connection = new NpgsqlConnection(_connectionString)) {
                 NpgsqlCommand command;
 
                 if (exit == "max") {
                     command = new NpgsqlCommand(
                         @"select fecha, horas, fase_r, fase_s, fase_t
-                        from a1_curva_intesidad_sobrecarga
+                        from b1_curva_intesidad_sobrecarga
                         where matricula = @Code and fecha >= @From and fecha <= @To and tpo_salida_max = 1", connection);
 
                     command.Parameters.Add("Code", NpgsqlDbType.Varchar).Value = code;
@@ -326,7 +330,7 @@ namespace PowerNetwork.Core.Helpers {
                 } else {
                     command = new NpgsqlCommand(
                         @"select fecha, horas, fase_r, fase_s, fase_t
-                        from a1_curva_intesidad_sobrecarga
+                        from b1_curva_intesidad_sobrecarga
                         where matricula = @Code and fecha >= @From and fecha <= @To and salida = @Exit", connection);
 
                     command.Parameters.Add("Code", NpgsqlDbType.Varchar).Value = code;
@@ -366,10 +370,11 @@ namespace PowerNetwork.Core.Helpers {
             using (var connection = new NpgsqlConnection(_connectionString)) {
                 NpgsqlCommand command;
 
+                // old table: a1_balance_prc_nominal_bcg_04_prueba1
                 if (exit == "max") {
                     command = new NpgsqlCommand(
                         @"select fecha, fase, prc_nominal, num_horas
-                        from a1_balance_prc_nominal_bcg_04_prueba1
+                        from b1_balance_prc_nominal_bcg_04_prueba1
                         where matricula = @Code and fecha >= @From and fecha <= @To and fase <> 'TODAS FASES' and tpo_salida_max = 1", connection);
 
                     command.Parameters.Add("Code", NpgsqlDbType.Varchar).Value = code;
@@ -379,7 +384,7 @@ namespace PowerNetwork.Core.Helpers {
                 } else {
                     command = new NpgsqlCommand(
                         @"select fecha, fase, prc_nominal, num_horas
-                        from a1_balance_prc_nominal_bcg_04_prueba1
+                        from b1_balance_prc_nominal_bcg_04_prueba1
                         where matricula = @Code and fecha >= @From and fecha <= @To and fase <> 'TODAS FASES' and salida = @Exit", connection);
 
                     command.Parameters.Add("Code", NpgsqlDbType.Varchar).Value = code;
@@ -413,9 +418,10 @@ namespace PowerNetwork.Core.Helpers {
             var result = string.Empty;
 
             using (var connection = new NpgsqlConnection(_connectionString)) {
+                // old table: a1_balance_prc_nominal_bcg_04_prueba1
                 using (var command = new NpgsqlCommand(
                     @"select top 1 salida
-                    from a1_balance_prc_nominal_bcg_04_prueba1
+                    from b1_balance_prc_nominal_bcg_04_prueba1
                     where matricula = @Code and tpo_salida_max = 1",connection)) {
 
                     command.Parameters.Add("Code", NpgsqlDbType.Varchar).Value = code;
@@ -471,10 +477,11 @@ namespace PowerNetwork.Core.Helpers {
         public List<FraudModel> Fraud(string code, DateTime from, DateTime to) {
             var result = new List<FraudModel>();
 
+            // old table: grafica_serie_fraude
             using (var connection = new NpgsqlConnection(_connectionString)) {
                 var command = new NpgsqlCommand(
                     @"select fecha, energia_g03, sum_energia_imp_salidas
-                    from grafica_serie_fraude
+                    from grafica_serie_fraude_bcg
                     where matricula = @Code and fecha >= @From and fecha <= @To
                     order by fecha", connection);
 

@@ -18,14 +18,12 @@
                 <span>@Html.Raw(ViewBag.Texts["Power.Menu.Power"])</span>
             </a>
         </li>
-        <environment names="Demo,DemoProduction">
-            <li>
-                <a href="/mpgs">
-                    <img src="~/images/strategy1.png" />
-                    <span>@Html.Raw(ViewBag.Texts["Power.Menu.Strategy"])</span>
-                </a>
-            </li>
-        </environment>
+        <li>
+            <a href="/mpgs">
+                <img src="~/images/strategy1.png" />
+                <span>@Html.Raw(ViewBag.Texts["Power.Menu.Strategy"])</span>
+            </a>
+        </li>
         <li>
             <a href="/fraud">
                 <img src="~/images/fraud1-sm.png" />
@@ -1346,6 +1344,8 @@
                 height = containerSize.height - margin.top - margin.bottom,
                 g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+            if (width < 0 || height < 0) return;
+
             var clip = g.append("defs").append("clipPath").attr("id", "clipEnergy").append("rect").attr("width", 0).attr("height", height);
 
             var x = d3.scaleTime().rangeRound([0, width]);
@@ -1399,6 +1399,8 @@
                 width = containerSize.width - margin.left - margin.right,
                 height = containerSize.height - margin.top - margin.bottom,
                 g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            if (width < 0 || height < 0) return;
 
             var y = d3.scaleLinear().rangeRound([height, 0]);
             y.domain([0, d3.max([data.sum.ct, data.sum.exit])]);

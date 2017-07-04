@@ -8,9 +8,8 @@
 }
 
 #loginView .login-container {
-    left: 10.5%;
+    left: 15px;
     width: 360px;
-    margin-left: -180px;
     color: #177B57;
     margin-top: -100px;
     -webkit-border-radius: 5px;
