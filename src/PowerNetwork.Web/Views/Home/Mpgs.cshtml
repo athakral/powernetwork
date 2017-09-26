@@ -725,7 +725,13 @@
                         max: data.maxClientCount,
                         step: 5,
                         range: true,
-                        value: [data.minClientCount, data.maxClientCount]
+                        value: [data.minClientCount, data.maxClientCount],
+                        formatter: function(value) {
+                            if (value.length == 2) {
+                                return value[0].toLocaleString() + " : " + value[1].toLocaleString();
+                            }
+                            return value;
+                        }
                     });
 
                     refreshSummaryTable();
@@ -736,21 +742,30 @@
                         min: 0,
                         max: data.strategy.assetCount,
                         step: 1,
-                        value: 0
+                        value: 0,
+                        formatter: function(value) {
+                            return value.toLocaleString();
+                        }
                     }).on("slideStop", function () { refreshStrategyDecision(0); });
 
                     sliderPreventiveCost = $("#sliderPreventiveCost").slider({
                         min: 0,
                         max: data.strategy.preventive,
                         step: 1,
-                        value: 0
+                        value: 0,
+                        formatter: function(value) {
+                            return value.toLocaleString() + " €";
+                        }
                     }).on("slideStop", function () { refreshStrategyDecision(1); });
 
                     sliderCorrectiveCost = $("#sliderCorrectiveCost").slider({
                         min: 0,
                         max: data.strategy.corrective,
                         step: 1,
-                        value: 0
+                        value: 0,
+                        formatter: function(value) {
+                            return value.toLocaleString() + " €";
+                        }
                     }).on("slideStop", function () { refreshStrategyDecision(2); });
 
                     strategyData = data.strategy;
@@ -1011,6 +1026,7 @@
             svg.append("g").call(d3.axisLeft(y));
 
             svg.append("text").attr("class", "label").attr("x", width).attr("y", height + 35).style("text-anchor", "end").text("# of assets (descending savings)");
+            svg.append("text").attr("class", "label").attr("transform", "rotate(-90)").attr("y", 6).attr("dy", 10).style("text-anchor", "end").text("Cost");
         }
 
         var performanceData;
@@ -1035,7 +1051,7 @@
                     success: function (data) {
 
                         $("#technicalCount").html(data.technical.toLocaleString(undefined));
-                        $("#technicalCost").html(data.technicalPreventive.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 }));
+                        $("#technicalCost").html(data.technicalPreventive.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + " €");
 
                         refreshTechnicalChart(data);
                         refreshEconomicChart(data);
@@ -1069,9 +1085,9 @@
                     sliderCorrectiveCost.slider("setValue", data.corrective);
 
                     $("#divBusinessCase > .content").html(
-                        "<br/><p><label>Preventive cost: " + data.preventive.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + "</label></p>" +
-                        "<p><label>Corrective cost: " + data.corrective.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + "</label></p>" +
-                        "<p><label>Total cost: " + (data.preventive + data.corrective).toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + "</label></p>"
+                        "<br/><p><label>Preventive cost: " + data.preventive.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + " €</label></p>" +
+                        "<p><label>Corrective cost: " + data.corrective.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + " €</label></p>" +
+                        "<p><label>Total cost: " + (data.preventive + data.corrective).toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + " €</label></p>"
                     );
 
                     refreshBusinessCaseChart(data);
@@ -1169,7 +1185,7 @@
                             svg.append("g").call(d3.axisLeft(y));
 
                             svg.append("text").attr("class", "label").attr("x", width).attr("y", height + 35).style("text-anchor", "end").text($("#ddlPredictiveX option:selected").text());
-                            svg.append("text").attr("class", "label").attr("transform", "rotate(-90)").attr("y", 6).attr("dy", 10).style("text-anchor", "end").text("Failure probability");
+                            svg.append("text").attr("class", "label").attr("transform", "rotate(-90)").attr("y", 6).attr("dy", 10).style("text-anchor", "end").text("Failure probability (%)");
 
                         },
                         complete: function () {
@@ -1229,7 +1245,7 @@
                         var container = $("#performanceChart");
                         container.html("");
 
-                        var margin = { top: 20, right: 180, bottom: 40, left: 50 },
+                        var margin = { top: 20, right: 180, bottom: 60, left: 50 },
                             width = container.width() - margin.left - margin.right,
                             height = container.height() - margin.top - margin.bottom;
 
@@ -1256,6 +1272,9 @@
                         svg.append("g").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x));
                         svg.append("g").call(d3.axisLeft(y));
 
+                        svg.append("text").attr("class", "label").attr("x", width).attr("y", height + 35).style("text-anchor", "end").text("Customer targeted");
+                        svg.append("text").attr("class", "label").attr("transform", "rotate(-90)").attr("y", 6).attr("dy", 10).style("text-anchor", "end").text("Sensitivity");
+
                         $("#sliderCustTarget").trigger("slide");
 
                     },
@@ -1276,7 +1295,7 @@
                         var container = $("#performanceChart");
                         container.html("");
 
-                        var margin = { top: 20, right: 150, bottom: 40, left: 50 },
+                        var margin = { top: 20, right: 150, bottom: 60, left: 50 },
                             width = container.width() - margin.left - margin.right,
                             height = container.height() - margin.top - margin.bottom;
 
@@ -1302,6 +1321,9 @@
 
                         svg.append("g").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(x));
                         svg.append("g").call(d3.axisLeft(y));
+
+                        svg.append("text").attr("class", "label").attr("x", width).attr("y", height + 35).style("text-anchor", "end").text("Customer targeted");
+                        svg.append("text").attr("class", "label").attr("transform", "rotate(-90)").attr("y", 6).attr("dy", 10).style("text-anchor", "end").text("Precision");
 
                         $("#sliderCustTarget").trigger("slide");
 
