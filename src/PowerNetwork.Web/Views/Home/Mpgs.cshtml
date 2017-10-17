@@ -21,320 +21,294 @@
 </head>
 <body>
     <div id="mpgsView">
-        <div class="left">
+        <div class="padding">
+            <h1>ASSET CONTROL CENTER</h1>
+
             <environment names="Development,Staging,Production">
-                <img src="~/images/logo.png" />
+                <img src="~/images/logo.png" class="logo" />
             </environment>
             <environment names="Demo,DemoProduction">
-                <img src="~/images/logo-2.png" />
+                <img src="~/images/logo-4.png" class="logo" />
             </environment>
-            <h3>Filters</h3>
-            <div class="overlay-container" id="filterContainer">
-                <div class="form-group">
-                    <select id="ddlRegion" class="form-control">
-                        <option value="">-- Region --</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <select id="ddlCity" class="form-control" disabled="disabled">
-                        <option value="">-- City --</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <select id="ddlCenter" class="form-control">
-                        <option value="">-- Maintenance Center --</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <input id="txtCTSearch" type="text" class="form-control" placeholder="Asset Code">
-                        <span class="input-group-btn">
-                            <button id="btnCTSearch" class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
-                        </span>
+
+            <h3>ASSET GEO-POSITIONING</h3>
+        </div>
+
+        <div style="position: relative;">
+            <div id="map" style="height: 600px;"></div>
+            <div id="mapLegends">
+                <p>
+                    <img src="~/images/c-yellow.png" />
+                    Regulatory
+                </p>
+                <p>
+                    <img src="~/images/c-red.png" />
+                    Critical asset
+                </p>
+                <p>
+                    <img src="~/images/c-blue.png" />
+                    No action
+                </p>
+            </div>
+        </div>
+
+        <div class="padding">
+            <div id="filterContainer">
+                <h4>FILTERS</h4>
+                <div class="row">
+                    <div class="col-md-2">
+                        <select id="ddlRegion" class="form-control">
+                            <option value="">-- Region --</option>
+                        </select>
+                        <br/>
+                        <div class="input-group">
+                            <input id="txtCTSearch" type="text" class="form-control" placeholder="Asset Code">
+                            <span class="input-group-btn">
+                                <button id="btnCTSearch" class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <select id="ddlCity" class="form-control" disabled="disabled">
+                            <option value="">-- City --</option>
+                        </select>
+                        <br/>
+                        <select id="ddlAction" class="form-control">
+                            <option value="">-- Action Required --</option>
+                            <option value="1">Regulatory Check</option>
+                            <option value="2">Maintenance Required</option>
+                            <option value="3">No Action Required</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <select id="ddlCenter" class="form-control">
+                            <option value="">-- Maintenance Center --</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="slider-container">
+                            <input type="text" id="sliderFailRate" style="width: 100%;" />
+                            <button id="btnFailRate" class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
+                            <label>FAILURE PROBABILITY</label>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="slider-container">
+                            <input type="text" id="sliderClientCount" style="width: 100%;" />
+                            <button id="btnClientCount" class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
+                            <label>NUMBER OF CLIENTS</label>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group error" id="ctSearchMessage" style="display: none;"></div>
-                <div class="form-group">
-                    <select id="ddlAction" class="form-control">
-                        <option value="">-- Action Required --</option>
-                        <option value="1">Regulatory Check</option>
-                        <option value="2">Maintenance Required</option>
-                        <option value="3">No Action Required</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Failure probability</label>
-                    <div style="padding-left: 10px;">
-                        <input type="text" id="sliderFailRate" style="width: 120px;" />
-                        &nbsp;&nbsp;
-                    <button id="btnFailRate" class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label># clients</label>
-                    <div style="padding-left: 10px;">
-                        <input type="text" id="sliderClientCount" style="width: 120px;" />
-                        &nbsp;&nbsp;
-                    <button id="btnClientCount" class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
-                    </div>
+            </div>
+
+            <hr/>
+
+            <div id="divSummaryTable">
+                <h3>ASSET SUMMARY TABLE <a href="javascript:void(0);" id="btnDownloadSummaryTable" title="Download"><span class="glyphicon glyphicon-download-alt"></span></a></h3>
+                <div>
+                    <table class="table table-condensed table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Failure Prob</th>
+                                <th>Action required</th>
+                                <th>Code</th>
+                                <th># clients</th>
+                                <th>Type Constr</th>
+                                <th># transf</th>
+                                <th># exits</th>
+                                <th>Box Age</th>
+                                <th>Tp function</th>
+                                <th>Max. I</th>
+                                <th>Min. I</th>
+                                <th>Transf. Age</th>
+                                <th>Transf. F. Rate</th>
+                                <th>Exits F. Rate</th>
+                                <th>Box F. Rate</th>
+                                <th>Constr F. Rate</th>
+                                <th>Last 36m failure</th>
+                                <th>Last 48m failure</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                    <p class="error"></p>
+                    <p class="paging"></p>
                 </div>
             </div>
         </div>
 
-        <div class="left2">
-            <div style="height: 630px; margin-top: 15px;">
-                <div class="text-menu" style="width: 122px;">
-                    <div class="text-menu-postfix" style="left: 106px;"></div>
-                    <div class="text-menu-text" style="padding-left: 12px; margin-top: -30px;">
-                        Asset<br />
-                        exploration
-                    </div>
-                </div>
-            </div>
-            <div style="height: 448px;">
-                <div class="text-menu" style="width: 118px;">
-                    <div class="text-menu-postfix" style="left: 104px;"></div>
-                    <div class="text-menu-text" style="padding-left: 5px; margin-top: -30px;">
-                        Model<br />
-                        interpretation
-                    </div>
-                </div>
-            </div>
-            <div style="height: 1108px;">
-                <div class="text-menu" style="width: 126px;">
-                    <div class="text-menu-postfix" style="left: 109px;"></div>
-                    <div class="text-menu-text" style="padding-left: 22px; margin-top: -45px;">
-                        Optimal<br />
-                        strategy<br />
-                        definition
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="center">
-            <h1>Asset Control Center</h1>
-
+        <div style="background-color: #F6F6F6; padding: 30px;">
             <div class="row">
-                <div class="col-md-6">
-                    <h3>Asset geo-positioning</h3>
-                    <div id="map" style="height: 520px;"></div>
-                    <p style="font-size: 11px; margin-top: 10px;">
-                        <img src="~/images/b-blue.png" />
-                        Regulatory Check &nbsp;&nbsp;&nbsp;
-                        <img src="~/images/b-red.png" />
-                        Critical assets &nbsp;&nbsp;&nbsp;
-                        <img src="~/images/b-lgreen.png" />
-                        No action required
-                    </p>
+                <div class="col-md-7">
+                    <div class="box">
+                        <h3>Key Predictive Model Variables</h3>
+                        <div id="divRelevances"></div>
+                        <div class="overlay-container" id="predictiveFilter">
+                            <div class="form-group">
+                                <select id="ddlPredictiveX" class="form-control">
+                                    <option value="">-- X Variable --</option>
+                                    <option value="0">Transf. F. Rate</option>
+                                    <option value="1">Type Constr</option>
+                                    <option value="2"># clients</option>
+                                    <option value="3">Tp function</option>
+                                    <option value="4">Exits F. Rate</option>
+                                    <option value="5">Constr F. Rate</option>
+                                    <option value="6">Max. I</option>
+                                    <option value="7"># exits</option>
+                                    <option value="8">Box Age</option>
+                                    <option value="9">Min. I</option>
+                                    <option value="10">Last 48m failure</option>
+                                    <option value="11">Transf. Age</option>
+                                    <option value="12">Last 36m failure</option>
+                                    <option value="13">Box F. Rate</option>
+                                    <option value="14"># transf</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="predictiveChart" class="scatter-chart" style="height: 300px;"></div>
+                    </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="block overlay-container" style="height: 580px; overflow: auto;" id="divSummaryTable">
-                        <h3>Asset summary table <a href="javascript:void(0);" id="btnDownloadSummaryTable" title="Download"><span class="glyphicon glyphicon-download-alt"></span></a></h3>
-                        <div style="display: inline-block;">
-                            <table class="table table-condensed table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Map</th>
-                                        <th>Code</th>
-                                        <th># clients</th>
-                                        <th>Type Constr</th>
-                                        <th># transf</th>
-                                        <th># exits</th>
-                                        <th>Box Age</th>
-                                        <th>Tp function</th>
-                                        <th>Max. I</th>
-                                        <th>Min. I</th>
-                                        <th>Transf. Age</th>
-                                        <th>Transf. F. Rate</th>
-                                        <th>Exits F. Rate</th>
-                                        <th>Box F. Rate</th>
-                                        <th>Constr F. Rate</th>
-                                        <th>Last 36m failure</th>
-                                        <th>Last 48m failure</th>
-                                        <th>Failure Prob</th>
-                                        <th>Action required</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
-                            <p class="error"></p>
-                            <p class="paging"></p>
+                <div class="col-md-5">
+                    <div class="box" id="divPerformance">
+                        <h3>Model Performance</h3>
+                        <table id="tblPerformance">
+                            <tbody>
+                                <tr>
+                                    <td class="calculated percent g1" style="width: 50%;">&nbsp;</td>
+                                    <td class="calculated percent g2" style="width: 50%;"></td>
+                                </tr>
+                                <tr>
+                                    <td class="g1">True Positive</td>
+                                    <td class="g2">False Positive</td>
+                                </tr>
+                                <tr>
+                                    <td class="calculated g1">&nbsp;</td>
+                                    <td class="calculated g2"></td>
+                                </tr>
+                                <tr>
+                                    <td class="calculated percent g3">&nbsp;</td>
+                                    <td class="calculated percent g4"></td>
+                                </tr>
+                                <tr>
+                                    <td class="g3">False Negative</td>
+                                    <td class="g4">True Negative</td>
+                                </tr>
+                                <tr>
+                                    <td class="calculated g3">&nbsp;</td>
+                                    <td class="calculated g4"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <hr style="margin-top: 40px; margin-bottom: 40px;" />
+                        <div id="divTargetThreshold">
+                            <label>Customer targeted threshold</label>
+                            <div style="position: absolute; top: 0px; right: 0px;">
+                                <a id="btnPerformanceSensitivity" class="btn btn-default" style="width: 100px; margin-bottom: 10px;">Sensitivity</a>
+                                <a id="btnPerformanceSensitivityInfo" href="javascript:void(0)" style="margin-left: 5px;">
+                                    <img src="~/images/btn-info.png" style="height: 24px; vertical-align: top; margin-top: 8px;" /></a>
+                                <br />
+                                <a id="btnPerformancePrecision" class="btn btn-default" style="width: 100px;">Precision</a>
+                                <a id="btnPerformancePrecisionInfo" href="javascript:void(0)" style="margin-left: 5px;">
+                                    <img src="~/images/btn-info.png" style="height: 24px; vertical-align: top; margin-top: 8px;" /></a>
+                            </div>
+                            <div style="padding: 10px 180px 10px 10px;">
+                                <input type="text" id="sliderCustTarget" style="width: 100%;" />
+                                <input type="number" class="form-control" id="txtCustTarget" style="width: 80px; margin: 10px auto; text-align: center;" />
+                            </div>
+                            <div id="performanceChart" class="scatter-chart" style="height: 300px;"></div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div style="background-color: #EAEAEA; padding: 30px;">
+            <h1>Maintenance Strategy definition</h1>
+            <h3>Optimal Strategy definition</h3>
 
             <div class="row">
                 <div class="col-md-6">
-                    <div class="block">
-                        <h3>Key Predictive Model Variables</h3>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <p>Select variable:</p>
-                                <div class="overlay-container" id="predictiveFilter">
-                                    <div class="form-group">
-                                        <select id="ddlPredictiveX" class="form-control">
-                                            <option value="">-- X Variable --</option>
-                                            <option value="0">Transf. F. Rate</option>
-                                            <option value="1">Type Constr</option>
-                                            <option value="2"># clients</option>
-                                            <option value="3">Tp function</option>
-                                            <option value="4">Exits F. Rate</option>
-                                            <option value="5">Constr F. Rate</option>
-                                            <option value="6">Max. I</option>
-                                            <option value="7"># exits</option>
-                                            <option value="8">Box Age</option>
-                                            <option value="9">Min. I</option>
-                                            <option value="10">Last 48m failure</option>
-                                            <option value="11">Transf. Age</option>
-                                            <option value="12">Last 36m failure</option>
-                                            <option value="13">Box F. Rate</option>
-                                            <option value="14"># transf</option>
-                                        </select>
+                    <div class="box" style="min-height: 420px;">
+                        <h3>Technical decision</h3>
+                        <div class="row overlay-container" id="divTechnicalDecision">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Minimal number of assets</label>
+                                    <div style="padding-left: 10px; padding-right: 50px;">
+                                        <input type="text" id="sliderTechnicalCount" style="width: 100%;" />
                                     </div>
                                 </div>
-                                <br />
-                                <div id="divRelevances"></div>
                             </div>
-                            <div class="col-md-8">
-                                <div id="predictiveChart" class="scatter-chart" style="height: 401px;"></div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Minimal preventive cost</label>
+                                    <span id="technicalCost" style="color: #30DACB; font-size: 40px; font-family: 'ProximaNova'"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div id="divTechnicalChart" class="scatter-chart" style="height: 250px;"></div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="block overlay-container" id="divPerformance">
-                        <h3>Model Performance - Key statistical variables</h3>
-                        <div id="performanceChart" class="scatter-chart" style="height: 250px;"></div>
-                        <div style="position: absolute; top: 40px; right: 20px;">
-                            <a id="btnPerformanceSensitivity" class="btn btn-default" style="width: 100px; margin-bottom: 10px;">Sensitivity</a>
-                            <a id="btnPerformanceSensitivityInfo" href="javascript:void(0)" style="margin-left: 5px;">
-                                <img src="~/images/btn-info.png" style="height: 24px; vertical-align: top; margin-top: 8px;" /></a>
-                            <br />
-                            <a id="btnPerformancePrecision" class="btn btn-default" style="width: 100px;">Precision</a>
-                            <a id="btnPerformancePrecisionInfo" href="javascript:void(0)" style="margin-left: 5px;">
-                                <img src="~/images/btn-info.png" style="height: 24px; vertical-align: top; margin-top: 8px;" /></a>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label>Customer targeted threshold</label>
-                                <div style="padding: 10px; position: relative;">
-                                    <input type="text" id="sliderCustTarget" style="width: 100%;" />
-                                    <input type="number" class="form-control" id="txtCustTarget" style="width: 80px; position: absolute; left: 50%; margin-left: -40px; margin-top: 10px; text-align: center;" />
+                    <div class="box" style="min-height: 420px;">
+                        <h3>Economic decision</h3>
+                        <div class="row overlay-container" id="divEconomicDecision">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Preventive maintenance</label>
+                                    <div style="padding-left: 10px; padding-right: 50px;">
+                                        <input type="text" id="sliderPreventiveCost" style="width: 100%;" />
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-8" id="perfTable" style="padding-left: 30px;">
-                                <div>Predicted</div>
-                                <table class="table table-condensed table-bordered table-responsive" id="tblPerformance">
-                                    <tbody>
-                                        <tr>
-                                            <td colspan="2"><b>Real</b></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="g1" style="width: 50%;">True Positive</td>
-                                            <td class="g2" style="width: 50%;">False Positive</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="calculated g1">&nbsp;</td>
-                                            <td class="calculated g2"></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="g3">False Negative</td>
-                                            <td class="g4">True Negative</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="calculated g3">&nbsp;</td>
-                                            <td class="calculated g4"></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <div class="col-md-6">
+                                <div class="form-group" style="min-height: 82px;">
+                                    <label>Corrective maintenance</label>
+                                    <div style="padding-left: 10px; padding-right: 50px;">
+                                        <input type="text" id="sliderCorrectiveCost" style="width: 100%;" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div id="divEconomicChart" class="scatter-chart" style="height: 250px;"></div>
+                                <div class="graph-legends" style="display: none;">
+                                    <div>
+                                        <div style="background: #0f0"></div>
+                                        Preventive
+                                    </div>
+                                    <div>
+                                        <div style="background: #f00"></div>
+                                        Corrective
+                                    </div>
+                                    <div>
+                                        <div style="background: #00f"></div>
+                                        Total
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <h1>Maintenance Strategy definition</h1>
-
-            <div class="block" style="min-height: 300px;">
-                <h3>Technical decision</h3>
-                <div class="row overlay-container" id="divTechnicalDecision">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <h4>Minimal number of assets to include</h4>
-                            <div style="padding-left: 10px; padding-right: 50px;">
-                                <input type="text" id="sliderTechnicalCount" style="width: 100%;" />
-                                &nbsp;&nbsp;
-                                <button id="btnTechnicalCount" class="btn btn-default" type="button" style="display: none;"><span class="glyphicon glyphicon-search"></span></button>
+                <div class="col-md-12">
+                    <div class="box" style="min-height: 300px; margin-top: 30px;">
+                        <h3>Strategy summary</h3>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div id="divBusinessCase" class="overlay-container">
+                                    <div class="content"></div>
+                                    <div class="scatter-chart" style="height: 200px;"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div id="divMaintenanceDotChart" class="scatter-chart" style="height: 300px;"></div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label style="font-weight: normal;">Selected assets: <b><span id="technicalCount"></span></b></label>
-                        </div>
-                        <div class="form-group">
-                            <label style="font-weight: normal;">Minimal preventive cost: <b><span id="technicalCost"></span></b></label>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div id="divTechnicalChart" class="scatter-chart" style="height: 250px;"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="block" style="min-height: 300px;">
-                <h3>Economic decision</h3>
-                <div class="row overlay-container" id="divEconomicDecision">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <h4>Preventive maintenance expense</h4>
-                            <div style="padding-left: 10px; padding-right: 50px;">
-                                <input type="text" id="sliderPreventiveCost" style="width: 100%;" />
-                                &nbsp;&nbsp;
-                                <button id="btnPreventiveCost" class="btn btn-default" type="button" style="display: none;"><span class="glyphicon glyphicon-search"></span></button>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <h4>Corrective maintenance expense</h4>
-                            <div style="padding-left: 10px; padding-right: 50px;">
-                                <input type="text" id="sliderCorrectiveCost" style="width: 100%;" />
-                                &nbsp;&nbsp;
-                                <button id="btnCorrectiveCost" class="btn btn-default" type="button" style="display: none;"><span class="glyphicon glyphicon-search"></span></button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div id="divEconomicChart" class="scatter-chart" style="height: 250px;"></div>
-                        <div class="graph-legends">
-                            <div>
-                                <div style="background: #0f0"></div>
-                                Preventive
-                            </div>
-                            <div>
-                                <div style="background: #f00"></div>
-                                Corrective
-                            </div>
-                            <div>
-                                <div style="background: #00f"></div>
-                                Total
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="block" style="min-height: 300px;">
-                <h3>Strategy summary</h3>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div id="divBusinessCase" class="overlay-container">
-                            <div class="content"></div>
-                            <div class="scatter-chart" style="height: 200px;"></div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div id="divMaintenanceDotChart" class="scatter-chart" style="height: 300px;"></div>
                     </div>
                 </div>
             </div>
@@ -519,7 +493,7 @@
                                         map: map,
                                         position: { lat: c.Lat, lng: c.Lng },
                                         icon: {
-                                            url: '/images/' + (c.ActionType == 1 ? 'b-blue.png' : c.ActionType == 2 ? 'b-red.png' : 'b-lgreen.png')
+                                            url: '/images/' + (c.ActionType == 1 ? 'c-yellow.png' : c.ActionType == 2 ? 'c-red.png' : 'c-blue.png')
                                         },
                                         tipo: { clientCount: c.ClientCount, failRate: c.FailRate, action: c.ActionType }
                                     });
@@ -796,15 +770,15 @@
                     $summaryTable.html("");
 
                     data.items.forEach(function (a) {
-                        $summaryTable.append('<tr><td><a class="btn btn-sm btn-default" data-code="' + a.ct.Code + '" data-lat="' + a.ct.Lat + '" data-lng="' + a.ct.Lng +
-                            '"><span class="glyphicon glyphicon-map-marker ct' + a.sum.ActionType + '"></span></a></td>' +
+                        $summaryTable.append('<tr><td><a class="btn" data-code="' + a.ct.Code + '" data-lat="' + a.ct.Lat + '" data-lng="' + a.ct.Lng +
+                            '"><span class="fa fa-eye ct' + a.sum.ActionType + '"></span></a></td>' +
+                            '<td class="red-cell">' + a.sum.FailRate + '</td>' +
+                            '<td class="ct' + a.sum.ActionType + '"><span title="' + a.sum.Action + '"></span></td>' +
                             '<td>' + a.ct.Code + '</td><td>' + a.ct.ClientCount + '</td>' +
                             '<td>' + a.sum.ConstructType + '</td><td>' + a.sum.TransfCount + '</td><td>' + a.sum.ExitCount + '</td><td>' + a.sum.BoxAge + '</td><td>' + a.sum.CellFunctional + '</td>' +
                             '<td>' + a.sum.MaxIma + '</td><td>' + a.sum.MinIma + '</td><td>' + a.sum.TransfAge + '</td>' +
                             '<td>' + a.sum.TransfFailRate + '</td><td>' + a.sum.ExitFailRate + '</td><td>' + a.sum.BoxFailRate + '</td><td>' + a.sum.ConstrFailRate + '</td>' +
-                            '<td>' + a.sum.FailRate36 + '</td><td>' + a.sum.FailRate48 + '</td>' +
-                            '<td class="red-cell">' + a.sum.FailRate + '</td>' +
-                            '<td class="ct' + a.sum.ActionType + '">' + a.sum.Action + '</td></tr>');
+                            '<td>' + a.sum.FailRate36 + '</td><td>' + a.sum.FailRate48 + '</td></tr>');
                     });
 
                     $("#divSummaryTable p.error").html("Total: " + data.count + " record(s).");
@@ -1050,7 +1024,7 @@
                     data: { technical: strategyTechnicalCount },
                     success: function (data) {
 
-                        $("#technicalCount").html(data.technical.toLocaleString(undefined));
+                        //$("#technicalCount").html(data.technical.toLocaleString(undefined));
                         $("#technicalCost").html(data.technicalPreventive.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + " €");
 
                         refreshTechnicalChart(data);
@@ -1210,11 +1184,15 @@
 
                 $.each(performanceData, function (i, item) {
                     if (item.CustTarget == custTarget) {
+                        performanceTableCells.filter(".g1.percent").html(item.TruePosPercent + "<span>%</span>");
+                        performanceTableCells.filter(".g2.percent").html(item.FalsePosPercent + "<span>%</span>");
+                        performanceTableCells.filter(".g3.percent").html(item.FalseNegPercent + "<span>%</span>");
+                        performanceTableCells.filter(".g4.percent").html(item.TrueNegPercent + "<span>%</span>");
 
-                        performanceTableCells[0].innerHTML = item.TruePos.toLocaleString() + " assets (" + item.TruePosPercent + "%)";
-                        performanceTableCells[1].innerHTML = item.FalsePos.toLocaleString() + " assets (" + item.FalsePosPercent + "%)";
-                        performanceTableCells[2].innerHTML = item.FalseNeg.toLocaleString() + " assets (" + item.FalseNegPercent + "%)";
-                        performanceTableCells[3].innerHTML = item.TrueNeg.toLocaleString() + " assets (" + item.TrueNegPercent + "%)";
+                        performanceTableCells.filter(".g1:not(.percent)").html(item.TruePos.toLocaleString() + " assets");
+                        performanceTableCells.filter(".g2:not(.percent)").html(item.FalsePos.toLocaleString() + " assets");
+                        performanceTableCells.filter(".g3:not(.percent)").html(item.FalseNeg.toLocaleString() + " assets");
+                        performanceTableCells.filter(".g4:not(.percent)").html(item.TrueNeg.toLocaleString() + " assets");
 
                         return false;
                     }
@@ -1245,7 +1223,7 @@
                         var container = $("#performanceChart");
                         container.html("");
 
-                        var margin = { top: 20, right: 180, bottom: 60, left: 50 },
+                        var margin = { top: 20, right: 30, bottom: 60, left: 50 },
                             width = container.width() - margin.left - margin.right,
                             height = container.height() - margin.top - margin.bottom;
 

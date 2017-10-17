@@ -1,20 +1,8 @@
-#mpgsView > .left {
-    background-color: #B8C7D0;
-    color: #333;
-}
-
-#mpgsView > .left2 .text-menu, #mpgsView > .left2 .text-menu-postfix:before, #mpgsView > .left2 .text-menu-postfix:after {
-    background-color: #6F8FA1;
-}
-
-#mpgsView > .center h1, #mpgsView > .center h3 {
-    color: #177B57;
-}
-
-#mpgsView .slider-handle {
-    background-color: #337ab7;
+#mpgsView .logo {
+    height: 80px;
+    top: 20px;
 }
 
 #mpgsView .scatter-chart .cursor {
-    fill: #337ab7;
+    fill: #555;
 }
