@@ -164,6 +164,7 @@
     font-weight: 400;
     display: inline-block;
     padding-bottom: 20px;
+    width: 100%;
 }
 
     #mpgsView thead th {
