@@ -1,0 +1,39 @@
+<ul id="topMenu">
+        <li>
+            <a href="/main">
+                <img src="~/images/home1.png" />
+                <span>@ViewBag.Texts["Power.Menu.Home"]</span>
+            </a>
+        </li>
+        <li>
+            <a href="/power-outlet"  class="@(ViewBag.CurrentTab=="power"? "active" : "")" >
+                <img src="@Url.Content("~/images/power"+(ViewBag.CurrentTab=="power"? "0" : "1")+"-sm.png")" />
+                <span>@Html.Raw(ViewBag.Texts["Power.Menu.Power"])</span>
+            </a>
+        </li>
+        <li>
+            <a href="http://demoweb:acc3s0ACC@new-demo-dev.bcgam40.com/index_demo.html">
+                <img src="~/images/strategy1.png" />
+                <span>@Html.Raw(ViewBag.Texts["Power.Menu.Strategy"])</span>
+            </a>
+        </li>
+        <li>
+            <a href="/fraud" class="@(ViewBag.CurrentTab=="fraud"? "active" : "")" >
+                <img src="@Url.Content("~/images/fraud"+(ViewBag.CurrentTab=="fraud"? "0" : "1")+"-sm.png")" />
+                <span>@Html.Raw(ViewBag.Texts["Power.Menu.Fraud"])</span>
+            </a>
+        </li>
+        <li>
+            <a href="https://tableau.bcg.com/#/site/Capex_Allocation_TMT/views/Network_Deployment_Model_20180319_vf_JDH_v2/NetworkDeploymentOptimization">
+                <img src="~/images/radio1-sm.png" />
+                <span>@Html.Raw(ViewBag.Texts["Power.Menu.Capex"])</span>
+            </a>
+        </li>
+        <li style="padding-left: 40px;">
+            <a href="javascript:void(0);" class="active" id="btnExportPdf">
+                <img src="~/images/download-pdf.png" />
+                <span>@Html.Raw(ViewBag.Texts["Power.Menu.Download"])</span>
+            </a>
+        </li>
+    </ul>
+

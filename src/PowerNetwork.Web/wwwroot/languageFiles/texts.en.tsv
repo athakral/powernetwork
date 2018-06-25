@@ -28,6 +28,7 @@ Power.Header				Loading Monitoring
 Power.Menu.Home				Home
 Power.Menu.Power			Loading<br />monitoring
 Power.Menu.Fraud			Fraud<br/>detection
+Power.Menu.Capex			Capex<br/>allocation
 Power.Menu.Fail				Probability<br/>of failure
 Power.Menu.Download			Download<br />report
 Power.Menu.Strategy			Maintenance<br/>management

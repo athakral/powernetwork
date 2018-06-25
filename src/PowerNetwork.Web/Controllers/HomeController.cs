@@ -134,6 +134,7 @@ namespace PowerNetwork.Web.Controllers {
         [Route("power-outlet")]
         public IActionResult PowerOutlet() {
             ViewBag.AppConf = _appConf;
+            ViewBag.CurrentTab = "power";
             return View();
         }
 
@@ -141,6 +142,7 @@ namespace PowerNetwork.Web.Controllers {
         [Route("fraud")]
         public IActionResult Fraud() {
             ViewBag.AppConf = _appConf;
+            ViewBag.CurrentTab = "fraud";
             return View();
         }
 
