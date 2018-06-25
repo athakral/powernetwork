@@ -19,6 +19,8 @@ Main.Box3.Header			Probability<br/>of failure
 Main.Box3.Content			The probability to failure allows to identify which assets are at risk to define critical and extraordinary maintenance
 Main.Box4.Header			Maintenance<br/>management
 Main.Box4.Content			The Maintenance Management allows to determine the Transformation Centers on which to carry out preventive maintenance in function of its probability of failure and its technical and economic criticality
+Main.Box5.Header			Capex<br/>allocation
+Main.Box5.Content			The CapEx optimization of network deployment allows to increase the coverage and quality of customers with higher value for the company, resulting in increased revenue and reduced churn.
 
 
 

@@ -11,14 +11,14 @@
         @ViewBag.Texts["Main.Header"]
     </h1>
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="box" data-url="/power-outlet">
                 <h3>@Html.Raw(ViewBag.Texts["Main.Box1.Header"])</h3>
                 <img src="~/images/power0.png"/>
                 <p>@Html.Raw(ViewBag.Texts["Main.Box1.Content"])</p>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="box" data-url="http://demoweb:acc3s0ACC@new-demo-dev.bcgam40.com/index_demo.html">
             <!-- <div class="box" data-url="/mpgs"> -->
                 <h3>@Html.Raw(ViewBag.Texts["Main.Box4.Header"])</h3>
@@ -26,11 +26,18 @@
                 <p>@Html.Raw(ViewBag.Texts["Main.Box4.Content"])</p>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="box" data-url="/fraud">
                 <h3>@Html.Raw(ViewBag.Texts["Main.Box2.Header"])</h3>
                 <img src="~/images/fraud0.png"/>
                 <p>@Html.Raw(ViewBag.Texts["Main.Box2.Content"])</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="box" data-url="https://tableau.bcg.com/#/site/Capex_Allocation_TMT/workbooks">
+                <h3>@Html.Raw(ViewBag.Texts["Main.Box5.Header"])</h3>
+                <img src="~/images/radio0.png"/>
+                <p>@Html.Raw(ViewBag.Texts["Main.Box5.Content"])</p>
             </div>
         </div>
     </div>
